@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ArrowDown, LayoutDashboard, Sparkles } from "lucide-react";
+import { ArrowDown, LayoutDashboard, MessageCircle, Sparkles } from "lucide-react";
 import { TrackedLink } from "@/components/TrackedLink";
 import { heroCampaign } from "@/data/mockData";
 
@@ -30,7 +30,7 @@ export function Hero() {
             QuestBoard membantu player dan DM match berdasarkan jadwal, gaya main,
             pengalaman, bahasa, dan ekspektasi campaign.
           </p>
-          <div className="mt-7 flex flex-col gap-3 sm:mt-9 sm:flex-row">
+          <div className="mt-7 flex flex-col gap-3 sm:mt-9 sm:flex-row sm:flex-wrap">
             <TrackedLink
               href="#join-beta"
               eventName="join_beta_click"
@@ -46,6 +46,14 @@ export function Hero() {
             >
               <LayoutDashboard className="size-4" aria-hidden="true" />
               Coba Prototype Clickable
+            </a>
+            <a
+              href="/feedback"
+              aria-label="Beri feedback komunitas untuk QuestBoard"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-md border border-violet/34 bg-violet/10 px-6 text-sm font-black text-parchment transition hover:-translate-y-0.5 hover:border-violet/70 hover:text-white focus:outline-none focus:ring-2 focus:ring-violet focus:ring-offset-2 focus:ring-offset-charcoal sm:h-12"
+            >
+              <MessageCircle className="size-4 text-violet" aria-hidden="true" />
+              Beri Feedback
             </a>
             <TrackedLink
               href="#cara-kerja"

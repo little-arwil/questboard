@@ -2,14 +2,77 @@
 
 import { FormEvent, useState } from "react";
 import { Mail, Sparkles } from "lucide-react";
+import {
+  createSupabaseBrowserClient,
+  type WaitlistInsert,
+} from "@/lib/supabase";
+
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+type SubmissionState = "idle" | "loading" | "success" | "error";
 
 export function CTASection() {
-  const [submitted, setSubmitted] = useState(false);
+  const [email, setEmail] = useState("");
+  const [submissionState, setSubmissionState] = useState<SubmissionState>("idle");
+  const [message, setMessage] = useState("");
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSubmitted(true);
+
+    const trimmedEmail = email.trim().toLowerCase();
+
+    if (!trimmedEmail) {
+      setSubmissionState("error");
+      setMessage("Email wajib diisi untuk join beta.");
+      return;
+    }
+
+    if (!emailPattern.test(trimmedEmail)) {
+      setSubmissionState("error");
+      setMessage("Format email belum valid. Cek lagi alamat email kamu.");
+      return;
+    }
+
+    const supabase = createSupabaseBrowserClient();
+
+    if (!supabase) {
+      setSubmissionState("error");
+      setMessage("Supabase belum dikonfigurasi. Tambahkan environment variables dulu.");
+      return;
+    }
+
+    setSubmissionState("loading");
+    setMessage("Mendaftarkan email kamu...");
+
+    const waitlistEntry: WaitlistInsert = {
+      email: trimmedEmail,
+      source: "landing-page",
+    };
+
+    const { error } = await supabase.from("waitlist").insert(waitlistEntry);
+
+    if (error) {
+      setSubmissionState("error");
+      setMessage(
+        error.code === "23505"
+          ? "Email ini sudah ada di waitlist QuestBoard."
+          : "Gagal join beta. Coba lagi sebentar lagi.",
+      );
+      return;
+    }
+
+    setEmail("");
+    setSubmissionState("success");
+    setMessage("Berhasil! Kamu masuk daftar beta QuestBoard.");
   }
+
+  const isLoading = submissionState === "loading";
+  const messageTone =
+    submissionState === "success"
+      ? "text-emerald"
+      : submissionState === "error"
+        ? "text-rose-300"
+        : "text-parchment/58";
 
   return (
     <section id="join-beta" className="section-pad" aria-labelledby="cta-title">
@@ -28,7 +91,11 @@ export function CTASection() {
               D&amp;D yang lebih cocok sejak awal.
             </p>
 
-            <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-3 sm:max-w-xl sm:flex-row">
+            <form
+              onSubmit={handleSubmit}
+              noValidate
+              className="mt-8 flex flex-col gap-3 sm:max-w-xl sm:flex-row"
+            >
               <label className="sr-only" htmlFor="email">
                 Email untuk join beta
               </label>
@@ -39,20 +106,36 @@ export function CTASection() {
                   name="email"
                   type="email"
                   required
+                  value={email}
+                  onChange={(event) => {
+                    setEmail(event.target.value);
+                    if (submissionState !== "idle") {
+                      setSubmissionState("idle");
+                      setMessage("");
+                    }
+                  }}
                   placeholder="email@domain.com"
+                  disabled={isLoading}
+                  aria-describedby="beta-form-message"
+                  aria-invalid={submissionState === "error"}
                   className="h-12 w-full rounded-md border border-white/12 bg-charcoal/78 pl-12 pr-4 text-sm font-semibold text-white outline-none transition placeholder:text-parchment/35 hover:border-gold/50 focus:border-ember focus:ring-2 focus:ring-ember/30"
                 />
               </div>
               <button
                 type="submit"
-                className="inline-flex h-12 items-center justify-center rounded-md bg-ember px-6 text-sm font-black text-charcoal transition hover:-translate-y-0.5 hover:bg-gold focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-charcoal"
+                disabled={isLoading}
+                className="inline-flex h-12 items-center justify-center rounded-md bg-ember px-6 text-sm font-black text-charcoal transition hover:-translate-y-0.5 hover:bg-gold focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-charcoal disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0"
               >
-                Join Beta
+                {isLoading ? "Joining..." : "Join Beta"}
               </button>
             </form>
 
-            <p className="mt-4 min-h-6 text-sm font-bold text-emerald" aria-live="polite">
-              {submitted ? "Berhasil! Kamu masuk daftar beta QuestBoard." : ""}
+            <p
+              id="beta-form-message"
+              className={`mt-4 min-h-6 text-sm font-bold ${messageTone}`}
+              aria-live="polite"
+            >
+              {message}
             </p>
           </div>
         </div>

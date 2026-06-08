@@ -3,8 +3,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, CalendarDays, MessageCircle, ShieldCheck, UsersRound } from "lucide-react";
 import { MatchReasons, PlaystyleBars } from "@/components/prototype/CampaignCard";
+import { PlaystyleFocusScale } from "@/components/prototype/PlaystyleFocusScale";
 import { SessionZeroPanel } from "@/components/prototype/SessionZeroPanel";
 import { campaigns } from "@/data/appMockData";
+import { getPlaystyleFocusMatchNote, getPlaystyleFocusOption } from "@/lib/playstyleFocus";
 
 type CampaignDetailPageProps = {
   params: Promise<{ id: string }>;
@@ -32,6 +34,8 @@ export default async function CampaignDetailPage({ params }: CampaignDetailPageP
   if (!campaign) {
     notFound();
   }
+
+  const playstyleFocus = getPlaystyleFocusOption(campaign.playstyleFocus);
 
   return (
     <>
@@ -70,7 +74,24 @@ export default async function CampaignDetailPage({ params }: CampaignDetailPageP
             <InfoRow icon={<CalendarDays className="size-4" aria-hidden="true" />} label="Schedule" value={`${campaign.day}, ${campaign.time} ${campaign.timezone}`} />
             <InfoRow icon={<MessageCircle className="size-4" aria-hidden="true" />} label="Language" value={campaign.language} />
             <InfoRow icon={<ShieldCheck className="size-4" aria-hidden="true" />} label="Tone" value={campaign.tone} />
+            <InfoRow
+              icon={<ShieldCheck className="size-4" aria-hidden="true" />}
+              label="Table focus"
+              value={`${campaign.playstyleFocus} - ${playstyleFocus.label}`}
+            />
           </dl>
+
+          <section className="mt-8">
+            <PlaystyleFocusScale
+              defaultValue={campaign.playstyleFocus}
+              name={`${campaign.id}-detail-focus`}
+              label="Table Focus"
+              readOnly
+            />
+            <p className="mt-3 rounded-md border border-emerald/18 bg-emerald/8 px-4 py-3 text-sm font-bold text-parchment/82">
+              {getPlaystyleFocusMatchNote(campaign.playstyleFocus)}
+            </p>
+          </section>
 
           <div className="mt-8 grid gap-6 lg:grid-cols-2">
             <section>

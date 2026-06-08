@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { ArrowRight, FileText, Send, ShieldCheck } from "lucide-react";
 import { AppPageHeader } from "@/components/prototype/AppShell";
+import { PlaystyleFocusScale } from "@/components/prototype/PlaystyleFocusScale";
 import { applications } from "@/data/appMockData";
+import { getPlaystyleFocusOption } from "@/lib/playstyleFocus";
 
 export default function ApplicationsPage() {
   return (
@@ -13,37 +15,56 @@ export default function ApplicationsPage() {
       />
 
       <section className="grid gap-5 lg:grid-cols-3">
-        {applications.map((application) => (
-          <article key={application.campaign} className="glass-panel rounded-lg p-5">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald">
-                  {application.status}
-                </p>
-                <h2 className="mt-2 text-2xl font-black tracking-normal text-white">
-                  {application.campaign}
-                </h2>
-                <p className="mt-2 text-sm font-semibold text-parchment/58">
-                  DM {application.dm}
-                </p>
+        {applications.map((application) => {
+          const focus = getPlaystyleFocusOption(application.playstyleFocus);
+
+          return (
+            <article key={application.campaign} className="glass-panel rounded-lg p-5">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald">
+                    {application.status}
+                  </p>
+                  <h2 className="mt-2 text-2xl font-black tracking-normal text-white">
+                    {application.campaign}
+                  </h2>
+                  <p className="mt-2 text-sm font-semibold text-parchment/58">
+                    DM {application.dm}
+                  </p>
+                </div>
+                <div className="rounded-md bg-emerald/12 px-3 py-2 text-center text-emerald">
+                  <p className="text-[0.65rem] font-black uppercase">Match</p>
+                  <p className="text-xl font-black">{application.matchScore}%</p>
+                </div>
               </div>
-              <div className="rounded-md bg-emerald/12 px-3 py-2 text-center text-emerald">
-                <p className="text-[0.65rem] font-black uppercase">Match</p>
-                <p className="text-xl font-black">{application.matchScore}%</p>
+              <div className="mt-5">
+                <PlaystyleFocusScale
+                  defaultValue={application.playstyleFocus}
+                  name={`${application.campaign}-application-focus`}
+                  label="Table Focus"
+                  readOnly
+                  compact
+                />
               </div>
-            </div>
-            <p className="mt-5 rounded-md border border-white/10 bg-white/6 p-4 text-sm font-semibold leading-6 text-parchment/78">
-              {application.nextStep}
-            </p>
-            <button
-              type="button"
-              className="mt-5 inline-flex h-11 w-full items-center justify-center gap-2 rounded-md bg-ember px-4 text-sm font-black text-charcoal transition hover:-translate-y-0.5 hover:bg-gold focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-charcoal"
-            >
-              <Send className="size-4" aria-hidden="true" />
-              Fake Submit
-            </button>
-          </article>
-        ))}
+              <p className="mt-4 text-sm font-black text-gold">
+                Table focus: {application.playstyleFocus} - {focus.label}
+              </p>
+              <p className="mt-3 rounded-md border border-white/10 bg-white/6 p-4 text-sm font-semibold leading-6 text-parchment/78">
+                {application.focusMatchNote}
+              </p>
+              <p className="mt-3 rounded-md border border-white/10 bg-white/6 p-4 text-sm font-semibold leading-6 text-parchment/78">
+                {application.nextStep}
+              </p>
+              <button
+                type="button"
+                className="mt-5 inline-flex h-11 w-full items-center justify-center gap-2 rounded-md bg-ember px-4 text-sm font-black text-charcoal transition hover:-translate-y-0.5 hover:bg-gold focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-charcoal"
+              >
+                <Send className="size-4" aria-hidden="true" />
+                Fake Submit
+              </button>
+            </article>
+          );
+        })}
       </section>
 
       <section className="mt-8 grid gap-6 lg:grid-cols-[1fr_0.8fr]">
@@ -57,6 +78,7 @@ export default function ApplicationsPage() {
           <div className="mt-6 grid gap-4">
             {[
               ["Why this table", "I like mystery fantasy, roleplay-heavy scenes, and Saturday evening games."],
+              ["Table focus", "Table focus: 8 - Roleplay-heavy. Gaya main cocok: sama-sama roleplay-focused."],
               ["Availability", "Sabtu malam WIB, with notice if work schedule changes."],
               ["Table expectations", "Session zero, clear boundaries, and no surprise PvP."],
             ].map(([label, value]) => (

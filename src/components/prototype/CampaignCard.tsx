@@ -1,8 +1,12 @@
 import Link from "next/link";
 import { CalendarDays, MapPin, ScrollText, Sparkles, UsersRound } from "lucide-react";
+import { PlaystyleFocusScale } from "@/components/prototype/PlaystyleFocusScale";
 import type { Campaign } from "@/data/appMockData";
+import { getPlaystyleFocusOption } from "@/lib/playstyleFocus";
 
 export function CampaignCard({ campaign }: { campaign: Campaign }) {
+  const playstyleFocus = getPlaystyleFocusOption(campaign.playstyleFocus);
+
   return (
     <article className="glass-panel flex h-full flex-col rounded-lg p-5 transition hover:-translate-y-1 hover:border-gold/35">
       <div className="flex items-start justify-between gap-4">
@@ -40,9 +44,21 @@ export function CampaignCard({ campaign }: { campaign: Campaign }) {
         </div>
         <div className="flex items-center gap-2 text-parchment/72">
           <ScrollText className="size-4 text-ember" aria-hidden="true" />
-          <span>{campaign.playstyle}</span>
+          <span>
+            {campaign.playstyleFocus} - {playstyleFocus.label}
+          </span>
         </div>
       </dl>
+
+      <div className="mt-5">
+        <PlaystyleFocusScale
+          defaultValue={campaign.playstyleFocus}
+          name={`${campaign.id}-focus`}
+          label="Table Focus"
+          readOnly
+          compact
+        />
+      </div>
 
       <div className="mt-5 flex flex-wrap gap-2">
         {campaign.tags.map((tag) => (

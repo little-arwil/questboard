@@ -57,6 +57,17 @@ The mock app lives under `/app`:
 
 All prototype content comes from `src/data/appMockData.ts`.
 
+The prototype uses a 1-9 `playstyleFocus` mock field as the simple matching
+signal for table style:
+
+- `1` means tactical combat-heavy.
+- `5` means balanced.
+- `9` means narrative-heavy.
+
+The interactive Table Focus scale appears in the player profile mock and DM
+campaign creation mock, then renders read-only on campaign cards, campaign
+details, and application previews.
+
 ## Supabase Waitlist Schema
 
 Run `supabase/waitlist.sql` in the Supabase SQL editor. It creates

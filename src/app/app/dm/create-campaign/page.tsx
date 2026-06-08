@@ -1,8 +1,12 @@
 import { AppPageHeader } from "@/components/prototype/AppShell";
+import { PlaystyleFocusScale } from "@/components/prototype/PlaystyleFocusScale";
 import { SessionZeroPanel } from "@/components/prototype/SessionZeroPanel";
 
 const campaignTypes = ["Campaign panjang", "One-shot", "Mini campaign"];
 const tableTools = ["Discord + Roll20", "Discord + Foundry", "Offline table", "Hybrid"];
+const mockCampaignDraft = {
+  playstyleFocus: 6,
+};
 
 export default function CreateCampaignPage() {
   return (
@@ -78,6 +82,14 @@ export default function CreateCampaignPage() {
             />
           </label>
 
+          <section className="md:col-span-2">
+            <PlaystyleFocusScale
+              defaultValue={mockCampaignDraft.playstyleFocus}
+              name="campaignPlaystyleFocus"
+              description="Set ekspektasi awal supaya applicant tahu apakah table kamu lebih taktis, seimbang, atau naratif."
+            />
+          </section>
+
           <fieldset className="md:col-span-2">
             <legend className="mb-3 text-xs font-black uppercase tracking-[0.16em] text-parchment/58">
               Table expectations
@@ -85,7 +97,7 @@ export default function CreateCampaignPage() {
             <div className="grid gap-3 md:grid-cols-2">
               {[
                 "Beginner-friendly",
-                "Roleplay-heavy",
+                "Table focus jelas",
                 "No surprise PvP",
                 "Session recap after every game",
               ].map((item) => (

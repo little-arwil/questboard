@@ -10,6 +10,7 @@ export type Campaign = {
   language: string;
   experience: string;
   playstyle: string;
+  playstyleFocus: number;
   format: string;
   tone: string;
   tools: string;
@@ -28,6 +29,8 @@ export type ApplicationPreview = {
   status: string;
   submittedAt: string;
   matchScore: number;
+  playstyleFocus: number;
+  focusMatchNote: string;
   nextStep: string;
 };
 
@@ -43,7 +46,10 @@ export const appFilters = [
   { label: "Hari", options: ["Any", "Jumat", "Sabtu", "Minggu", "Weekday"] },
   { label: "Bahasa", options: ["Any", "Bahasa Indonesia", "English", "Bilingual"] },
   { label: "Experience", options: ["Any", "Beginner", "Mixed", "Veteran"] },
-  { label: "Playstyle", options: ["Any", "Roleplay-heavy", "Balanced", "Combat-heavy"] },
+  {
+    label: "Playstyle",
+    options: ["Any", "1-3 Combat-focused", "5 Balanced", "7-9 Roleplay-focused"],
+  },
   { label: "Format", options: ["Any", "Online", "Offline", "Hybrid"] },
 ];
 
@@ -60,6 +66,7 @@ export const campaigns: Campaign[] = [
     language: "Bahasa Indonesia",
     experience: "Beginner",
     playstyle: "Roleplay-heavy",
+    playstyleFocus: 8,
     format: "Online",
     tone: "Mystery fantasy",
     tools: "Discord + Roll20",
@@ -71,7 +78,8 @@ export const campaigns: Campaign[] = [
     compatibilityReasons: [
       "Jadwal cocok Sabtu malam",
       "Beginner-friendly",
-      "Roleplay-heavy",
+      "Gaya main cocok: sama-sama roleplay-focused",
+      "Table focus: 8 - Roleplay-heavy",
       "Bahasa Indonesia",
       "Discord + Roll20",
     ],
@@ -99,6 +107,7 @@ export const campaigns: Campaign[] = [
     language: "Bilingual",
     experience: "Mixed",
     playstyle: "Balanced",
+    playstyleFocus: 5,
     format: "Online",
     tone: "Swashbuckling arcane tech",
     tools: "Discord + Foundry VTT",
@@ -110,7 +119,8 @@ export const campaigns: Campaign[] = [
     compatibilityReasons: [
       "Format online",
       "Open to mixed experience",
-      "Balanced roleplay and combat",
+      "Table focus: 5 - Balanced",
+      "Campaign ini sedikit lebih combat-focused dari preferensi kamu",
       "Weekend afternoon slot",
       "Clear table safety notes",
     ],
@@ -138,6 +148,7 @@ export const campaigns: Campaign[] = [
     language: "Bahasa Indonesia",
     experience: "Veteran",
     playstyle: "Combat-heavy",
+    playstyleFocus: 3,
     format: "Hybrid",
     tone: "Dungeon survival",
     tools: "Discord + Table maps",
@@ -148,7 +159,8 @@ export const campaigns: Campaign[] = [
     tags: ["Combat-heavy", "One-shot", "Hybrid"],
     compatibilityReasons: [
       "Friday night availability",
-      "Tactical combat preference",
+      "Table focus: 3 - Combat-focused",
+      "Campaign ini lebih combat-focused dari preferensi kamu",
       "Experienced table",
       "Hybrid-ready",
       "One-shot commitment",
@@ -177,6 +189,7 @@ export const campaigns: Campaign[] = [
     language: "English",
     experience: "Beginner",
     playstyle: "Roleplay-heavy",
+    playstyleFocus: 7,
     format: "Offline",
     tone: "Cozy mystery",
     tools: "Physical dice + shared notes",
@@ -188,7 +201,8 @@ export const campaigns: Campaign[] = [
     compatibilityReasons: [
       "Beginner support",
       "Offline preference",
-      "Roleplay-heavy tone",
+      "Gaya main cocok: sama-sama roleplay-focused",
+      "Table focus: 7 - Roleplay-focused",
       "English table",
       "Weekday evening slot",
     ],
@@ -211,6 +225,7 @@ export const dashboardStats = [
   { label: "Open campaigns", value: "12", detail: "4 beginner-friendly" },
   { label: "Applications", value: "3", detail: "1 waiting for DM" },
   { label: "Session zero", value: "5/7", detail: "Checklist preview ready" },
+  { label: "Table focus", value: "7/9", detail: "Roleplay-focused preference" },
 ];
 
 export const sessionZeroChecklist = [
@@ -230,6 +245,8 @@ export const applications: ApplicationPreview[] = [
     status: "Draft preview",
     submittedAt: "Not submitted",
     matchScore: 92,
+    playstyleFocus: 8,
+    focusMatchNote: "Gaya main cocok: sama-sama roleplay-focused.",
     nextStep: "Review table expectations before applying",
   },
   {
@@ -238,6 +255,8 @@ export const applications: ApplicationPreview[] = [
     status: "Ready to send",
     submittedAt: "Not submitted",
     matchScore: 86,
+    playstyleFocus: 5,
+    focusMatchNote: "Campaign ini sedikit lebih combat-focused dari preferensi kamu.",
     nextStep: "Confirm Sunday availability",
   },
   {
@@ -246,6 +265,8 @@ export const applications: ApplicationPreview[] = [
     status: "Needs profile",
     submittedAt: "Not submitted",
     matchScore: 83,
+    playstyleFocus: 7,
+    focusMatchNote: "Table focus: 7 - Roleplay-focused.",
     nextStep: "Finish safety preferences",
   },
 ];
@@ -255,6 +276,6 @@ export const profileChecklist = [
   "Preferred role",
   "Experience level",
   "Languages",
-  "Playstyle mix",
+  "Table focus scale",
   "Safety preferences",
 ];

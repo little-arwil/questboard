@@ -17,7 +17,7 @@ export default function AppDashboardPage() {
         action={<AppSearchButton />}
       />
 
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
         {dashboardStats.map((stat) => (
           <article key={stat.label} className="glass-panel rounded-lg p-5">
             <p className="text-xs font-black uppercase tracking-[0.18em] text-parchment/50">

@@ -1,10 +1,14 @@
 import { Check, Languages, ShieldCheck, Swords } from "lucide-react";
 import { AppPageHeader } from "@/components/prototype/AppShell";
+import { PlaystyleFocusScale } from "@/components/prototype/PlaystyleFocusScale";
 import { profileChecklist } from "@/data/appMockData";
 
 const availabilityOptions = ["Jumat malam", "Sabtu malam", "Minggu siang", "Weekday"];
 const languageOptions = ["Bahasa Indonesia", "English", "Bilingual"];
 const safetyOptions = ["Lines and veils", "Fade to black", "No PvP surprise", "Debrief after intense scenes"];
+const mockPlayerProfile = {
+  playstyleFocus: 7,
+};
 
 export default function ProfileSetupPage() {
   return (
@@ -113,9 +117,17 @@ export default function ProfileSetupPage() {
           </fieldset>
 
           <section className="md:col-span-2">
+            <PlaystyleFocusScale
+              defaultValue={mockPlayerProfile.playstyleFocus}
+              name="profilePlaystyleFocus"
+              description="Angka ini menjadi sinyal cepat untuk mencocokkan preferensi player dengan fokus table."
+            />
+          </section>
+
+          <section className="md:col-span-2">
             <div className="mb-3 flex items-center gap-2 text-xs font-black uppercase tracking-[0.16em] text-parchment/58">
               <Swords className="size-4 text-violet" aria-hidden="true" />
-              Playstyle
+              Supporting playstyle mix
             </div>
             <div className="grid gap-4 md:grid-cols-3">
               {[

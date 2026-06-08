@@ -71,7 +71,6 @@ export const filters = [
   { label: "Hari", options: ["Sabtu", "Jumat", "Minggu", "Weekday"] },
   { label: "Bahasa", options: ["Bahasa Indonesia", "English", "Bilingual"] },
   { label: "Experience", options: ["Beginner", "Mixed", "Veteran"] },
-  { label: "Playstyle", options: ["Roleplay-heavy", "Balanced", "Combat-heavy"] },
   { label: "Format", options: ["Online", "Offline", "Hybrid"] },
 ];
 

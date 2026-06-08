@@ -14,6 +14,8 @@ type PlaystyleFocusScaleProps = {
   description?: string;
   readOnly?: boolean;
   compact?: boolean;
+  dense?: boolean;
+  showExplanation?: boolean;
 };
 
 export function PlaystyleFocusScale({
@@ -23,21 +25,32 @@ export function PlaystyleFocusScale({
   description = "Pilih angka yang paling mendekati energi table kamu.",
   readOnly = false,
   compact = false,
+  dense = false,
+  showExplanation = true,
 }: PlaystyleFocusScaleProps) {
   const [playstyleFocus, setPlaystyleFocus] = useState(defaultValue);
   const selected = getPlaystyleFocusOption(playstyleFocus);
   const idBase = name.replace(/[^a-zA-Z0-9_-]/g, "-");
+  const isCompact = compact || dense;
 
   return (
     <section
       className={
-        compact
-          ? "rounded-md border border-violet/18 bg-violet/8 p-4"
+        dense
+          ? "rounded-md border border-violet/18 bg-violet/8 p-3"
+          : compact
+            ? "rounded-md border border-violet/18 bg-violet/8 p-4"
           : "rounded-lg border border-violet/20 bg-violet/8 p-5 shadow-gold-glow"
       }
       aria-labelledby={`${idBase}-label`}
     >
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      <div
+        className={
+          dense
+            ? "grid gap-2"
+            : "flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"
+        }
+      >
         <div>
           <p
             id={`${idBase}-label`}
@@ -45,13 +58,19 @@ export function PlaystyleFocusScale({
           >
             {label}
           </p>
-          {!compact && (
+          {!isCompact && (
             <p className="mt-2 text-sm font-semibold leading-6 text-parchment/64">
               {description}
             </p>
           )}
         </div>
-        <div className="rounded-md border border-gold/20 bg-gold/10 px-3 py-2 text-left sm:text-right">
+        <div
+          className={
+            dense
+              ? "text-left"
+              : "rounded-md border border-gold/20 bg-gold/10 px-3 py-2 text-left sm:text-right"
+          }
+        >
           <p className="text-[0.68rem] font-black uppercase tracking-[0.14em] text-gold/80">
             Selected
           </p>
@@ -61,15 +80,21 @@ export function PlaystyleFocusScale({
         </div>
       </div>
 
-      <div className={compact ? "mt-4" : "mt-5"}>
-        <div className="mb-3 flex items-center justify-between gap-3 text-xs font-black uppercase tracking-[0.12em] text-parchment/52">
+      <div className={isCompact ? "mt-3" : "mt-5"}>
+        <div
+          className={
+            dense
+              ? "mb-2 flex items-center justify-between gap-3 text-[0.68rem] font-black uppercase tracking-[0.1em] text-parchment/52"
+              : "mb-3 flex items-center justify-between gap-3 text-xs font-black uppercase tracking-[0.12em] text-parchment/52"
+          }
+        >
           <span className="inline-flex items-center gap-2">
-            <Swords className="size-4 text-gold" aria-hidden="true" />
+            <Swords className={dense ? "size-3.5 text-gold" : "size-4 text-gold"} aria-hidden="true" />
             Combat-heavy
           </span>
           <span className="inline-flex items-center gap-2 text-right">
             Roleplay-heavy
-            <MessageCircle className="size-4 text-violet" aria-hidden="true" />
+            <MessageCircle className={dense ? "size-3.5 text-violet" : "size-4 text-violet"} aria-hidden="true" />
           </span>
         </div>
 
@@ -81,7 +106,9 @@ export function PlaystyleFocusScale({
           {playstyleFocusScale.map((option) => {
             const isSelected = option.value === playstyleFocus;
             const className = [
-              "grid aspect-square min-h-8 place-items-center rounded-full text-xs font-black transition sm:min-h-9",
+              dense
+                ? "grid aspect-square min-h-7 place-items-center rounded-full text-[0.72rem] font-black transition"
+                : "grid aspect-square min-h-8 place-items-center rounded-full text-xs font-black transition sm:min-h-9",
               isSelected
                 ? "bg-ember text-charcoal shadow-gold-glow"
                 : "bg-white/6 text-parchment/62",
@@ -116,9 +143,11 @@ export function PlaystyleFocusScale({
 
       {!readOnly && <input type="hidden" name={name} value={playstyleFocus} />}
 
-      <p className="mt-4 text-sm font-semibold leading-6 text-parchment/74">
-        {selected.explanation}
-      </p>
+      {showExplanation && (
+        <p className="mt-4 text-sm font-semibold leading-6 text-parchment/74">
+          {selected.explanation}
+        </p>
+      )}
     </section>
   );
 }

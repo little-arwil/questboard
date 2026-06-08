@@ -6,6 +6,7 @@ import {
   createSupabaseBrowserClient,
   type WaitlistInsert,
 } from "@/lib/supabase";
+import { trackQuestBoardEvent } from "@/lib/analytics";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -64,6 +65,7 @@ export function CTASection() {
     setEmail("");
     setSubmissionState("success");
     setMessage("Berhasil! Kamu masuk daftar beta QuestBoard.");
+    trackQuestBoardEvent("waitlist_submit_success", { source: "landing-page" });
   }
 
   const isLoading = submissionState === "loading";
@@ -124,6 +126,9 @@ export function CTASection() {
               <button
                 type="submit"
                 disabled={isLoading}
+                onClick={() =>
+                  trackQuestBoardEvent("join_beta_click", { location: "beta_cta" })
+                }
                 className="inline-flex h-12 items-center justify-center rounded-md bg-ember px-6 text-sm font-black text-charcoal transition hover:-translate-y-0.5 hover:bg-gold focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-charcoal disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0"
               >
                 {isLoading ? "Joining..." : "Join Beta"}

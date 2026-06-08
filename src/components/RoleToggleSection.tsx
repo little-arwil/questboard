@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Check, Swords, WandSparkles } from "lucide-react";
 import { roleBenefits } from "@/data/mockData";
+import { trackQuestBoardEvent } from "@/lib/analytics";
 
 type Role = "player" | "dm";
 
@@ -24,6 +25,14 @@ export function RoleToggleSection() {
   const active = roleCopy[role];
   const benefits = roleBenefits[role];
 
+  function handleRoleChange(nextRole: Role) {
+    if (nextRole !== role) {
+      trackQuestBoardEvent("role_toggle_change", { selected_role: nextRole });
+    }
+
+    setRole(nextRole);
+  }
+
   return (
     <section id="role-toggle" className="section-pad bg-charcoal-2/60" aria-labelledby="role-title">
       <div className="quest-container">
@@ -39,7 +48,7 @@ export function RoleToggleSection() {
               <button
                 type="button"
                 aria-pressed={role === "player"}
-                onClick={() => setRole("player")}
+                onClick={() => handleRoleChange("player")}
                 className={`flex h-12 items-center justify-center gap-2 rounded-md text-sm font-black transition ${
                   role === "player"
                     ? "bg-ember text-charcoal"
@@ -52,7 +61,7 @@ export function RoleToggleSection() {
               <button
                 type="button"
                 aria-pressed={role === "dm"}
-                onClick={() => setRole("dm")}
+                onClick={() => handleRoleChange("dm")}
                 className={`flex h-12 items-center justify-center gap-2 rounded-md text-sm font-black transition ${
                   role === "dm"
                     ? "bg-violet text-white"

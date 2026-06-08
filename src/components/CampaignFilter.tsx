@@ -1,4 +1,5 @@
 import { Search } from "lucide-react";
+import { TrackedButton } from "@/components/TrackedButton";
 import { filters } from "@/data/mockData";
 
 export function CampaignFilter() {
@@ -32,13 +33,15 @@ export function CampaignFilter() {
             </label>
           ))}
 
-          <button
+          <TrackedButton
             type="button"
+            eventName="campaign_filter_click"
+            eventProperties={{ location: "campaign_filter" }}
             className="mt-2 inline-flex h-12 items-center justify-center gap-2 rounded-md bg-emerald px-5 text-sm font-black text-charcoal transition hover:-translate-y-0.5 hover:bg-emerald/90 focus:outline-none focus:ring-2 focus:ring-emerald focus:ring-offset-2 focus:ring-offset-charcoal lg:mt-7"
           >
             <Search className="size-4" aria-hidden="true" />
             Cari Campaign
-          </button>
+          </TrackedButton>
         </form>
       </div>
     </section>

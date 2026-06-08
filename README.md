@@ -3,6 +3,7 @@
 QuestBoard is a polished landing page MVP for a D&D/tabletop RPG matchmaking platform. It helps players and DMs find compatible sessions based on schedule, timezone, language, playstyle, experience level, campaign type, tools, and table expectations.
 
 This MVP uses Supabase only for beta waitlist submissions. There is no custom backend or authentication yet.
+It also uses Vercel Analytics for lightweight page visit and interaction tracking.
 
 ## Tech Stack
 
@@ -69,6 +70,23 @@ with check (
 
 No select policy is required for this MVP, which keeps public visitors from reading waitlist entries.
 
+## Analytics
+
+QuestBoard uses the official Vercel Analytics package (`@vercel/analytics`).
+The `Analytics` component is mounted in `src/app/layout.tsx` so page visits are
+tracked automatically when Web Analytics is enabled for the Vercel project.
+
+Custom events currently tracked:
+
+- `join_beta_click`
+- `waitlist_submit_success`
+- `role_toggle_change`
+- `campaign_filter_click`
+- `hero_secondary_cta_click`
+
+No additional analytics provider, authentication, or custom backend is required.
+Local development does not need extra analytics environment variables.
+
 ## Production Check
 
 Build the app:
@@ -87,4 +105,5 @@ npm run lint
 
 - Uses mock data for campaign, role, filter, feature, and matching content.
 - The beta form writes submitted emails to Supabase.
+- Vercel Analytics tracks page visits plus key landing page interactions.
 - The original hero artwork is generated for this project and avoids official D&D logos, Wizards of the Coast assets, and copyrighted fantasy artwork.

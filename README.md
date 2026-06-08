@@ -5,6 +5,10 @@ QuestBoard is a polished landing page MVP for a D&D/tabletop RPG matchmaking pla
 This MVP uses Supabase only for beta waitlist submissions. There is no custom backend or authentication yet.
 It also uses Vercel Analytics for lightweight page visit and interaction tracking.
 
+The `/app` routes are a clickable mock product prototype. They use static mock
+data only and do not include authentication, application persistence, campaign
+storage, or a real app database.
+
 ## Tech Stack
 
 - Next.js App Router
@@ -39,6 +43,19 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 ```
 
 These values are used by the public landing page to insert waitlist submissions. Do not use the Supabase service role key in the browser.
+
+## App Prototype Routes
+
+The mock app lives under `/app`:
+
+- `/app` dashboard
+- `/app/campaigns` campaign browse page with mock filters
+- `/app/campaigns/[id]` campaign detail page
+- `/app/profile` player profile setup mock
+- `/app/dm/create-campaign` DM campaign creation mock
+- `/app/applications` application preview page
+
+All prototype content comes from `src/data/appMockData.ts`.
 
 ## Supabase Waitlist Schema
 

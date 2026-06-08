@@ -97,7 +97,7 @@ If the form submits but the row does not appear in Supabase, verify:
 - RLS is enabled and the only public policy is the `anon` insert policy above.
 - The insert request is not blocked by duplicate email, email format, or source constraints.
 
-Temporary waitlist debugging:
+Waitlist troubleshooting:
 
 - Open the deployed page, submit the form, then check the browser console for `Waitlist insert failed`.
 - The console entry shows Supabase `code`, `message`, `details`, and `hint` without printing env vars.
@@ -133,6 +133,12 @@ Run lint:
 
 ```bash
 npm run lint
+```
+
+Run the TypeScript check:
+
+```bash
+npm exec tsc -- --noEmit
 ```
 
 ## Notes

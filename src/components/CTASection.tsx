@@ -2,14 +2,148 @@
 
 import { FormEvent, useState } from "react";
 import { Mail, Sparkles } from "lucide-react";
+import {
+  createSupabaseBrowserClient,
+  getMissingSupabaseEnvVars,
+  WAITLIST_SOURCE,
+  WAITLIST_TABLE,
+  type WaitlistInsert,
+} from "@/lib/supabase";
+import { trackQuestBoardEvent } from "@/lib/analytics";
+
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+type SubmissionState = "idle" | "loading" | "success" | "error";
+
+type SupabaseInsertError = {
+  code?: string;
+  details?: string | null;
+  hint?: string | null;
+  message?: string;
+};
+
+function normalizeEmail(value: string) {
+  return value.trim().toLowerCase();
+}
+
+function isValidEmail(value: string) {
+  return emailPattern.test(value);
+}
+
+function redactSubmittedEmail(value: string | null | undefined, submittedEmail: string) {
+  return value?.replaceAll(submittedEmail, "[redacted-email]") ?? value;
+}
+
+function logSupabaseInsertError(error: SupabaseInsertError, submittedEmail: string) {
+  if (process.env.NODE_ENV !== "development") {
+    return;
+  }
+
+  console.error("Supabase waitlist insert failed", {
+    code: error.code,
+    message: redactSubmittedEmail(error.message, submittedEmail),
+    details: redactSubmittedEmail(error.details, submittedEmail),
+    hint: redactSubmittedEmail(error.hint, submittedEmail),
+  });
+}
+
+function getInsertErrorMessage(error: SupabaseInsertError) {
+  if (error.code === "23505") {
+    return "Email ini sudah ada di waitlist QuestBoard.";
+  }
+
+  if (error.code === "23514") {
+    return "Email tidak lolos validasi database. Cek lagi format email kamu.";
+  }
+
+  if (error.code === "42501") {
+    return "Waitlist belum mengizinkan submission publik. Cek RLS policy Supabase.";
+  }
+
+  if (error.code === "42P01") {
+    return "Table waitlist belum ditemukan di Supabase. Jalankan SQL setup terlebih dulu.";
+  }
+
+  return "Gagal join beta. Cek koneksi atau konfigurasi Supabase lalu coba lagi.";
+}
 
 export function CTASection() {
-  const [submitted, setSubmitted] = useState(false);
+  const [email, setEmail] = useState("");
+  const [submissionState, setSubmissionState] = useState<SubmissionState>("idle");
+  const [message, setMessage] = useState("");
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSubmitted(true);
+
+    const normalizedEmail = normalizeEmail(email);
+
+    if (!normalizedEmail) {
+      setSubmissionState("error");
+      setMessage("Email wajib diisi untuk join beta.");
+      return;
+    }
+
+    if (!isValidEmail(normalizedEmail)) {
+      setSubmissionState("error");
+      setMessage("Format email belum valid. Cek lagi alamat email kamu.");
+      return;
+    }
+
+    const missingEnvVars = getMissingSupabaseEnvVars();
+    const supabase = createSupabaseBrowserClient();
+
+    if (missingEnvVars.length > 0 || !supabase) {
+      if (process.env.NODE_ENV === "development") {
+        console.warn("Supabase waitlist env vars are missing", {
+          missing: missingEnvVars,
+        });
+      }
+
+      setSubmissionState("error");
+      setMessage("Waitlist belum terhubung ke Supabase. Cek environment variables.");
+      return;
+    }
+
+    setSubmissionState("loading");
+    setMessage("Mendaftarkan email kamu...");
+
+    const waitlistEntry: WaitlistInsert = {
+      email: normalizedEmail,
+      source: WAITLIST_SOURCE,
+    };
+
+    try {
+      const { error } = await supabase.from(WAITLIST_TABLE).insert(waitlistEntry);
+
+      if (error) {
+        logSupabaseInsertError(error, normalizedEmail);
+        setSubmissionState("error");
+        setMessage(getInsertErrorMessage(error));
+        return;
+      }
+    } catch (error) {
+      if (process.env.NODE_ENV === "development") {
+        console.error("Unexpected waitlist submit failure", error);
+      }
+
+      setSubmissionState("error");
+      setMessage("Tidak bisa menghubungi Supabase. Cek koneksi lalu coba lagi.");
+      return;
+    }
+
+    setEmail("");
+    setSubmissionState("success");
+    setMessage("Berhasil! Kamu masuk daftar beta QuestBoard.");
+    trackQuestBoardEvent("waitlist_submit_success", { source: "landing-page" });
   }
+
+  const isLoading = submissionState === "loading";
+  const messageTone =
+    submissionState === "success"
+      ? "text-emerald"
+      : submissionState === "error"
+        ? "text-rose-300"
+        : "text-parchment/58";
 
   return (
     <section id="join-beta" className="section-pad" aria-labelledby="cta-title">
@@ -28,7 +162,11 @@ export function CTASection() {
               D&amp;D yang lebih cocok sejak awal.
             </p>
 
-            <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-3 sm:max-w-xl sm:flex-row">
+            <form
+              onSubmit={handleSubmit}
+              noValidate
+              className="mt-8 flex flex-col gap-3 sm:max-w-xl sm:flex-row"
+            >
               <label className="sr-only" htmlFor="email">
                 Email untuk join beta
               </label>
@@ -39,20 +177,39 @@ export function CTASection() {
                   name="email"
                   type="email"
                   required
+                  value={email}
+                  onChange={(event) => {
+                    setEmail(event.target.value);
+                    if (submissionState !== "idle") {
+                      setSubmissionState("idle");
+                      setMessage("");
+                    }
+                  }}
                   placeholder="email@domain.com"
+                  disabled={isLoading}
+                  aria-describedby="beta-form-message"
+                  aria-invalid={submissionState === "error"}
                   className="h-12 w-full rounded-md border border-white/12 bg-charcoal/78 pl-12 pr-4 text-sm font-semibold text-white outline-none transition placeholder:text-parchment/35 hover:border-gold/50 focus:border-ember focus:ring-2 focus:ring-ember/30"
                 />
               </div>
               <button
                 type="submit"
-                className="inline-flex h-12 items-center justify-center rounded-md bg-ember px-6 text-sm font-black text-charcoal transition hover:-translate-y-0.5 hover:bg-gold focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-charcoal"
+                disabled={isLoading}
+                onClick={() =>
+                  trackQuestBoardEvent("join_beta_click", { location: "beta_cta" })
+                }
+                className="inline-flex h-12 items-center justify-center rounded-md bg-ember px-6 text-sm font-black text-charcoal transition hover:-translate-y-0.5 hover:bg-gold focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-charcoal disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0"
               >
-                Join Beta
+                {isLoading ? "Joining..." : "Join Beta"}
               </button>
             </form>
 
-            <p className="mt-4 min-h-6 text-sm font-bold text-emerald" aria-live="polite">
-              {submitted ? "Berhasil! Kamu masuk daftar beta QuestBoard." : ""}
+            <p
+              id="beta-form-message"
+              className={`mt-4 min-h-6 text-sm font-bold ${messageTone}`}
+              aria-live="polite"
+            >
+              {message}
             </p>
           </div>
         </div>

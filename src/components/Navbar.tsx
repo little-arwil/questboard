@@ -1,4 +1,5 @@
 import { Search } from "lucide-react";
+import { TrackedLink } from "@/components/TrackedLink";
 import { navLinks } from "@/data/mockData";
 
 export function Navbar() {
@@ -16,15 +17,27 @@ export function Navbar() {
         </a>
 
         <div className="hidden items-center gap-7 lg:flex">
-          {navLinks.map((link) => (
-            <a
-              key={`${link.href}-${link.label}`}
-              href={link.href}
-              className="text-sm font-medium text-parchment/72 transition hover:text-ember"
-            >
-              {link.label}
-            </a>
-          ))}
+          {navLinks.map((link) =>
+            link.href === "#join-beta" ? (
+              <TrackedLink
+                key={`${link.href}-${link.label}`}
+                href={link.href}
+                eventName="join_beta_click"
+                eventProperties={{ location: "navbar" }}
+                className="text-sm font-medium text-parchment/72 transition hover:text-ember"
+              >
+                {link.label}
+              </TrackedLink>
+            ) : (
+              <a
+                key={`${link.href}-${link.label}`}
+                href={link.href}
+                className="text-sm font-medium text-parchment/72 transition hover:text-ember"
+              >
+                {link.label}
+              </a>
+            ),
+          )}
         </div>
 
         <a

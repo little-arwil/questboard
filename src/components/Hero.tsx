@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { ArrowDown, Sparkles } from "lucide-react";
+import { TrackedLink } from "@/components/TrackedLink";
 import { heroCampaign } from "@/data/mockData";
 
 export function Hero() {
@@ -30,19 +31,23 @@ export function Hero() {
             pengalaman, bahasa, dan ekspektasi campaign.
           </p>
           <div className="mt-7 flex flex-col gap-3 sm:mt-9 sm:flex-row">
-            <a
+            <TrackedLink
               href="#join-beta"
+              eventName="join_beta_click"
+              eventProperties={{ location: "hero" }}
               className="inline-flex h-11 items-center justify-center rounded-md bg-ember px-6 text-sm font-black text-charcoal transition hover:-translate-y-0.5 hover:bg-gold focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-charcoal sm:h-12"
             >
               Join Beta
-            </a>
-            <a
+            </TrackedLink>
+            <TrackedLink
               href="#cara-kerja"
+              eventName="hero_secondary_cta_click"
+              eventProperties={{ location: "hero" }}
               className="inline-flex h-11 items-center justify-center gap-2 rounded-md border border-parchment/24 bg-white/7 px-6 text-sm font-bold text-parchment transition hover:-translate-y-0.5 hover:border-ember/70 hover:text-white focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-charcoal sm:h-12"
             >
               <ArrowDown className="size-4" aria-hidden="true" />
               Lihat Cara Match
-            </a>
+            </TrackedLink>
           </div>
         </div>
 

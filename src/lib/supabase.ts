@@ -5,8 +5,16 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 export const WAITLIST_TABLE = "waitlist";
 
+export type WaitlistRole = "player" | "dm" | "both";
+export type WaitlistExperienceLevel = "new" | "some" | "experienced";
+export type WaitlistPreferredFormat = "online" | "offline" | "hybrid";
+
 export type WaitlistInsert = {
   email: string;
+  role: WaitlistRole;
+  experience_level: WaitlistExperienceLevel;
+  preferred_format: WaitlistPreferredFormat;
+  availability: string;
 };
 
 export function getMissingSupabaseEnvVars(): string[] {

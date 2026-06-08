@@ -6,13 +6,37 @@ import {
   createSupabaseBrowserClient,
   getMissingSupabaseEnvVars,
   WAITLIST_TABLE,
+  type WaitlistExperienceLevel,
   type WaitlistInsert,
+  type WaitlistPreferredFormat,
+  type WaitlistRole,
 } from "@/lib/supabase";
 import { trackQuestBoardEvent } from "@/lib/analytics";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type SubmissionState = "idle" | "loading" | "success" | "error";
+
+const roleOptions: Array<{ label: string; value: WaitlistRole }> = [
+  { label: "Player", value: "player" },
+  { label: "DM", value: "dm" },
+  { label: "Player & DM", value: "both" },
+];
+
+const experienceOptions: Array<{
+  label: string;
+  value: WaitlistExperienceLevel;
+}> = [
+  { label: "Baru mulai", value: "new" },
+  { label: "Pernah main", value: "some" },
+  { label: "Berpengalaman", value: "experienced" },
+];
+
+const formatOptions: Array<{ label: string; value: WaitlistPreferredFormat }> = [
+  { label: "Online", value: "online" },
+  { label: "Offline", value: "offline" },
+  { label: "Hybrid", value: "hybrid" },
+];
 
 type SupabaseInsertError = {
   code?: string;
@@ -25,20 +49,36 @@ function normalizeEmail(value: string) {
   return value.trim().toLowerCase();
 }
 
+function normalizeAvailability(value: string) {
+  return value.trim().replace(/\s+/g, " ");
+}
+
 function isValidEmail(value: string) {
   return emailPattern.test(value);
 }
 
-function redactSubmittedEmail(value: string | null | undefined, submittedEmail: string) {
-  return value?.replaceAll(submittedEmail, "[redacted-email]") ?? value;
+function redactSubmittedValues(
+  value: string | null | undefined,
+  submittedValues: string[],
+) {
+  return submittedValues.reduce(
+    (redactedValue, submittedValue) =>
+      submittedValue
+        ? redactedValue?.replaceAll(submittedValue, "[redacted]") ?? redactedValue
+        : redactedValue,
+    value,
+  );
 }
 
-function logSupabaseInsertError(error: SupabaseInsertError, submittedEmail: string) {
+function logSupabaseInsertError(
+  error: SupabaseInsertError,
+  submittedValues: string[],
+) {
   console.error("Waitlist insert failed", {
     code: error.code,
-    message: redactSubmittedEmail(error.message, submittedEmail),
-    details: redactSubmittedEmail(error.details, submittedEmail),
-    hint: redactSubmittedEmail(error.hint, submittedEmail),
+    message: redactSubmittedValues(error.message, submittedValues),
+    details: redactSubmittedValues(error.details, submittedValues),
+    hint: redactSubmittedValues(error.hint, submittedValues),
   });
 }
 
@@ -80,13 +120,27 @@ function getInsertErrorMessage(error: SupabaseInsertError) {
 
 export function CTASection() {
   const [email, setEmail] = useState("");
+  const [role, setRole] = useState<WaitlistRole>("player");
+  const [experienceLevel, setExperienceLevel] =
+    useState<WaitlistExperienceLevel>("new");
+  const [preferredFormat, setPreferredFormat] =
+    useState<WaitlistPreferredFormat>("online");
+  const [availability, setAvailability] = useState("");
   const [submissionState, setSubmissionState] = useState<SubmissionState>("idle");
   const [message, setMessage] = useState("");
+
+  function clearSubmissionFeedback() {
+    if (submissionState !== "idle") {
+      setSubmissionState("idle");
+      setMessage("");
+    }
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const normalizedEmail = normalizeEmail(email);
+    const normalizedAvailability = normalizeAvailability(availability);
 
     if (!normalizedEmail) {
       setSubmissionState("error");
@@ -97,6 +151,12 @@ export function CTASection() {
     if (!isValidEmail(normalizedEmail)) {
       setSubmissionState("error");
       setMessage("Format email belum valid. Cek lagi alamat email kamu.");
+      return;
+    }
+
+    if (!normalizedAvailability) {
+      setSubmissionState("error");
+      setMessage("Availability wajib diisi supaya jadwal bisa dicocokkan.");
       return;
     }
 
@@ -120,13 +180,17 @@ export function CTASection() {
 
     const waitlistEntry: WaitlistInsert = {
       email: normalizedEmail,
+      role,
+      experience_level: experienceLevel,
+      preferred_format: preferredFormat,
+      availability: normalizedAvailability,
     };
 
     try {
       const { error } = await supabase.from(WAITLIST_TABLE).insert(waitlistEntry);
 
       if (error) {
-        logSupabaseInsertError(error, normalizedEmail);
+        logSupabaseInsertError(error, [normalizedEmail, normalizedAvailability]);
         setSubmissionState("error");
         setMessage(getInsertErrorMessage(error));
         return;
@@ -142,6 +206,7 @@ export function CTASection() {
     }
 
     setEmail("");
+    setAvailability("");
     setSubmissionState("success");
     setMessage("Berhasil! Kamu masuk daftar beta QuestBoard.");
     trackQuestBoardEvent("waitlist_submit_success", { source: "landing-page" });
@@ -175,13 +240,16 @@ export function CTASection() {
             <form
               onSubmit={handleSubmit}
               noValidate
-              className="mt-8 flex flex-col gap-3 sm:max-w-xl sm:flex-row"
+              className="mt-8 grid gap-3 sm:max-w-3xl sm:grid-cols-2 lg:grid-cols-4"
             >
-              <label className="sr-only" htmlFor="email">
-                Email untuk join beta
-              </label>
-              <div className="relative flex-1">
-                <Mail className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-parchment/42" aria-hidden="true" />
+              <div className="relative sm:col-span-2">
+                <label
+                  className="mb-2 block text-xs font-black uppercase tracking-[0.16em] text-parchment/58"
+                  htmlFor="email"
+                >
+                  Email
+                </label>
+                <Mail className="pointer-events-none absolute left-4 top-[2.35rem] size-5 text-parchment/42" aria-hidden="true" />
                 <input
                   id="email"
                   name="email"
@@ -190,10 +258,7 @@ export function CTASection() {
                   value={email}
                   onChange={(event) => {
                     setEmail(event.target.value);
-                    if (submissionState !== "idle") {
-                      setSubmissionState("idle");
-                      setMessage("");
-                    }
+                    clearSubmissionFeedback();
                   }}
                   placeholder="email@domain.com"
                   disabled={isLoading}
@@ -202,13 +267,105 @@ export function CTASection() {
                   className="h-12 w-full rounded-md border border-white/12 bg-charcoal/78 pl-12 pr-4 text-sm font-semibold text-white outline-none transition placeholder:text-parchment/35 hover:border-gold/50 focus:border-ember focus:ring-2 focus:ring-ember/30"
                 />
               </div>
+
+              <label className="block">
+                <span className="mb-2 block text-xs font-black uppercase tracking-[0.16em] text-parchment/58">
+                  Role
+                </span>
+                <select
+                  name="role"
+                  value={role}
+                  onChange={(event) => {
+                    setRole(event.target.value as WaitlistRole);
+                    clearSubmissionFeedback();
+                  }}
+                  disabled={isLoading}
+                  className="h-12 w-full rounded-md border border-white/12 bg-charcoal/78 px-3 text-sm font-bold text-parchment outline-none transition hover:border-gold/50 focus:border-ember focus:ring-2 focus:ring-ember/30 disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {roleOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="block">
+                <span className="mb-2 block text-xs font-black uppercase tracking-[0.16em] text-parchment/58">
+                  Experience
+                </span>
+                <select
+                  name="experience_level"
+                  value={experienceLevel}
+                  onChange={(event) => {
+                    setExperienceLevel(
+                      event.target.value as WaitlistExperienceLevel,
+                    );
+                    clearSubmissionFeedback();
+                  }}
+                  disabled={isLoading}
+                  className="h-12 w-full rounded-md border border-white/12 bg-charcoal/78 px-3 text-sm font-bold text-parchment outline-none transition hover:border-gold/50 focus:border-ember focus:ring-2 focus:ring-ember/30 disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {experienceOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="block">
+                <span className="mb-2 block text-xs font-black uppercase tracking-[0.16em] text-parchment/58">
+                  Format
+                </span>
+                <select
+                  name="preferred_format"
+                  value={preferredFormat}
+                  onChange={(event) => {
+                    setPreferredFormat(
+                      event.target.value as WaitlistPreferredFormat,
+                    );
+                    clearSubmissionFeedback();
+                  }}
+                  disabled={isLoading}
+                  className="h-12 w-full rounded-md border border-white/12 bg-charcoal/78 px-3 text-sm font-bold text-parchment outline-none transition hover:border-gold/50 focus:border-ember focus:ring-2 focus:ring-ember/30 disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {formatOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="block sm:col-span-2 lg:col-span-2">
+                <span className="mb-2 block text-xs font-black uppercase tracking-[0.16em] text-parchment/58">
+                  Availability
+                </span>
+                <input
+                  name="availability"
+                  type="text"
+                  required
+                  value={availability}
+                  onChange={(event) => {
+                    setAvailability(event.target.value);
+                    clearSubmissionFeedback();
+                  }}
+                  placeholder="Contoh: Sabtu malam WIB, Minggu siang"
+                  maxLength={160}
+                  disabled={isLoading}
+                  aria-describedby="beta-form-message"
+                  className="h-12 w-full rounded-md border border-white/12 bg-charcoal/78 px-4 text-sm font-semibold text-white outline-none transition placeholder:text-parchment/35 hover:border-gold/50 focus:border-ember focus:ring-2 focus:ring-ember/30 disabled:cursor-not-allowed disabled:opacity-70"
+                />
+              </label>
+
               <button
                 type="submit"
                 disabled={isLoading}
                 onClick={() =>
                   trackQuestBoardEvent("join_beta_click", { location: "beta_cta" })
                 }
-                className="inline-flex h-12 items-center justify-center rounded-md bg-ember px-6 text-sm font-black text-charcoal transition hover:-translate-y-0.5 hover:bg-gold focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-charcoal disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0"
+                className="inline-flex h-12 w-full items-center justify-center rounded-md bg-ember px-6 text-sm font-black text-charcoal transition hover:-translate-y-0.5 hover:bg-gold focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-charcoal disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0 sm:col-span-2 lg:col-span-1 lg:mt-7"
               >
                 {isLoading ? "Joining..." : "Join Beta"}
               </button>

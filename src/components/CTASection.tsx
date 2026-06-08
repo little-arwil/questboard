@@ -4,6 +4,9 @@ import { FormEvent, useState } from "react";
 import { Mail, Sparkles } from "lucide-react";
 import {
   createSupabaseBrowserClient,
+  getMissingSupabaseEnvVars,
+  WAITLIST_SOURCE,
+  WAITLIST_TABLE,
   type WaitlistInsert,
 } from "@/lib/supabase";
 import { trackQuestBoardEvent } from "@/lib/analytics";
@@ -11,6 +14,58 @@ import { trackQuestBoardEvent } from "@/lib/analytics";
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type SubmissionState = "idle" | "loading" | "success" | "error";
+
+type SupabaseInsertError = {
+  code?: string;
+  details?: string | null;
+  hint?: string | null;
+  message?: string;
+};
+
+function normalizeEmail(value: string) {
+  return value.trim().toLowerCase();
+}
+
+function isValidEmail(value: string) {
+  return emailPattern.test(value);
+}
+
+function redactSubmittedEmail(value: string | null | undefined, submittedEmail: string) {
+  return value?.replaceAll(submittedEmail, "[redacted-email]") ?? value;
+}
+
+function logSupabaseInsertError(error: SupabaseInsertError, submittedEmail: string) {
+  if (process.env.NODE_ENV !== "development") {
+    return;
+  }
+
+  console.error("Supabase waitlist insert failed", {
+    code: error.code,
+    message: redactSubmittedEmail(error.message, submittedEmail),
+    details: redactSubmittedEmail(error.details, submittedEmail),
+    hint: redactSubmittedEmail(error.hint, submittedEmail),
+  });
+}
+
+function getInsertErrorMessage(error: SupabaseInsertError) {
+  if (error.code === "23505") {
+    return "Email ini sudah ada di waitlist QuestBoard.";
+  }
+
+  if (error.code === "23514") {
+    return "Email tidak lolos validasi database. Cek lagi format email kamu.";
+  }
+
+  if (error.code === "42501") {
+    return "Waitlist belum mengizinkan submission publik. Cek RLS policy Supabase.";
+  }
+
+  if (error.code === "42P01") {
+    return "Table waitlist belum ditemukan di Supabase. Jalankan SQL setup terlebih dulu.";
+  }
+
+  return "Gagal join beta. Cek koneksi atau konfigurasi Supabase lalu coba lagi.";
+}
 
 export function CTASection() {
   const [email, setEmail] = useState("");
@@ -20,25 +75,32 @@ export function CTASection() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const trimmedEmail = email.trim().toLowerCase();
+    const normalizedEmail = normalizeEmail(email);
 
-    if (!trimmedEmail) {
+    if (!normalizedEmail) {
       setSubmissionState("error");
       setMessage("Email wajib diisi untuk join beta.");
       return;
     }
 
-    if (!emailPattern.test(trimmedEmail)) {
+    if (!isValidEmail(normalizedEmail)) {
       setSubmissionState("error");
       setMessage("Format email belum valid. Cek lagi alamat email kamu.");
       return;
     }
 
+    const missingEnvVars = getMissingSupabaseEnvVars();
     const supabase = createSupabaseBrowserClient();
 
-    if (!supabase) {
+    if (missingEnvVars.length > 0 || !supabase) {
+      if (process.env.NODE_ENV === "development") {
+        console.warn("Supabase waitlist env vars are missing", {
+          missing: missingEnvVars,
+        });
+      }
+
       setSubmissionState("error");
-      setMessage("Supabase belum dikonfigurasi. Tambahkan environment variables dulu.");
+      setMessage("Waitlist belum terhubung ke Supabase. Cek environment variables.");
       return;
     }
 
@@ -46,19 +108,26 @@ export function CTASection() {
     setMessage("Mendaftarkan email kamu...");
 
     const waitlistEntry: WaitlistInsert = {
-      email: trimmedEmail,
-      source: "landing-page",
+      email: normalizedEmail,
+      source: WAITLIST_SOURCE,
     };
 
-    const { error } = await supabase.from("waitlist").insert(waitlistEntry);
+    try {
+      const { error } = await supabase.from(WAITLIST_TABLE).insert(waitlistEntry);
 
-    if (error) {
+      if (error) {
+        logSupabaseInsertError(error, normalizedEmail);
+        setSubmissionState("error");
+        setMessage(getInsertErrorMessage(error));
+        return;
+      }
+    } catch (error) {
+      if (process.env.NODE_ENV === "development") {
+        console.error("Unexpected waitlist submit failure", error);
+      }
+
       setSubmissionState("error");
-      setMessage(
-        error.code === "23505"
-          ? "Email ini sudah ada di waitlist QuestBoard."
-          : "Gagal join beta. Coba lagi sebentar lagi.",
-      );
+      setMessage("Tidak bisa menghubungi Supabase. Cek koneksi lalu coba lagi.");
       return;
     }
 

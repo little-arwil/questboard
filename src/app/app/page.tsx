@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, CalendarDays, ClipboardCheck, Sparkles } from "lucide-react";
+import { ArrowRight, CalendarDays, ClipboardCheck, MessageCircle, Sparkles } from "lucide-react";
 import { AppPageHeader, AppSearchButton } from "@/components/prototype/AppShell";
 import { CampaignCard } from "@/components/prototype/CampaignCard";
 import { SessionZeroPanel } from "@/components/prototype/SessionZeroPanel";
@@ -88,6 +88,23 @@ export default function AppDashboardPage() {
                 </li>
               ))}
             </ul>
+          </section>
+
+          <section className="glass-panel rounded-lg p-5">
+            <div className="flex items-center gap-3">
+              <MessageCircle className="size-5 text-emerald" aria-hidden="true" />
+              <h2 className="text-xl font-black tracking-normal text-white">Prototype feedback</h2>
+            </div>
+            <p className="mt-3 text-sm font-semibold leading-6 text-parchment/66">
+              Tried the clickable flow? Tell us what feels useful, confusing, or missing.
+            </p>
+            <Link
+              href="/feedback"
+              className="mt-5 inline-flex h-11 w-full items-center justify-center gap-2 rounded-md bg-ember px-4 text-sm font-black text-charcoal transition hover:-translate-y-0.5 hover:bg-gold focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-charcoal"
+            >
+              Give Feedback
+              <ArrowRight className="size-4" aria-hidden="true" />
+            </Link>
           </section>
         </div>
       </section>

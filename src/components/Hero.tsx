@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ArrowDown, Sparkles } from "lucide-react";
+import { ArrowDown, LayoutDashboard, Sparkles } from "lucide-react";
 import { TrackedLink } from "@/components/TrackedLink";
 import { heroCampaign } from "@/data/mockData";
 
@@ -39,6 +39,14 @@ export function Hero() {
             >
               Join Beta
             </TrackedLink>
+            <a
+              href="/app"
+              aria-label="Coba clickable prototype QuestBoard"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-md bg-emerald px-6 text-sm font-black text-charcoal transition hover:-translate-y-0.5 hover:bg-emerald/90 focus:outline-none focus:ring-2 focus:ring-emerald focus:ring-offset-2 focus:ring-offset-charcoal sm:h-12"
+            >
+              <LayoutDashboard className="size-4" aria-hidden="true" />
+              Coba Prototype Clickable
+            </a>
             <TrackedLink
               href="#cara-kerja"
               eventName="hero_secondary_cta_click"

@@ -4,6 +4,7 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 export const WAITLIST_TABLE = "waitlist";
+export const FEEDBACK_TABLE = "feedback";
 
 export type WaitlistRole = "player" | "dm" | "both";
 export type WaitlistExperienceLevel = "new" | "some" | "experienced";
@@ -15,6 +16,18 @@ export type WaitlistInsert = {
   experience_level: WaitlistExperienceLevel;
   preferred_format: WaitlistPreferredFormat;
   availability: string;
+};
+
+export type FeedbackRole = "player" | "dm" | "both";
+
+export type FeedbackInsert = {
+  role: FeedbackRole;
+  rating: number;
+  most_useful: string;
+  most_confusing: string;
+  must_have_feature: string;
+  email: string | null;
+  source: "feedback-page";
 };
 
 export function getMissingSupabaseEnvVars(): string[] {

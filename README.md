@@ -182,6 +182,15 @@ with check (
 
 No select policy is required for this MVP, which keeps public visitors from reading waitlist entries.
 
+## Supabase Feedback Schema
+
+Run `supabase/feedback.sql` in the Supabase SQL editor to enable the public
+feedback form at `/feedback`.
+
+The migration creates `public.feedback`, enables RLS, grants `anon` insert
+access to the structured feedback columns only, and does not create any public
+select policy.
+
 If the form submits but the row does not appear in Supabase, verify:
 
 - `.env.local` or Vercel has `NEXT_PUBLIC_SUPABASE_URL`.

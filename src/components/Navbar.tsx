@@ -1,4 +1,4 @@
-import { Search } from "lucide-react";
+import { LayoutDashboard, Search } from "lucide-react";
 import { TrackedLink } from "@/components/TrackedLink";
 import { navLinks } from "@/data/mockData";
 
@@ -40,14 +40,24 @@ export function Navbar() {
           )}
         </div>
 
-        <a
-          href="#campaign-filter"
-          aria-label="Cari Table"
-          className="inline-flex h-10 w-10 items-center justify-center gap-2 rounded-md bg-ember text-sm font-bold text-charcoal transition hover:-translate-y-0.5 hover:bg-gold focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-charcoal sm:w-auto sm:px-4"
-        >
-          <Search className="size-4" aria-hidden="true" />
-          <span className="hidden sm:inline">Cari Table</span>
-        </a>
+        <div className="flex items-center gap-2">
+          <a
+            href="/app"
+            aria-label="Coba clickable prototype QuestBoard"
+            className="hidden h-10 items-center justify-center gap-2 rounded-md border border-emerald/28 bg-emerald/10 px-4 text-sm font-black text-emerald transition hover:-translate-y-0.5 hover:border-emerald/70 hover:text-white focus:outline-none focus:ring-2 focus:ring-emerald focus:ring-offset-2 focus:ring-offset-charcoal md:inline-flex"
+          >
+            <LayoutDashboard className="size-4" aria-hidden="true" />
+            Coba Prototype
+          </a>
+          <a
+            href="#campaign-filter"
+            aria-label="Cari Table"
+            className="inline-flex h-10 w-10 items-center justify-center gap-2 rounded-md bg-ember text-sm font-bold text-charcoal transition hover:-translate-y-0.5 hover:bg-gold focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-charcoal sm:w-auto sm:px-4"
+          >
+            <Search className="size-4" aria-hidden="true" />
+            <span className="hidden sm:inline">Cari Table</span>
+          </a>
+        </div>
       </nav>
     </header>
   );

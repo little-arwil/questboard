@@ -11,6 +11,9 @@ export function Footer() {
           </p>
         </div>
         <nav className="flex flex-wrap gap-5 text-sm font-bold text-parchment/62" aria-label="Footer">
+          <a href="/feedback" className="transition hover:text-ember">
+            Feedback
+          </a>
           <a href="#" className="transition hover:text-ember">
             Privacy
           </a>

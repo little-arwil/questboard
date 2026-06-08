@@ -43,8 +43,8 @@ These values are used by the public landing page to insert waitlist emails. Do n
 ## Supabase Waitlist Schema
 
 Run `supabase/waitlist.sql` in the Supabase SQL editor. It creates
-`public.waitlist`, enables RLS, grants `anon` insert access only, and does not
-create any public select policy.
+`public.waitlist`, enables RLS, grants `anon` insert access to the `email`
+column only, and does not create any public select policy.
 
 ```sql
 create extension if not exists pgcrypto with schema extensions;
@@ -68,7 +68,7 @@ revoke all on table public.waitlist from anon;
 revoke all on table public.waitlist from authenticated;
 
 grant usage on schema public to anon;
-grant insert on table public.waitlist to anon;
+grant insert (email) on table public.waitlist to anon;
 
 drop policy if exists "Anyone can join the waitlist" on public.waitlist;
 drop policy if exists "Allow anonymous waitlist inserts" on public.waitlist;
@@ -96,6 +96,13 @@ If the form submits but the row does not appear in Supabase, verify:
 - The table is named exactly `public.waitlist`.
 - RLS is enabled and the only public policy is the `anon` insert policy above.
 - The insert request is not blocked by duplicate email, email format, or source constraints.
+
+Temporary waitlist debugging:
+
+- Open the deployed page, submit the form, then check the browser console for `Waitlist insert failed`.
+- The console entry shows Supabase `code`, `message`, `details`, and `hint` without printing env vars.
+- In Vercel, confirm both `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` exist for the exact environment you are testing.
+- If you edit Vercel env vars, redeploy the affected Preview or Production deployment before testing again.
 
 ## Analytics
 

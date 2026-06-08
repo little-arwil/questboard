@@ -22,7 +22,7 @@ revoke all on table public.waitlist from anon;
 revoke all on table public.waitlist from authenticated;
 
 grant usage on schema public to anon;
-grant insert on table public.waitlist to anon;
+grant insert (email) on table public.waitlist to anon;
 
 drop policy if exists "Anyone can join the waitlist" on public.waitlist;
 drop policy if exists "Allow anonymous waitlist inserts" on public.waitlist;

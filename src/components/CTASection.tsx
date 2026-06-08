@@ -5,7 +5,6 @@ import { Mail, Sparkles } from "lucide-react";
 import {
   createSupabaseBrowserClient,
   getMissingSupabaseEnvVars,
-  WAITLIST_SOURCE,
   WAITLIST_TABLE,
   type WaitlistInsert,
 } from "@/lib/supabase";
@@ -35,11 +34,7 @@ function redactSubmittedEmail(value: string | null | undefined, submittedEmail: 
 }
 
 function logSupabaseInsertError(error: SupabaseInsertError, submittedEmail: string) {
-  if (process.env.NODE_ENV !== "development") {
-    return;
-  }
-
-  console.error("Supabase waitlist insert failed", {
+  console.error("Waitlist insert failed", {
     code: error.code,
     message: redactSubmittedEmail(error.message, submittedEmail),
     details: redactSubmittedEmail(error.details, submittedEmail),
@@ -47,24 +42,40 @@ function logSupabaseInsertError(error: SupabaseInsertError, submittedEmail: stri
   });
 }
 
+function isPolicyError(error: SupabaseInsertError) {
+  const message = error.message?.toLowerCase() ?? "";
+  const details = error.details?.toLowerCase() ?? "";
+  const hint = error.hint?.toLowerCase() ?? "";
+
+  return (
+    error.code === "42501" ||
+    message.includes("row-level security") ||
+    message.includes("policy") ||
+    details.includes("row-level security") ||
+    details.includes("policy") ||
+    hint.includes("row-level security") ||
+    hint.includes("policy")
+  );
+}
+
 function getInsertErrorMessage(error: SupabaseInsertError) {
   if (error.code === "23505") {
-    return "Email ini sudah ada di waitlist QuestBoard.";
+    return "Email ini sudah terdaftar.";
+  }
+
+  if (isPolicyError(error)) {
+    return "Supabase policy menolak request insert.";
   }
 
   if (error.code === "23514") {
     return "Email tidak lolos validasi database. Cek lagi format email kamu.";
   }
 
-  if (error.code === "42501") {
-    return "Waitlist belum mengizinkan submission publik. Cek RLS policy Supabase.";
-  }
-
   if (error.code === "42P01") {
     return "Table waitlist belum ditemukan di Supabase. Jalankan SQL setup terlebih dulu.";
   }
 
-  return "Gagal join beta. Cek koneksi atau konfigurasi Supabase lalu coba lagi.";
+  return "Supabase mengembalikan error. Cek browser console untuk detail.";
 }
 
 export function CTASection() {
@@ -100,7 +111,7 @@ export function CTASection() {
       }
 
       setSubmissionState("error");
-      setMessage("Waitlist belum terhubung ke Supabase. Cek environment variables.");
+      setMessage("Supabase belum dikonfigurasi.");
       return;
     }
 
@@ -109,7 +120,6 @@ export function CTASection() {
 
     const waitlistEntry: WaitlistInsert = {
       email: normalizedEmail,
-      source: WAITLIST_SOURCE,
     };
 
     try {

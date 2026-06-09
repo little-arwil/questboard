@@ -68,12 +68,12 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="relative mx-auto w-full max-w-md animate-float lg:ml-auto">
-          <div className="pointer-events-none absolute inset-0 z-0 mb-16 scale-[1.18] translate-x-4 lg:scale-[1.28] lg:translate-x-10 xl:scale-[1.35]">
+        <div className="relative mx-auto w-full max-w-xl lg:ml-auto lg:min-h-[35rem] xl:min-h-[38rem]">
+          <div className="relative z-10 mx-auto flex justify-center lg:absolute lg:inset-x-0 lg:top-0 lg:justify-end">
             <HeroCharacter />
           </div>
 
-          <div className="relative z-10">
+          <div className="relative z-20 mx-auto mt-[-2.5rem] max-w-sm lg:absolute lg:bottom-4 lg:left-0 lg:mt-0 lg:max-w-[21rem]">
             <div className="glass-panel rounded-lg p-3 sm:p-5">
               <div className="parchment-panel rounded-md p-4 shadow-gold-glow sm:p-5">
                 <div className="flex items-start justify-between gap-4">

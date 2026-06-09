@@ -208,7 +208,7 @@ export function CTASection() {
     setEmail("");
     setAvailability("");
     setSubmissionState("success");
-    setMessage("Berhasil! Kamu masuk daftar beta QuestBoard.");
+    setMessage("Berhasil! Kamu terdaftar di beta QuestBoard bersama komunitas D&D.");
     trackQuestBoardEvent("waitlist_submit_success", { source: "landing-page" });
   }
 
@@ -227,14 +227,15 @@ export function CTASection() {
           <div className="max-w-3xl">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-gold/35 bg-charcoal/55 px-4 py-2 text-sm font-black text-ember">
               <Sparkles className="size-4" aria-hidden="true" />
-              Beta access
+              Komunitas D&amp;D
             </div>
             <h2 id="cta-title" className="text-4xl font-black tracking-normal text-white sm:text-5xl">
-              Bangun party tanpa chaos jadwal.
+              Bantu bentuk QuestBoard untuk table D&amp;D kamu.
             </h2>
             <p className="mt-5 max-w-2xl leading-8 text-parchment/78">
-              Masuk daftar beta QuestBoard dan bantu bentuk cara baru mencari table
-              D&amp;D yang lebih cocok sejak awal.
+              Masuk daftar beta dan ceritakan kebutuhan komunitas D&amp;D kamu:
+              jadwal main, format table, pengalaman player, dan cara mencari party
+              yang benar-benar cocok.
             </p>
 
             <form
@@ -367,7 +368,7 @@ export function CTASection() {
                 }
                 className="inline-flex h-12 w-full items-center justify-center rounded-md bg-ember px-6 text-sm font-black text-charcoal transition hover:-translate-y-0.5 hover:bg-gold focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-charcoal disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0 sm:col-span-2 lg:col-span-1 lg:mt-7"
               >
-                {isLoading ? "Joining..." : "Join Beta"}
+                {isLoading ? "Mendaftarkan..." : "Gabung Beta Sekarang"}
               </button>
             </form>
 

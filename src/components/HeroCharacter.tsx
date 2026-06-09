@@ -111,68 +111,69 @@ export function HeroCharacter() {
 
   return (
     <div
-      className="pointer-events-auto relative mx-auto aspect-[0.68] w-full max-w-[22rem] select-none sm:max-w-[25rem] lg:max-w-[29rem] xl:max-w-[32rem]"
+      className="pointer-events-auto relative mx-auto aspect-[0.68] w-full max-w-[22rem] select-none sm:max-w-[24rem] lg:max-w-[28rem] xl:max-w-[30rem]"
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
       aria-hidden="true"
     >
-      <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_58%_17%,rgba(244,197,106,0.18),transparent_22%),radial-gradient(circle_at_48%_34%,rgba(139,92,246,0.2),transparent_32%),radial-gradient(circle_at_60%_50%,rgba(53,211,154,0.1),transparent_30%)] blur-2xl" />
+      {/* Ambient background glow */}
+      <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_54%_22%,rgba(244,197,106,0.15),transparent_30%),radial-gradient(circle_at_46%_40%,rgba(139,92,246,0.15),transparent_34%),radial-gradient(circle_at_60%_50%,rgba(53,211,154,0.08),transparent_30%)] blur-2xl" />
       <div className="absolute inset-x-[20%] bottom-[2%] h-[9%] rounded-full bg-black/45 blur-2xl" />
 
       <div className="hero-character-idle absolute inset-0 motion-reduce:animate-none">
+        {/* Cloak back — behind everything */}
         <CharacterLayer
           src={`${ASSET_BASE}/cloak-back.png`}
-          className="hero-cloak-sway absolute left-[16%] top-[8%] h-[88%] w-[70%]"
+          className="hero-cloak-sway absolute left-[14%] top-[10%] h-[84%] w-[72%]"
           style={{ transformOrigin: "50% 30%" }}
           priority
         />
 
+        {/* Body base with gentle breathing */}
         <div className="hero-breathe absolute inset-0 motion-reduce:animate-none">
           <CharacterLayer
             src={`${ASSET_BASE}/body-base.png`}
-            className="absolute left-[25%] top-[9%] h-[89%] w-[56%]"
+            className="absolute left-[26%] top-[22%] h-[74%] w-[48%]"
             priority
           />
         </div>
 
-        <CharacterLayer
-          src={`${ASSET_BASE}/right-arm-staff.png`}
-          className="absolute left-[30%] top-[0%] h-[101%] w-[82%]"
-          style={{
-            transform: `rotate(${armRotation}deg)`,
-            transformOrigin: "41% 62%",
-          }}
-          priority
-        />
-
+        {/* Head — reduced and centered naturally over collar */}
         <CharacterLayer
           src={`${ASSET_BASE}/head.png`}
-          className="absolute left-[8%] top-[-5%] h-[57%] w-[82%]"
+          className="absolute left-[20%] top-[0%] h-[34%] w-[50%]"
           style={{
             transform: `translate(${motion.x * 3}px, ${motion.y * 2}px) rotate(${headTilt}deg)`,
-            transformOrigin: "48% 38%",
+            transformOrigin: "50% 72%",
           }}
           priority
         />
 
+        {/* Right arm + staff */}
+        <CharacterLayer
+          src={`${ASSET_BASE}/right-arm-staff.png`}
+          className="absolute left-[20%] top-[0%] h-[97%] w-[75%]"
+          style={{
+            transform: `rotate(${armRotation}deg)`,
+            transformOrigin: "38% 55%",
+          }}
+          priority
+        />
+
+        {/* Pure CSS glow orb — replaces magic-orb.png */}
         <div
-          className="hero-orb-pulse absolute left-[70%] top-[4%] z-20 h-[22%] w-[22%] motion-reduce:animate-none"
+          className="hero-orb-pulse absolute left-[58%] top-[-2%] z-20 h-[20%] w-[20%] motion-reduce:animate-none"
           style={{ transform: `translate(${glowX}px, ${glowY}px)` }}
         >
-          <div className="absolute inset-[-35%] rounded-full bg-[radial-gradient(circle,rgba(244,197,106,0.5)_0%,rgba(139,92,246,0.22)_43%,rgba(139,92,246,0)_76%)] blur-xl" />
-          <CharacterLayer
-            src={`${ASSET_BASE}/magic-orb.png`}
-            className="absolute inset-0"
-            priority
-          />
+          <div className="absolute inset-[-50%] rounded-full bg-[radial-gradient(circle,rgba(244,197,106,0.55)_0%,rgba(139,92,246,0.25)_40%,rgba(139,92,246,0)_72%)] blur-2xl" />
+          <div className="absolute left-1/2 top-1/2 h-[45%] w-[45%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,240,200,0.8)_0%,rgba(244,197,106,0.3)_53%,transparent_80%)] blur-md" />
         </div>
 
+        {/* Minimal drifting particles near staff glow */}
         <div className="hero-particles motion-reduce:hidden">
-          <span className="absolute left-[70%] top-[8%] h-1.5 w-1.5 rounded-full bg-gold/80 blur-[1px]" />
-          <span className="absolute left-[80%] top-[14%] h-1 w-1 rounded-full bg-emerald/70 blur-[1px]" />
-          <span className="absolute left-[64%] top-[18%] h-1 w-1 rounded-full bg-violet/75 blur-[1px]" />
-          <span className="absolute left-[77%] top-[4%] h-1.5 w-1.5 rounded-full bg-parchment/75 blur-[1px]" />
-          <span className="absolute left-[86%] top-[9%] h-1 w-1 rounded-full bg-gold/65 blur-[1px]" />
+          <span className="absolute left-[63%] top-[4%] h-1.5 w-1.5 rounded-full bg-gold/80 blur-[1px]" />
+          <span className="absolute left-[74%] top-[10%] h-1 w-1 rounded-full bg-violet/70 blur-[1px]" />
+          <span className="absolute left-[55%] top-[14%] h-1 w-1 rounded-full bg-emerald/75 blur-[1px]" />
         </div>
       </div>
     </div>

@@ -68,10 +68,10 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="relative mx-auto grid w-full max-w-3xl items-end gap-4 lg:ml-auto lg:grid-cols-[minmax(16rem,0.76fr)_minmax(21rem,1fr)] lg:gap-2 xl:gap-4">
-          <div className="relative z-20 mx-auto w-full max-w-sm lg:order-1 lg:mb-12 lg:max-w-[21rem] xl:mb-16">
-            <div className="glass-panel rounded-lg p-3 sm:p-5">
-              <div className="parchment-panel rounded-md p-4 shadow-gold-glow sm:p-5">
+        <div className="relative mx-auto grid w-full max-w-3xl items-end gap-4 lg:ml-auto lg:grid-cols-[minmax(13rem,0.58fr)_minmax(23rem,1fr)] lg:gap-0 xl:gap-2">
+          <div className="relative z-20 mx-auto w-full max-w-xs lg:order-1 lg:-mr-8 lg:mb-10 lg:max-w-[17.5rem] xl:-mr-10 xl:mb-14">
+            <div className="glass-panel rounded-lg p-2.5 opacity-92 shadow-quest-card sm:p-3">
+              <div className="parchment-panel rounded-md p-3 shadow-gold-glow sm:p-4">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-xs font-black uppercase tracking-[0.18em] text-stone-700">
@@ -117,7 +117,7 @@ export function Hero() {
               </div>
             </div>
           </div>
-          <div className="relative z-10 mx-auto w-full lg:order-2 lg:-ml-6 xl:-ml-4">
+          <div className="relative z-10 mx-auto w-full lg:order-2 lg:-ml-10 xl:-ml-6">
             <HeroCharacter />
           </div>
         </div>

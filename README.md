@@ -3,6 +3,8 @@
 QuestBoard is a polished landing page MVP for a D&D/tabletop RPG matchmaking platform. It helps players and DMs find compatible sessions based on schedule, timezone, language, playstyle, experience level, campaign type, tools, and table expectations.
 
 This MVP uses Supabase only for beta waitlist submissions. There is no custom backend or authentication yet.
+
+> Project ini sedang dikembangkan dengan bantuan **Hermes Agent**.
 It also uses Vercel Analytics for lightweight page visit and interaction tracking.
 
 The `/app` routes are a clickable mock product prototype. They use static mock

@@ -68,12 +68,8 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="relative mx-auto w-full max-w-xl lg:ml-auto lg:min-h-[35rem] xl:min-h-[38rem]">
-          <div className="relative z-10 mx-auto flex justify-center lg:absolute lg:inset-x-0 lg:top-0 lg:justify-end">
-            <HeroCharacter />
-          </div>
-
-          <div className="relative z-20 mx-auto mt-[-2.5rem] max-w-sm lg:absolute lg:bottom-4 lg:left-0 lg:mt-0 lg:max-w-[21rem]">
+        <div className="relative mx-auto grid w-full max-w-3xl items-end gap-4 lg:ml-auto lg:grid-cols-[minmax(16rem,0.76fr)_minmax(21rem,1fr)] lg:gap-2 xl:gap-4">
+          <div className="relative z-20 mx-auto w-full max-w-sm lg:order-1 lg:mb-12 lg:max-w-[21rem] xl:mb-16">
             <div className="glass-panel rounded-lg p-3 sm:p-5">
               <div className="parchment-panel rounded-md p-4 shadow-gold-glow sm:p-5">
                 <div className="flex items-start justify-between gap-4">
@@ -120,6 +116,9 @@ export function Hero() {
                 </div>
               </div>
             </div>
+          </div>
+          <div className="relative z-10 mx-auto w-full lg:order-2 lg:-ml-6 xl:-ml-4">
+            <HeroCharacter />
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { ArrowDown, LayoutDashboard, MessageCircle, Sparkles } from "lucide-react";
 import { TrackedLink } from "@/components/TrackedLink";
+import { HeroCharacter } from "@/components/HeroCharacter";
 import { heroCampaign } from "@/data/mockData";
 
 export function Hero() {
@@ -68,49 +69,55 @@ export function Hero() {
         </div>
 
         <div className="relative mx-auto w-full max-w-md animate-float lg:ml-auto">
-          <div className="glass-panel rounded-lg p-3 sm:p-5">
-            <div className="parchment-panel rounded-md p-4 shadow-gold-glow sm:p-5">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-xs font-black uppercase tracking-[0.18em] text-stone-700">
-                    Campaign
-                  </p>
-                  <h2 className="mt-2 text-xl font-black tracking-normal text-stone-950 sm:text-2xl">
-                    {heroCampaign.campaign}
-                  </h2>
-                </div>
-                <div className="rounded-md bg-charcoal px-3 py-2 text-center text-white">
-                  <p className="text-[0.65rem] font-bold uppercase text-parchment/64">
-                    Match
-                  </p>
-                  <p className="text-xl font-black text-emerald sm:text-2xl">{heroCampaign.matchScore}</p>
-                </div>
-              </div>
+          <div className="pointer-events-none absolute inset-0 z-0 mb-16 scale-[1.18] translate-x-4 lg:scale-[1.28] lg:translate-x-10 xl:scale-[1.35]">
+            <HeroCharacter />
+          </div>
 
-              <dl className="mt-4 grid grid-cols-2 gap-2 text-xs sm:mt-6 sm:gap-3 sm:text-sm">
-                <div className="rounded-md bg-white/55 p-2.5 sm:p-3">
-                  <dt className="font-bold text-stone-500">Schedule</dt>
-                  <dd className="mt-1 font-black text-stone-950">{heroCampaign.schedule}</dd>
+          <div className="relative z-10">
+            <div className="glass-panel rounded-lg p-3 sm:p-5">
+              <div className="parchment-panel rounded-md p-4 shadow-gold-glow sm:p-5">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-xs font-black uppercase tracking-[0.18em] text-stone-700">
+                      Campaign
+                    </p>
+                    <h2 className="mt-2 text-xl font-black tracking-normal text-stone-950 sm:text-2xl">
+                      {heroCampaign.campaign}
+                    </h2>
+                  </div>
+                  <div className="rounded-md bg-charcoal px-3 py-2 text-center text-white">
+                    <p className="text-[0.65rem] font-bold uppercase text-parchment/64">
+                      Match
+                    </p>
+                    <p className="text-xl font-black text-emerald sm:text-2xl">{heroCampaign.matchScore}</p>
+                  </div>
                 </div>
-                <div className="rounded-md bg-white/55 p-2.5 sm:p-3">
-                  <dt className="font-bold text-stone-500">Format</dt>
-                  <dd className="mt-1 font-black text-stone-950">{heroCampaign.format}</dd>
-                </div>
-                <div className="col-span-2 rounded-md bg-white/55 p-2.5 sm:p-3">
-                  <dt className="font-bold text-stone-500">Tools</dt>
-                  <dd className="mt-1 font-black text-stone-950">{heroCampaign.tools}</dd>
-                </div>
-              </dl>
 
-              <div className="mt-4 flex flex-wrap gap-2 sm:mt-5">
-                {heroCampaign.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-full border border-stone-900/10 bg-stone-950/8 px-2.5 py-1 text-[0.68rem] font-bold text-stone-800 sm:px-3 sm:text-xs"
-                  >
-                    {tag}
-                  </span>
-                ))}
+                <dl className="mt-4 grid grid-cols-2 gap-2 text-xs sm:mt-6 sm:gap-3 sm:text-sm">
+                  <div className="rounded-md bg-white/55 p-2.5 sm:p-3">
+                    <dt className="font-bold text-stone-500">Schedule</dt>
+                    <dd className="mt-1 font-black text-stone-950">{heroCampaign.schedule}</dd>
+                  </div>
+                  <div className="rounded-md bg-white/55 p-2.5 sm:p-3">
+                    <dt className="font-bold text-stone-500">Format</dt>
+                    <dd className="mt-1 font-black text-stone-950">{heroCampaign.format}</dd>
+                  </div>
+                  <div className="col-span-2 rounded-md bg-white/55 p-2.5 sm:p-3">
+                    <dt className="font-bold text-stone-500">Tools</dt>
+                    <dd className="mt-1 font-black text-stone-950">{heroCampaign.tools}</dd>
+                  </div>
+                </dl>
+
+                <div className="mt-4 flex flex-wrap gap-2 sm:mt-5">
+                  {heroCampaign.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-full border border-stone-900/10 bg-stone-950/8 px-2.5 py-1 text-[0.68rem] font-bold text-stone-800 sm:px-3 sm:text-xs"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

@@ -9,6 +9,7 @@ import {
   type FeedbackInsert,
   type FeedbackRole,
 } from "@/lib/supabase";
+import { trackQuestBoardEvent } from "@/lib/analytics";
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -192,6 +193,7 @@ export function FeedbackForm() {
     setEmail("");
     setSubmissionState("success");
     setMessage("Terima kasih! Feedback kamu sudah masuk ke QuestBoard.");
+    trackQuestBoardEvent("feedback_submit_success", { source: "feedback-page" });
   }
 
   const isLoading = submissionState === "loading";

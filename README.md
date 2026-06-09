@@ -218,6 +218,7 @@ Custom events currently tracked:
 
 - `join_beta_click`
 - `waitlist_submit_success`
+- `feedback_submit_success`
 - `role_toggle_change`
 - `campaign_filter_click`
 - `hero_secondary_cta_click`

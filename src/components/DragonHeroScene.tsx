@@ -1,8 +1,8 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Environment, useAnimations, useGLTF } from "@react-three/drei";
-import { PointerEvent, Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { Bounds, Html, useGLTF } from "@react-three/drei";
+import { PointerEvent, Suspense, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
 type CursorTarget = {
@@ -49,21 +49,6 @@ function useDesktopCanvas() {
   return canRender;
 }
 
-function useDragonAnimationNames(names: string[]) {
-  return useMemo(() => {
-    const calmHints = ["idle", "stand", "rest", "breath", "loop"];
-    const lowerNames = names.map((name) => name.toLowerCase());
-    const calmIndex = lowerNames.findIndex((name) =>
-      calmHints.some((hint) => name.includes(hint)),
-    );
-
-    return {
-      idleName: calmIndex >= 0 ? names[calmIndex] : names[0],
-      hasAnimations: names.length > 0,
-    };
-  }, [names]);
-}
-
 function DragonModel({
   motion,
   prefersReducedMotion,
@@ -72,25 +57,7 @@ function DragonModel({
   prefersReducedMotion: boolean;
 }) {
   const groupRef = useRef<THREE.Group>(null);
-  const gltf = useGLTF(MODEL_PATH);
-  const { actions, names } = useAnimations(gltf.animations, groupRef);
-  const { idleName, hasAnimations } = useDragonAnimationNames(names);
-
-  useEffect(() => {
-    if (!hasAnimations || !idleName) {
-      return undefined;
-    }
-
-    const action = actions[idleName];
-    if (!action) {
-      return undefined;
-    }
-
-    action.reset().fadeIn(0.8).play();
-    return () => {
-      action.fadeOut(0.4);
-    };
-  }, [actions, hasAnimations, idleName]);
+  const gltf = useGLTF(MODEL_PATH, "/draco/");
 
   useEffect(() => {
     gltf.scene.traverse((object) => {
@@ -100,11 +67,16 @@ function DragonModel({
 
       object.castShadow = true;
       object.receiveShadow = true;
+      object.frustumCulled = false;
 
-      if (object.material instanceof THREE.MeshStandardMaterial) {
-        object.material.roughness = Math.max(object.material.roughness, 0.54);
-        object.material.metalness = Math.min(object.material.metalness, 0.16);
-      }
+      const materials = Array.isArray(object.material) ? object.material : [object.material];
+      materials.forEach((material) => {
+        if (material instanceof THREE.MeshStandardMaterial) {
+          material.roughness = Math.max(material.roughness, 0.5);
+          material.metalness = Math.min(material.metalness, 0.18);
+          material.needsUpdate = true;
+        }
+      });
     });
   }, [gltf.scene]);
 
@@ -114,21 +86,39 @@ function DragonModel({
     }
 
     const elapsed = clock.getElapsedTime();
-    const floatY = prefersReducedMotion ? 0 : Math.sin(elapsed * 0.78) * 0.045;
-    const breathScale = prefersReducedMotion ? 1 : 1 + Math.sin(elapsed * 1.1) * 0.006;
-    const targetRotY = -0.58 + (prefersReducedMotion ? 0 : motion.x * 0.18);
-    const targetRotX = prefersReducedMotion ? 0.02 : 0.02 - motion.y * 0.055;
+    const floatY = prefersReducedMotion ? 0 : Math.sin(elapsed * 0.72) * 0.045;
+    const breathScale = prefersReducedMotion ? 1 : 1 + Math.sin(elapsed * 1.05) * 0.006;
+    const targetRotY = prefersReducedMotion ? 0 : motion.x * 0.16;
+    const targetRotX = prefersReducedMotion ? 0 : -motion.y * 0.045;
 
-    groupRef.current.position.y = -0.42 + floatY;
-    groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, targetRotY, 0.055);
-    groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, targetRotX, 0.055);
+    groupRef.current.position.y = -0.5 + floatY;
+    groupRef.current.rotation.y = THREE.MathUtils.lerp(
+      groupRef.current.rotation.y,
+      targetRotY,
+      0.06,
+    );
+    groupRef.current.rotation.x = THREE.MathUtils.lerp(
+      groupRef.current.rotation.x,
+      targetRotX,
+      0.06,
+    );
     groupRef.current.scale.setScalar(breathScale);
   });
 
   return (
-    <group ref={groupRef} position={[0.25, -0.42, 0]} rotation={[0.02, -0.58, 0]} scale={1.08}>
+    <group ref={groupRef} position={[0, -0.5, 0]}>
       <primitive object={gltf.scene} />
     </group>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <Html center>
+      <div className="rounded-full border border-gold/30 bg-charcoal/70 px-5 py-2.5 text-xs font-bold uppercase tracking-[0.2em] text-gold shadow-gold-glow backdrop-blur-md">
+        Summoning guardian
+      </div>
+    </Html>
   );
 }
 
@@ -141,27 +131,21 @@ function DragonScene({
 }) {
   return (
     <Canvas
-      camera={{ position: [0.2, 0.55, 5.1], fov: 34 }}
-      dpr={[1, 1.7]}
-      gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+      camera={{ position: [0, 2, 9], fov: 40, near: 0.1, far: 100 }}
+      dpr={[1, 1.5]}
+      gl={{ alpha: true, antialias: true }}
       shadows
+      style={{ background: "transparent" }}
     >
-      <color attach="background" args={["#000000"]} />
-      <fog attach="fog" args={["#080b0d", 5.5, 9]} />
-      <ambientLight intensity={1.15} color="#d8c8ff" />
-      <directionalLight
-        position={[-3.2, 3.5, 4.4]}
-        intensity={3.1}
-        color="#ffd79a"
-        castShadow
-        shadow-mapSize={[1024, 1024]}
-      />
-      <directionalLight position={[3.2, 2.4, -3.5]} intensity={2.5} color="#8b5cf6" />
-      <pointLight position={[0.2, -0.6, 2.4]} intensity={2.4} color="#f4c56a" distance={5.5} />
-      <pointLight position={[2.5, 0.7, 1.6]} intensity={1.2} color="#35d39a" distance={4.8} />
-      <Suspense fallback={null}>
-        <DragonModel motion={motion} prefersReducedMotion={prefersReducedMotion} />
-        <Environment preset="night" />
+      <ambientLight intensity={1.2} />
+      <directionalLight position={[5, 5, 5]} intensity={2} castShadow />
+      <pointLight position={[-3, 2, 4]} intensity={1} />
+      <directionalLight position={[-4, 3, -4]} intensity={1.4} color="#8b5cf6" />
+      <pointLight position={[2.5, -0.5, 2.5]} intensity={1.1} color="#f4c56a" distance={7} />
+      <Suspense fallback={<LoadingFallback />}>
+        <Bounds fit clip observe margin={1.2}>
+          <DragonModel motion={motion} prefersReducedMotion={prefersReducedMotion} />
+        </Bounds>
       </Suspense>
     </Canvas>
   );
@@ -234,5 +218,3 @@ export function DragonHeroScene() {
     </div>
   );
 }
-
-useGLTF.preload(MODEL_PATH);

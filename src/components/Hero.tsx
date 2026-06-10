@@ -68,7 +68,7 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="relative mx-auto w-full max-w-[720px] lg:ml-auto lg:h-[560px] xl:h-[640px] 2xl:h-[680px]">
+        <div className="relative mx-auto w-full max-w-[700px] lg:ml-auto lg:h-[620px]">
           <DragonHeroSlot />
 
           <div className="relative z-20 mx-auto mt-4 w-full max-w-xs lg:absolute lg:left-0 lg:top-1/2 lg:mx-0 lg:mt-0 lg:max-w-[13.5rem] lg:-translate-y-1/2 xl:left-2 xl:max-w-[14rem]">

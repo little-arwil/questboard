@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { ArrowDown, LayoutDashboard, MessageCircle, Sparkles } from "lucide-react";
 import { TrackedLink } from "@/components/TrackedLink";
-import { HeroCharacter } from "@/components/HeroCharacter";
+import { DragonHeroSlot } from "@/components/DragonHeroSlot";
 import { heroCampaign } from "@/data/mockData";
 
 export function Hero() {
@@ -68,8 +68,8 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="relative mx-auto grid w-full max-w-3xl items-end gap-4 lg:ml-auto lg:grid-cols-[minmax(13rem,0.58fr)_minmax(23rem,1fr)] lg:gap-0 xl:gap-2">
-          <div className="relative z-20 mx-auto w-full max-w-xs lg:order-1 lg:-mr-8 lg:mb-10 lg:max-w-[17.5rem] xl:-mr-10 xl:mb-14">
+        <div className="relative mx-auto grid w-full max-w-4xl items-end gap-4 lg:ml-auto lg:grid-cols-[minmax(12rem,0.48fr)_minmax(25rem,1fr)] lg:gap-0 xl:gap-2">
+          <div className="relative z-20 mx-auto w-full max-w-xs lg:order-1 lg:-mr-12 lg:mb-8 lg:max-w-[16.5rem] xl:-mr-16 xl:mb-12">
             <div className="glass-panel rounded-lg p-2.5 opacity-92 shadow-quest-card sm:p-3">
               <div className="parchment-panel rounded-md p-3 shadow-gold-glow sm:p-4">
                 <div className="flex items-start justify-between gap-4">
@@ -117,8 +117,8 @@ export function Hero() {
               </div>
             </div>
           </div>
-          <div className="relative z-10 mx-auto w-full lg:order-2 lg:-ml-10 xl:-ml-6">
-            <HeroCharacter />
+          <div className="relative z-10 mx-auto w-full lg:order-2 lg:-ml-12 xl:-ml-8">
+            <DragonHeroSlot />
           </div>
         </div>
       </div>

@@ -8,6 +8,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        display: ["Georgia", "Palatino Linotype", "Book Antiqua", "Palatino", "serif"],
+      },
       colors: {
         charcoal: "#080b0d",
         "charcoal-2": "#111717",

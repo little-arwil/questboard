@@ -67,10 +67,10 @@ export function HeroCampaignCard() {
 
         <a
           href="#campaign-filter"
-          className="mt-4 inline-flex h-12 w-full items-center justify-center gap-2 rounded-2xl border border-ember/32 bg-gradient-to-r from-ember/92 via-gold/92 to-ember/78 text-sm font-black text-[#17100a] shadow-[0_0_28px_rgba(244,197,106,0.2)] transition hover:-translate-y-0.5 hover:border-ember/70 hover:shadow-[0_0_36px_rgba(244,197,106,0.3)] focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-charcoal"
+          className="mt-4 inline-flex h-11 w-full items-center justify-center gap-2.5 rounded-2xl border border-violet/28 bg-gradient-to-r from-violet/[0.14] via-ember/[0.08] to-violet/[0.12] px-5 text-sm font-black text-white shadow-[0_0_24px_rgba(139,92,246,0.12)] backdrop-blur-xl transition hover:-translate-y-0.5 hover:border-violet/50 hover:shadow-[0_0_34px_rgba(139,92,246,0.2)] focus:outline-none focus:ring-2 focus:ring-violet focus:ring-offset-2 focus:ring-offset-charcoal"
         >
           View Campaign
-          <ArrowRight className="size-4" aria-hidden="true" />
+          <ArrowRight className="size-4 text-ember/90" aria-hidden="true" />
         </a>
       </div>
     </aside>

@@ -16,7 +16,7 @@ export function Hero() {
 
       {/* ── Campaign Architect character — large, centre-right ── */}
       <div className="absolute bottom-0 left-[52%] z-[1] hidden -translate-x-1/2 overflow-visible lg:block">
-        <div className="flex h-[95vh] min-h-[700px] w-[48vw] min-w-[42rem] max-w-[52rem] items-end xl:w-[52vw] 2xl:max-w-[58rem]">
+        <div className="flex h-[90vh] min-h-[660px] w-[46vw] min-w-[39rem] max-w-[49rem] items-end xl:w-[50vw] 2xl:max-w-[54rem]">
           <HeroCharacter />
         </div>
       </div>
@@ -29,14 +29,14 @@ export function Hero() {
         {/* Main hero row */}
         <div className="relative flex flex-1 flex-col gap-10 lg:flex-row lg:gap-0">
           {/* Left column: headline + CTAs */}
-          <div className="relative z-10 flex w-full max-w-lg flex-col justify-center pb-8 lg:w-[36%] lg:pb-0">
+          <div className="relative z-10 flex w-full max-w-xl flex-col justify-center pb-8 lg:w-[39%] lg:pb-0">
             <div className="animate-rise">
               <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-ember/24 bg-black/40 px-3.5 py-1.5 text-[0.6rem] font-black uppercase tracking-[0.22em] text-ember/88 shadow-[0_0_28px_rgba(244,197,106,0.1)] backdrop-blur-xl">
                 <Compass className="size-3" aria-hidden="true" />
                 Matchmaking table RPG
               </div>
 
-              <h1 className="font-display text-[clamp(1.8rem,3.6vw,3.4rem)] font-semibold leading-[1.1] tracking-tight text-white">
+              <h1 className="font-display text-[clamp(1.85rem,3.45vw,3.25rem)] font-semibold leading-[1.1] tracking-tight text-white">
                 <span className="block">Temukan table D&amp;D</span>
                 <span className="block">yang cocok sebelum</span>
                 <span className="block bg-gradient-to-r from-[#f7da8a] via-ember to-[#fdeab8] bg-clip-text text-transparent">
@@ -74,7 +74,7 @@ export function Hero() {
           </div>
 
           {/* Right column: campaign card */}
-          <div className="relative z-10 flex w-full max-w-sm flex-col items-center gap-4 lg:ml-auto lg:w-auto lg:self-start lg:pt-[14vh] lg:items-end">
+          <div className="relative z-10 flex w-full max-w-sm flex-col items-center gap-4 lg:ml-auto lg:w-auto lg:translate-x-8 lg:self-start lg:pt-[14vh] lg:items-end xl:translate-x-10">
             <HeroCampaignCard />
           </div>
         </div>

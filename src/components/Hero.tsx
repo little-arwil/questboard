@@ -68,9 +68,9 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="relative mx-auto grid w-full max-w-4xl items-end gap-4 lg:ml-auto lg:grid-cols-[minmax(12rem,0.48fr)_minmax(25rem,1fr)] lg:gap-0 xl:gap-2">
-          <div className="relative z-20 mx-auto w-full max-w-xs lg:order-1 lg:-mr-12 lg:mb-8 lg:max-w-[16.5rem] xl:-mr-16 xl:mb-12">
-            <div className="glass-panel rounded-lg p-2.5 opacity-92 shadow-quest-card sm:p-3">
+        <div className="relative mx-auto grid w-full max-w-4xl items-end gap-4 lg:ml-auto lg:grid-cols-[minmax(10rem,0.38fr)_minmax(28rem,1fr)] lg:gap-1 xl:gap-3">
+          <div className="relative z-20 mx-auto w-full max-w-xs lg:order-1 lg:-mr-14 lg:mb-6 lg:max-w-[14.5rem] xl:-mr-20 xl:mb-8">
+            <div className="glass-panel rounded-lg p-2 shadow-quest-card sm:p-2.5 opacity-85">
               <div className="parchment-panel rounded-md p-3 shadow-gold-glow sm:p-4">
                 <div className="flex items-start justify-between gap-4">
                   <div>
@@ -117,7 +117,7 @@ export function Hero() {
               </div>
             </div>
           </div>
-          <div className="relative z-10 mx-auto w-full lg:order-2 lg:-ml-12 xl:-ml-8">
+          <div className="relative z-10 mx-auto w-full lg:order-2 lg:-ml-8 xl:-ml-6">
             <DragonHeroSlot />
           </div>
         </div>

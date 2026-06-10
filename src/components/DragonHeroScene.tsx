@@ -72,8 +72,10 @@ function DragonModel({
       const materials = Array.isArray(object.material) ? object.material : [object.material];
       materials.forEach((material) => {
         if (material instanceof THREE.MeshStandardMaterial) {
-          material.roughness = Math.max(material.roughness, 0.5);
-          material.metalness = Math.min(material.metalness, 0.18);
+          material.color.set("#5f554f");
+          material.roughness = 0.42;
+          material.metalness = Math.min(Math.max(material.metalness, 0.08), 0.22);
+          material.envMapIntensity = 0.78;
           material.needsUpdate = true;
         }
       });
@@ -86,12 +88,12 @@ function DragonModel({
     }
 
     const elapsed = clock.getElapsedTime();
-    const floatY = prefersReducedMotion ? 0 : Math.sin(elapsed * 0.72) * 0.045;
-    const breathScale = prefersReducedMotion ? 1 : 1 + Math.sin(elapsed * 1.05) * 0.006;
-    const targetRotY = prefersReducedMotion ? 0 : motion.x * 0.16;
-    const targetRotX = prefersReducedMotion ? 0 : -motion.y * 0.045;
+    const floatY = prefersReducedMotion ? 0 : Math.sin(elapsed * 0.62) * 0.055;
+    const breathScale = prefersReducedMotion ? 1 : 1 + Math.sin(elapsed * 0.92) * 0.007;
+    const targetRotY = -0.32 + (prefersReducedMotion ? 0 : motion.x * 0.18);
+    const targetRotX = 0.03 + (prefersReducedMotion ? 0 : -motion.y * 0.05);
 
-    groupRef.current.position.y = -0.5 + floatY;
+    groupRef.current.position.y = -0.72 + floatY;
     groupRef.current.rotation.y = THREE.MathUtils.lerp(
       groupRef.current.rotation.y,
       targetRotY,
@@ -106,7 +108,7 @@ function DragonModel({
   });
 
   return (
-    <group ref={groupRef} position={[0, -0.5, 0]}>
+    <group ref={groupRef} position={[0.38, -0.72, 0]} rotation={[0.03, -0.32, 0]}>
       <primitive object={gltf.scene} />
     </group>
   );
@@ -131,19 +133,25 @@ function DragonScene({
 }) {
   return (
     <Canvas
-      camera={{ position: [0, 2, 9], fov: 40, near: 0.1, far: 100 }}
+      camera={{ position: [0.25, 1.4, 8.2], fov: 36, near: 0.1, far: 100 }}
       dpr={[1, 1.5]}
       gl={{ alpha: true, antialias: true }}
       shadows
       style={{ background: "transparent" }}
+      onCreated={({ gl }) => {
+        gl.setClearColor(0x000000, 0);
+        gl.toneMapping = THREE.ACESFilmicToneMapping;
+        gl.toneMappingExposure = 0.72;
+        gl.outputColorSpace = THREE.SRGBColorSpace;
+      }}
     >
-      <ambientLight intensity={1.2} />
-      <directionalLight position={[5, 5, 5]} intensity={2} castShadow />
-      <pointLight position={[-3, 2, 4]} intensity={1} />
-      <directionalLight position={[-4, 3, -4]} intensity={1.4} color="#8b5cf6" />
-      <pointLight position={[2.5, -0.5, 2.5]} intensity={1.1} color="#f4c56a" distance={7} />
+      <ambientLight intensity={0.38} color="#7d6f84" />
+      <directionalLight position={[-4.5, 4.2, 5.5]} intensity={2.2} color="#f4c56a" castShadow />
+      <directionalLight position={[4.2, 2.8, -4.8]} intensity={2.5} color="#8b5cf6" />
+      <pointLight position={[1.7, -0.8, 2.8]} intensity={1.6} color="#d97706" distance={6.5} />
+      <pointLight position={[-3.5, 1.5, 3.8]} intensity={0.85} color="#35d39a" distance={7} />
       <Suspense fallback={<LoadingFallback />}>
-        <Bounds fit clip observe margin={1.2}>
+        <Bounds fit clip observe margin={0.56}>
           <DragonModel motion={motion} prefersReducedMotion={prefersReducedMotion} />
         </Bounds>
       </Suspense>
@@ -205,13 +213,13 @@ export function DragonHeroScene() {
 
   return (
     <div
-      className="relative hidden aspect-[1.05] w-full max-w-[35rem] overflow-visible lg:block xl:max-w-[40rem]"
+      className="relative hidden aspect-[1.02] w-full max-w-[41rem] overflow-visible lg:block xl:max-w-[46rem]"
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
       aria-hidden="true"
     >
-      <div className="absolute inset-[-8%] rounded-full bg-[radial-gradient(circle_at_55%_42%,rgba(244,197,106,0.24),transparent_32%),radial-gradient(circle_at_44%_38%,rgba(139,92,246,0.23),transparent_42%),radial-gradient(circle_at_62%_62%,rgba(53,211,154,0.12),transparent_36%)] blur-3xl" />
-      <div className="absolute bottom-[8%] left-[18%] h-[12%] w-[62%] rounded-full bg-black/50 blur-3xl" />
+      <div className="absolute inset-[-10%] rounded-full bg-[radial-gradient(circle_at_62%_40%,rgba(244,197,106,0.2),transparent_30%),radial-gradient(circle_at_48%_38%,rgba(139,92,246,0.27),transparent_44%),radial-gradient(circle_at_64%_66%,rgba(53,211,154,0.1),transparent_34%)] blur-3xl" />
+      <div className="absolute bottom-[7%] left-[20%] h-[14%] w-[64%] rounded-full bg-black/60 blur-3xl" />
       <div className="absolute inset-0 overflow-visible">
         <DragonScene motion={motion} prefersReducedMotion={prefersReducedMotion} />
       </div>

@@ -2,7 +2,7 @@ import { ArrowRight, Compass, Map, ShieldCheck, Sparkles, UsersRound } from "luc
 
 export function HeroCampaignCard() {
   return (
-    <aside className="relative w-full max-w-[24rem] overflow-hidden rounded-[2rem] border border-ember/28 bg-[#0b0810]/58 p-5 shadow-[0_28px_100px_rgba(0,0,0,0.56),0_0_70px_rgba(139,92,246,0.13)] backdrop-blur-2xl lg:max-w-[25.5rem] xl:max-w-[27rem]">
+    <aside className="relative w-full max-w-[21rem] overflow-hidden rounded-[1.75rem] border border-ember/28 bg-[#0b0810]/58 p-4 shadow-[0_28px_100px_rgba(0,0,0,0.56),0_0_70px_rgba(139,92,246,0.13)] backdrop-blur-2xl lg:max-w-[23rem] xl:max-w-[24rem]">
       <div className="pointer-events-none absolute inset-0 rounded-[2rem] bg-[linear-gradient(135deg,rgba(255,255,255,0.09),transparent_34%),radial-gradient(circle_at_18%_12%,rgba(244,197,106,0.15),transparent_36%),radial-gradient(circle_at_96%_86%,rgba(139,92,246,0.22),transparent_46%)]" />
       <div className="pointer-events-none absolute inset-[10px] rounded-[1.45rem] border border-ember/14" />
       <div className="pointer-events-none absolute left-5 right-5 top-4 h-px bg-gradient-to-r from-transparent via-ember/48 to-transparent" />

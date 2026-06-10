@@ -1,4 +1,5 @@
 import { ArrowDown, LayoutDashboard, MessageCircle, Sparkles } from "lucide-react";
+import { LottieLogo } from "@/components/LottieLogo";
 import { TrackedLink } from "@/components/TrackedLink";
 import { DragonHeroSlot } from "@/components/DragonHeroSlot";
 import { HeroCharacter } from "@/components/HeroCharacter";
@@ -19,9 +20,17 @@ export function Hero() {
       {/* Content overlay */}
       <div className="relative z-20 quest-container flex min-h-screen flex-col justify-center pt-24 pb-20">
         <div className="max-w-2xl animate-rise">
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-emerald/30 bg-emerald/10 px-3 py-2 text-xs font-semibold text-emerald sm:mb-6 sm:px-4 sm:text-sm">
-            <Sparkles className="size-4" aria-hidden="true" />
-            Matchmaking untuk table RPG yang lebih rapi
+          <div className="mb-5 flex items-center gap-3 sm:mb-6">
+            <div className="grid size-16 shrink-0 place-items-center rounded-2xl border border-gold/35 bg-charcoal/55 shadow-gold-glow backdrop-blur sm:size-20">
+              <LottieLogo
+                className="size-14 sm:size-[4.5rem]"
+                ariaLabel="QuestBoard fantasy quest board logo"
+              />
+            </div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-emerald/30 bg-emerald/10 px-3 py-2 text-xs font-semibold text-emerald sm:px-4 sm:text-sm">
+              <Sparkles className="size-4" aria-hidden="true" />
+              Matchmaking untuk table RPG yang lebih rapi
+            </div>
           </div>
 
           <h1 className="max-w-4xl text-4xl font-black leading-[1.06] tracking-normal text-white sm:text-6xl sm:leading-[1.02] lg:text-7xl">

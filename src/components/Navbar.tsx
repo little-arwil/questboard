@@ -1,4 +1,5 @@
 import { LayoutDashboard, MessageCircle, Search } from "lucide-react";
+import { LottieLogo } from "@/components/LottieLogo";
 import { TrackedLink } from "@/components/TrackedLink";
 import { navLinks } from "@/data/mockData";
 
@@ -10,9 +11,10 @@ export function Navbar() {
         aria-label="Navigasi utama"
       >
         <a href="#" className="group flex items-center gap-3" aria-label="QuestBoard home">
-          <span className="grid size-10 place-items-center rounded-md border border-gold/40 bg-gold/10 text-lg font-black text-ember shadow-gold-glow transition group-hover:scale-105">
-            Q
-          </span>
+          <LottieLogo
+            className="size-10 shrink-0"
+            ariaLabel="QuestBoard home"
+          />
           <span className="text-lg font-black tracking-normal text-white">QuestBoard</span>
         </a>
 

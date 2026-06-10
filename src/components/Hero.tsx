@@ -84,8 +84,8 @@ export function Hero() {
           <HeroCharacter />
         </div>
 
-        {/* Campaign card — subtle floating overlay on desktop, inline on mobile */}
-        <div className="relative mt-6 w-full max-w-xs lg:absolute lg:bottom-20 lg:left-8 lg:z-30 lg:mt-0 lg:max-w-[13rem]">
+        {/* Campaign card — anchors the match preview to the dragon visual on desktop */}
+        <div className="relative mt-6 w-full max-w-xs lg:absolute lg:bottom-[12%] lg:right-[7%] lg:z-30 lg:mt-0 lg:max-w-[15rem]">
           <div className="glass-panel rounded-lg p-2 opacity-80 shadow-quest-card sm:p-2.5 lg:opacity-70 lg:p-2">
             <div className="parchment-panel rounded-md p-3 shadow-gold-glow sm:p-4 lg:p-2">
               <div className="flex items-start justify-between gap-3 lg:gap-2">

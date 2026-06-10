@@ -10,11 +10,8 @@ export function Navbar() {
         className="quest-container flex h-16 items-center justify-between gap-4"
         aria-label="Navigasi utama"
       >
-        <a href="#" className="group flex items-center gap-3" aria-label="QuestBoard home">
-          <LottieLogo
-            className="size-10 shrink-0"
-            ariaLabel="QuestBoard home"
-          />
+        <a href="#" className="group flex items-center gap-2" aria-label="QuestBoard home">
+          <LottieLogo className="size-9 shrink-0" />
           <span className="text-lg font-black tracking-normal text-white">QuestBoard</span>
         </a>
 

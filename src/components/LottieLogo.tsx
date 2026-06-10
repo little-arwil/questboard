@@ -30,7 +30,7 @@ export function LottieLogo({
         renderer: "svg",
         loop: true,
         autoplay: true,
-        path: "/lottie/questboard-logo.json",
+        path: "/lottie/questboard-logo-transparent.json",
         rendererSettings: {
           preserveAspectRatio: "xMidYMid meet",
           progressiveLoad: true,

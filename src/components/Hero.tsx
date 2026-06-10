@@ -21,9 +21,9 @@ export function Hero() {
       <div className="relative z-20 quest-container flex min-h-screen flex-col justify-center pt-24 pb-20">
         <div className="max-w-2xl animate-rise">
           <div className="mb-5 flex items-center gap-3 sm:mb-6">
-            <div className="grid size-16 shrink-0 place-items-center rounded-2xl border border-gold/35 bg-charcoal/55 shadow-gold-glow backdrop-blur sm:size-20">
+            <div className="grid size-14 shrink-0 place-items-center drop-shadow-[0_0_18px_rgba(245,158,11,0.35)] sm:size-16">
               <LottieLogo
-                className="size-14 sm:size-[4.5rem]"
+                className="size-14 sm:size-16"
                 ariaLabel="QuestBoard fantasy quest board logo"
               />
             </div>

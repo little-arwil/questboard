@@ -89,7 +89,7 @@ export function Hero() {
                   </div>
                 </div>
 
-                <dl className="mt-4 grid grid-cols-2 gap-2 text-xs sm:mt-6 sm:gap-3 sm:text-sm">
+                <dl className="mt-4 grid grid-cols-2 gap-2 text-xs sm:mt-6 sm:gap-3 sm:text-sm lg:hidden">
                   <div className="rounded-md bg-white/55 p-2.5 sm:p-3">
                     <dt className="font-bold text-stone-500">Schedule</dt>
                     <dd className="mt-1 font-black text-stone-950">{heroCampaign.schedule}</dd>
@@ -104,7 +104,7 @@ export function Hero() {
                   </div>
                 </dl>
 
-                <div className="mt-4 flex flex-wrap gap-2 sm:mt-5">
+                <div className="mt-4 flex flex-wrap gap-2 sm:mt-5 lg:hidden">
                   {heroCampaign.tags.map((tag) => (
                     <span
                       key={tag}

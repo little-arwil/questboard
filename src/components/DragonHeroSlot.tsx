@@ -8,7 +8,7 @@ const DragonHeroScene = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="hidden aspect-[1.02] w-full max-w-[41rem] lg:block xl:max-w-[46rem]" />
+      <div className="hidden aspect-[1.02] w-full max-w-[39rem] lg:block xl:max-w-[42rem]" />
     ),
   },
 );

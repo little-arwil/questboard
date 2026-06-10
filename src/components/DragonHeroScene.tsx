@@ -1,7 +1,7 @@
 "use client";
 
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Bounds, Html, useGLTF } from "@react-three/drei";
+import { Bounds, Center, Html, useGLTF } from "@react-three/drei";
 import { PointerEvent, Suspense, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 
@@ -72,10 +72,10 @@ function DragonModel({
       const materials = Array.isArray(object.material) ? object.material : [object.material];
       materials.forEach((material) => {
         if (material instanceof THREE.MeshStandardMaterial) {
-          material.color.set("#5f554f");
-          material.roughness = 0.42;
+          material.color.set("#776b63");
+          material.roughness = 0.5;
           material.metalness = Math.min(Math.max(material.metalness, 0.08), 0.22);
-          material.envMapIntensity = 0.78;
+          material.envMapIntensity = 0.65;
           material.needsUpdate = true;
         }
       });
@@ -88,12 +88,12 @@ function DragonModel({
     }
 
     const elapsed = clock.getElapsedTime();
-    const floatY = prefersReducedMotion ? 0 : Math.sin(elapsed * 0.62) * 0.055;
-    const breathScale = prefersReducedMotion ? 1 : 1 + Math.sin(elapsed * 0.92) * 0.007;
-    const targetRotY = -0.32 + (prefersReducedMotion ? 0 : motion.x * 0.18);
-    const targetRotX = 0.03 + (prefersReducedMotion ? 0 : -motion.y * 0.05);
+    const floatY = prefersReducedMotion ? 0 : Math.sin(elapsed * 0.58) * 0.025;
+    const breathScale = prefersReducedMotion ? 1 : 1 + Math.sin(elapsed * 0.88) * 0.003;
+    const targetRotY = -0.26 + (prefersReducedMotion ? 0 : motion.x * 0.11);
+    const targetRotX = 0.02 + (prefersReducedMotion ? 0 : -motion.y * 0.03);
 
-    groupRef.current.position.y = -0.72 + floatY;
+    groupRef.current.position.y = floatY;
     groupRef.current.rotation.y = THREE.MathUtils.lerp(
       groupRef.current.rotation.y,
       targetRotY,
@@ -108,8 +108,10 @@ function DragonModel({
   });
 
   return (
-    <group ref={groupRef} position={[0.38, -0.72, 0]} rotation={[0.03, -0.32, 0]}>
-      <primitive object={gltf.scene} />
+    <group ref={groupRef} rotation={[0.02, -0.26, 0]}>
+      <Center>
+        <primitive object={gltf.scene} />
+      </Center>
     </group>
   );
 }
@@ -133,7 +135,7 @@ function DragonScene({
 }) {
   return (
     <Canvas
-      camera={{ position: [0.25, 1.4, 8.2], fov: 36, near: 0.1, far: 100 }}
+      camera={{ position: [0, 1.5, 8], fov: 40, near: 0.01, far: 200 }}
       dpr={[1, 1.5]}
       gl={{ alpha: true, antialias: true }}
       shadows
@@ -141,17 +143,17 @@ function DragonScene({
       onCreated={({ gl }) => {
         gl.setClearColor(0x000000, 0);
         gl.toneMapping = THREE.ACESFilmicToneMapping;
-        gl.toneMappingExposure = 0.72;
+        gl.toneMappingExposure = 0.86;
         gl.outputColorSpace = THREE.SRGBColorSpace;
       }}
     >
-      <ambientLight intensity={0.38} color="#7d6f84" />
-      <directionalLight position={[-4.5, 4.2, 5.5]} intensity={2.2} color="#f4c56a" castShadow />
-      <directionalLight position={[4.2, 2.8, -4.8]} intensity={2.5} color="#8b5cf6" />
-      <pointLight position={[1.7, -0.8, 2.8]} intensity={1.6} color="#d97706" distance={6.5} />
-      <pointLight position={[-3.5, 1.5, 3.8]} intensity={0.85} color="#35d39a" distance={7} />
+      <ambientLight intensity={0.62} color="#b7a6c8" />
+      <directionalLight position={[-4.5, 5, 5.5]} intensity={2.35} color="#f4c56a" castShadow />
+      <directionalLight position={[4.4, 3.2, -5]} intensity={2.15} color="#8b5cf6" />
+      <pointLight position={[1.8, -0.4, 3.2]} intensity={1.25} color="#d97706" distance={7.5} />
+      <pointLight position={[-3.5, 1.7, 3.8]} intensity={0.95} color="#35d39a" distance={7.5} />
       <Suspense fallback={<LoadingFallback />}>
-        <Bounds fit clip observe margin={0.56}>
+        <Bounds fit clip observe margin={1.4}>
           <DragonModel motion={motion} prefersReducedMotion={prefersReducedMotion} />
         </Bounds>
       </Suspense>
@@ -213,7 +215,7 @@ export function DragonHeroScene() {
 
   return (
     <div
-      className="relative hidden aspect-[1.02] w-full max-w-[41rem] overflow-visible lg:block xl:max-w-[46rem]"
+      className="relative hidden aspect-[1.02] w-full max-w-[39rem] overflow-visible lg:block xl:max-w-[42rem]"
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
       aria-hidden="true"

@@ -18,7 +18,7 @@ export function Hero() {
       <div className="absolute inset-0 bg-gradient-to-r from-charcoal via-charcoal/80 to-charcoal/30" />
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(8,11,13,0.18)_0%,rgba(8,11,13,0.25)_62%,#080b0d_100%)]" />
 
-      <div className="quest-container relative z-10 grid min-h-[calc(86vh-4rem)] items-center gap-8 py-10 sm:gap-10 sm:py-12 lg:grid-cols-[1.05fr_0.95fr]">
+      <div className="quest-container relative z-10 grid min-h-[calc(86vh-4rem)] items-center gap-8 py-10 sm:gap-10 sm:py-12 lg:grid-cols-[minmax(0,0.82fr)_minmax(560px,0.95fr)] xl:grid-cols-[minmax(0,0.9fr)_minmax(640px,1fr)]">
         <div className="max-w-3xl animate-rise">
           <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-emerald/30 bg-emerald/10 px-3 py-2 text-xs font-semibold text-emerald sm:mb-6 sm:px-4 sm:text-sm">
             <Sparkles className="size-4" aria-hidden="true" />
@@ -68,24 +68,26 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="relative mx-auto grid w-full max-w-4xl items-end gap-4 lg:ml-auto lg:grid-cols-[minmax(10rem,0.38fr)_minmax(28rem,1fr)] lg:gap-1 xl:gap-3">
-          <div className="relative z-20 mx-auto w-full max-w-xs lg:order-1 lg:-mr-14 lg:mb-6 lg:max-w-[14.5rem] xl:-mr-20 xl:mb-8">
-            <div className="glass-panel rounded-lg p-2 shadow-quest-card sm:p-2.5 opacity-85">
-              <div className="parchment-panel rounded-md p-3 shadow-gold-glow sm:p-4">
-                <div className="flex items-start justify-between gap-4">
+        <div className="relative mx-auto w-full max-w-[720px] lg:ml-auto lg:h-[560px] xl:h-[640px] 2xl:h-[680px]">
+          <DragonHeroSlot />
+
+          <div className="relative z-20 mx-auto mt-4 w-full max-w-xs lg:absolute lg:left-0 lg:top-1/2 lg:mx-0 lg:mt-0 lg:max-w-[13.5rem] lg:-translate-y-1/2 xl:left-2 xl:max-w-[14rem]">
+            <div className="glass-panel rounded-lg p-2 opacity-85 shadow-quest-card sm:p-2.5 lg:opacity-80">
+              <div className="parchment-panel rounded-md p-3 shadow-gold-glow sm:p-4 lg:p-3">
+                <div className="flex items-start justify-between gap-4 lg:gap-3">
                   <div>
                     <p className="text-xs font-black uppercase tracking-[0.18em] text-stone-700">
                       Campaign
                     </p>
-                    <h2 className="mt-2 text-xl font-black tracking-normal text-stone-950 sm:text-2xl">
+                    <h2 className="mt-2 text-xl font-black tracking-normal text-stone-950 sm:text-2xl lg:text-xl">
                       {heroCampaign.campaign}
                     </h2>
                   </div>
-                  <div className="rounded-md bg-charcoal px-3 py-2 text-center text-white">
+                  <div className="rounded-md bg-charcoal px-3 py-2 text-center text-white lg:px-2.5 lg:py-1.5">
                     <p className="text-[0.65rem] font-bold uppercase text-parchment/64">
                       Match
                     </p>
-                    <p className="text-xl font-black text-emerald sm:text-2xl">{heroCampaign.matchScore}</p>
+                    <p className="text-xl font-black text-emerald sm:text-2xl lg:text-xl">{heroCampaign.matchScore}</p>
                   </div>
                 </div>
 
@@ -116,9 +118,6 @@ export function Hero() {
                 </div>
               </div>
             </div>
-          </div>
-          <div className="relative z-10 mx-auto w-full lg:order-2 lg:-ml-8 xl:-ml-6">
-            <DragonHeroSlot />
           </div>
         </div>
       </div>

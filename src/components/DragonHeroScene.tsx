@@ -93,7 +93,7 @@ function DragonModel({
     const targetRotY = -0.26 + (prefersReducedMotion ? 0 : motion.x * 0.11);
     const targetRotX = 0.02 + (prefersReducedMotion ? 0 : -motion.y * 0.03);
 
-    groupRef.current.position.y = floatY;
+    groupRef.current.position.y = 0.35 + floatY;
     groupRef.current.rotation.y = THREE.MathUtils.lerp(
       groupRef.current.rotation.y,
       targetRotY,
@@ -135,7 +135,7 @@ function DragonScene({
 }) {
   return (
     <Canvas
-      camera={{ position: [0, 1.5, 8], fov: 40, near: 0.01, far: 200 }}
+      camera={{ position: [0, 0.8, 12], fov: 35, near: 0.01, far: 200 }}
       dpr={[1, 1.5]}
       gl={{ alpha: true, antialias: true }}
       shadows
@@ -143,17 +143,17 @@ function DragonScene({
       onCreated={({ gl }) => {
         gl.setClearColor(0x000000, 0);
         gl.toneMapping = THREE.ACESFilmicToneMapping;
-        gl.toneMappingExposure = 0.86;
+        gl.toneMappingExposure = 0.9;
         gl.outputColorSpace = THREE.SRGBColorSpace;
       }}
     >
-      <ambientLight intensity={0.62} color="#b7a6c8" />
-      <directionalLight position={[-4.5, 5, 5.5]} intensity={2.35} color="#f4c56a" castShadow />
-      <directionalLight position={[4.4, 3.2, -5]} intensity={2.15} color="#8b5cf6" />
-      <pointLight position={[1.8, -0.4, 3.2]} intensity={1.25} color="#d97706" distance={7.5} />
-      <pointLight position={[-3.5, 1.7, 3.8]} intensity={0.95} color="#35d39a" distance={7.5} />
+      <ambientLight intensity={0.65} color="#b7a6c8" />
+      <directionalLight position={[-4.5, 5, 5.5]} intensity={2.8} color="#f4c56a" castShadow />
+      <directionalLight position={[4.4, 3.2, -5]} intensity={2.5} color="#8b5cf6" />
+      <pointLight position={[1.8, -0.4, 3.2]} intensity={1.5} color="#d97706" distance={8} />
+      <pointLight position={[-3.5, 1.7, 3.8]} intensity={1.0} color="#35d39a" distance={8} />
       <Suspense fallback={<LoadingFallback />}>
-        <Bounds fit clip observe margin={1.4}>
+        <Bounds fit clip observe margin={1.1}>
           <DragonModel motion={motion} prefersReducedMotion={prefersReducedMotion} />
         </Bounds>
       </Suspense>
@@ -215,7 +215,7 @@ export function DragonHeroScene() {
 
   return (
     <div
-      className="relative hidden aspect-[1.02] w-full max-w-[39rem] overflow-visible lg:block xl:max-w-[42rem]"
+      className="absolute inset-0 hidden overflow-visible lg:block"
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
       aria-hidden="true"

@@ -8,8 +8,8 @@ export function HeroCharacter() {
     >
       <div className="absolute inset-x-[27%] bottom-[1%] h-[6%] rounded-full bg-black/78 blur-3xl" />
       <div className="absolute left-[13%] top-[8%] h-[24%] w-[26%] rounded-full bg-ember/[0.07] blur-3xl" />
-      <div className="absolute right-[20%] top-[26%] h-[30%] w-[24%] rounded-full bg-[#8b5cf6]/[0.08] blur-3xl" />
-      <div className="absolute right-[24%] top-[10%] h-[42%] w-[18%] rounded-full bg-[#9fd7ff]/[0.08] blur-3xl" />
+      <div className="absolute right-[22%] top-[28%] h-[26%] w-[20%] rounded-full bg-[#8b5cf6]/[0.045] blur-3xl" />
+      <div className="absolute right-[24%] top-[12%] h-[36%] w-[15%] rounded-full bg-[#9fd7ff]/[0.06] blur-3xl" />
 
       <Image
         src="/hero/questboard-mage.png"
@@ -22,7 +22,7 @@ export function HeroCharacter() {
 
       {/* Animated glow only: raised spell hand */}
       <div className="hero-hand-glow absolute left-[15%] top-[8%] z-20 h-[20%] w-[23%] motion-reduce:animate-none">
-        <div className="absolute inset-[-34%] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.68)_0%,rgba(244,197,106,0.24)_25%,rgba(139,92,246,0.28)_52%,transparent_76%)] blur-2xl" />
+        <div className="absolute inset-[-30%] rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.74)_0%,rgba(244,197,106,0.28)_25%,rgba(139,92,246,0.32)_52%,transparent_74%)] blur-2xl" />
         <div className="absolute left-1/2 top-1/2 h-[34%] w-[34%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.96),rgba(244,197,106,0.38)_33%,rgba(139,92,246,0.42)_59%,transparent_78%)] blur-md" />
         <div className="hero-magic-particles absolute inset-0 motion-reduce:hidden">
           <span className="absolute left-[18%] top-[14%] size-1.5 rounded-full bg-white/90 shadow-[0_0_16px_rgba(255,255,255,0.95)]" />
@@ -34,8 +34,8 @@ export function HeroCharacter() {
 
       {/* Animated glow only: arcane book/tablet */}
       <div className="hero-book-glow absolute left-[52%] top-[48%] z-20 h-[15%] w-[21%] rotate-[-8deg] motion-reduce:animate-none">
-        <div className="absolute inset-[-30%] rounded-[45%] bg-[radial-gradient(circle,rgba(244,197,106,0.16),rgba(139,92,246,0.28)_44%,transparent_74%)] blur-xl" />
-        <div className="absolute inset-x-[18%] top-[30%] h-[14%] rounded-full bg-violet/62 blur-md" />
+        <div className="absolute inset-[-28%] rounded-[45%] bg-[radial-gradient(circle,rgba(244,197,106,0.2),rgba(139,92,246,0.34)_44%,transparent_72%)] blur-xl" />
+        <div className="absolute inset-x-[18%] top-[30%] h-[14%] rounded-full bg-violet/70 blur-md" />
         <div className="absolute left-[42%] top-[39%] size-2 rounded-full bg-white/82 shadow-[0_0_18px_rgba(255,255,255,0.82)]" />
         <div className="hero-magic-particles absolute inset-0 motion-reduce:hidden">
           <span className="absolute left-[20%] top-[20%] size-1 rounded-full bg-ember/75 shadow-[0_0_12px_rgba(244,197,106,0.75)]" />

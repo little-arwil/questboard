@@ -6,9 +6,9 @@ import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
 const MODEL_PATH = "/models/quest-dragon.glb";
-const CAMERA_DISTANCE = 10;
-const CAMERA_FOV = 45;
-const TARGET_HEIGHT_RATIO = 0.72;
+const CAMERA_DISTANCE = 14;
+const CAMERA_FOV = 50;
+const TARGET_HEIGHT_RATIO = 0.5;
 
 const HEAD_BONES = [
   "Bip002-Head_015",
@@ -286,12 +286,12 @@ function DragonModel({
     // mostly the dragon's back.
     outerRef.current.position.x = THREE.MathUtils.lerp(
       outerRef.current.position.x,
-      1.55,
+      2.05,
       0.045,
     );
     outerRef.current.position.y = THREE.MathUtils.lerp(
       outerRef.current.position.y,
-      -0.22 + idleBob,
+      -1.35 + idleBob,
       0.045,
     );
     outerRef.current.rotation.x = THREE.MathUtils.lerp(
@@ -397,7 +397,7 @@ function DragonModel({
   });
 
   return (
-    <group ref={outerRef} scale={(fit?.scale ?? 0.02) * 1.08}>
+    <group ref={outerRef} scale={(fit?.scale ?? 0.02) * 0.92}>
       <group
         position={
           fit ? [-fit.center.x, -fit.center.y, -fit.center.z] : [0, -1, 0]

@@ -7,7 +7,7 @@ export function Navbar() {
   return (
     <header className="fixed inset-x-0 top-0 z-50 border-b border-ember/12 bg-charcoal/62 backdrop-blur-2xl">
       <nav
-        className="quest-container flex h-16 items-center justify-between gap-4"
+        className="mx-auto flex h-16 w-full items-center justify-between gap-4 px-[4%] xl:px-[5%] 2xl:px-[6%]"
         aria-label="Navigasi utama"
       >
         <a href="#" className="group flex items-center gap-2" aria-label="QuestBoard home">

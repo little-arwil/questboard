@@ -15,8 +15,8 @@ export function Hero() {
       </div>
 
       {/* ── Desktop: Campaign Architect character — zooms centre ── */}
-      <div className="absolute inset-0 z-[1] hidden items-start justify-center overflow-hidden lg:flex">
-        <div className="flex h-[140vh] min-h-[1000px] w-[93vh] min-w-[44rem] max-w-[65rem]">
+      <div className="absolute left-1/2 top-16 z-[1] hidden -translate-x-1/2 overflow-visible lg:block">
+        <div className="h-[165vh] min-h-[1100px] w-[115vh] min-w-[50rem] max-w-[75rem]">
           <HeroCharacter />
         </div>
       </div>

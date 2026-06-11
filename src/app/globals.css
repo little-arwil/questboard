@@ -99,6 +99,43 @@ body {
   100% { transform: translate(0, 0); opacity: 0.6; }
 }
 
+@keyframes hero-ring-spin {
+  from { transform: rotate(0deg) scale(0.98); opacity: 0.74; }
+  50% { opacity: 0.92; }
+  to { transform: rotate(360deg) scale(0.98); opacity: 0.74; }
+}
+
+@keyframes hero-ring-counter {
+  from { transform: rotate(0deg) scale(1.02); opacity: 0.48; }
+  50% { opacity: 0.7; }
+  to { transform: rotate(-360deg) scale(1.02); opacity: 0.48; }
+}
+
+@keyframes hero-orbit-1 {
+  0% { transform: translateY(0) translateX(0); opacity: 0.72; }
+  33% { transform: translateY(-6px) translateX(4px); opacity: 0.38; }
+  66% { transform: translateY(-2px) translateX(-3px); opacity: 0.94; }
+  100% { transform: translateY(0) translateX(0); opacity: 0.72; }
+}
+
+@keyframes hero-orbit-2 {
+  0% { transform: translateY(0) translateX(0); opacity: 0.62; }
+  40% { transform: translateY(-8px) translateX(-2px); opacity: 0.3; }
+  68% { transform: translateY(-1px) translateX(3px); opacity: 0.86; }
+  100% { transform: translateY(0) translateX(0); opacity: 0.62; }
+}
+
+@keyframes hero-sigil-pulse {
+  0%, 100% { opacity: 0.34; transform: translateY(0) scaleX(0.92); }
+  42% { opacity: 0.82; transform: translateY(-2px) scaleX(1); }
+  70% { opacity: 0.46; transform: translateY(1px) scaleX(0.96); }
+}
+
+@keyframes hero-sigil-gem {
+  0%, 100% { opacity: 0.45; transform: translate(-50%, -50%) rotate(0deg) scale(0.82); }
+  50% { opacity: 0.86; transform: translate(-50%, -50%) rotate(45deg) scale(1.08); }
+}
+
 .hero-hand-glow {
   animation: hero-glow-pulse 5.2s ease-in-out infinite;
 }
@@ -121,4 +158,55 @@ body {
 
 .hero-magic-particles span:nth-child(4) {
   animation: hero-particle-float-4 4.8s ease-in-out infinite 2s;
+}
+
+.hero-ring-spin {
+  animation: hero-ring-spin 16s linear infinite;
+  background:
+    conic-gradient(from 90deg, transparent 0deg, rgba(216, 195, 255, 0.62) 28deg, transparent 58deg, transparent 112deg, rgba(244, 197, 106, 0.46) 138deg, transparent 168deg, transparent 220deg, rgba(139, 92, 246, 0.54) 252deg, transparent 286deg, transparent 360deg);
+  mask: radial-gradient(circle, transparent 54%, #000 56%, #000 63%, transparent 65%);
+}
+
+.hero-ring-counter {
+  animation: hero-ring-counter 22s linear infinite;
+  background:
+    conic-gradient(from 0deg, transparent 0deg, rgba(244, 197, 106, 0.5) 18deg, transparent 40deg, transparent 96deg, rgba(216, 195, 255, 0.48) 126deg, transparent 152deg, transparent 248deg, rgba(139, 92, 246, 0.42) 278deg, transparent 310deg, transparent 360deg);
+  mask: radial-gradient(circle, transparent 50%, #000 52%, #000 60%, transparent 62%);
+}
+
+.hero-orbital-1 {
+  animation: hero-orbit-1 8s linear infinite;
+  transform-origin: 180% 180%;
+}
+
+.hero-orbital-2 {
+  animation: hero-orbit-2 9s linear infinite;
+  transform-origin: -80% 120%;
+}
+
+.hero-sigil-pulse {
+  animation: hero-sigil-pulse 3.8s ease-in-out infinite;
+}
+
+.hero-sigil-pulse-delayed {
+  animation: hero-sigil-pulse 4.4s ease-in-out infinite 0.8s;
+}
+
+.hero-sigil-gem {
+  animation: hero-sigil-gem 5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-hand-glow,
+  .hero-book-glow,
+  .hero-magic-particles span,
+  .hero-ring-spin,
+  .hero-ring-counter,
+  .hero-orbital-1,
+  .hero-orbital-2,
+  .hero-sigil-pulse,
+  .hero-sigil-pulse-delayed,
+  .hero-sigil-gem {
+    animation: none !important;
+  }
 }

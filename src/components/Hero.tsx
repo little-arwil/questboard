@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { HeroCampaignCard } from "@/components/HeroCampaignCard";
 import { HeroCharacter } from "@/components/HeroCharacter";
@@ -8,6 +8,21 @@ import { TrackedLink } from "@/components/TrackedLink";
 
 export function Hero() {
   const charRef = useRef<HTMLDivElement>(null);
+  const [particles, setParticles] = useState<
+    { left: number; top: number; size: number; dur: number; delay: number }[]
+  >([]);
+
+  useEffect(() => {
+    setParticles(
+      Array.from({ length: 20 }, () => ({
+        left: Math.random() * 100,
+        top: 30 + Math.random() * 60,
+        size: 1 + Math.random() * 2,
+        dur: 3 + Math.random() * 4,
+        delay: Math.random() * 5,
+      })),
+    );
+  }, []);
 
   useEffect(() => {
     const el = charRef.current;
@@ -26,7 +41,24 @@ export function Hero() {
       {/* ── Background ── */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[url('/hero/questboard-war-room.png')] bg-cover bg-center brightness-[0.45] saturate-[0.7]" />
-        <div className="absolute inset-0 bg-[linear-gradient(105deg,rgba(10,8,6,0.88)_0%,rgba(10,8,6,0.65)_38%,rgba(10,8,6,0.10)_65%,rgba(10,8,6,0.50)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(105deg,rgba(8,5,3,0.88)_0%,rgba(8,5,3,0.65)_38%,rgba(8,5,3,0.10)_65%,rgba(8,5,3,0.50)_100%)]" />
+      </div>
+
+      {/* ── Ambient floating particles ── */}
+      <div className="pointer-events-none absolute inset-0 z-[2]" aria-hidden="true">
+        {particles.map((p, i) => (
+          <span
+            key={i}
+            className="absolute rounded-full bg-gold opacity-0"
+            style={{
+              left: `${p.left}%`,
+              top: `${p.top}%`,
+              width: `${p.size}px`,
+              height: `${p.size}px`,
+              animation: `hero-float-up ${p.dur}s ${p.delay}s infinite ease-in-out`,
+            }}
+          />
+        ))}
       </div>
 
       {/* ── Content ── */}
@@ -36,8 +68,7 @@ export function Hero() {
           <h1 className="font-display text-[clamp(2.4rem,4vw,3.4rem)] font-semibold leading-[1.15] text-[#F0EAD6]">
             Temukan table D&amp;D<br />
             yang cocok sebelum
-            <br />
-            <span className="font-bold text-gold">roll pertama.</span>
+            <span className="block font-bold text-gold">roll pertama.</span>
           </h1>
           <p className="mt-[18px] mb-[34px] max-w-[360px] text-sm leading-[1.65] text-text-muted">
             QuestBoard membantu player dan DM menemukan campaign yang pas berdasarkan gaya main, jadwal, pengalaman, dan ekspektasi party.

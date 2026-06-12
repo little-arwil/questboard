@@ -99,6 +99,13 @@ body {
   100% { transform: translate(0, 0); opacity: 0.6; }
 }
 
+@keyframes hero-float-up {
+  0% { opacity: 0; transform: translateY(0) scale(1); }
+  20% { opacity: 0.6; }
+  80% { opacity: 0.3; }
+  100% { opacity: 0; transform: translateY(-120px) scale(0); }
+}
+
 @keyframes hero-ring-spin {
   from { transform: rotate(0deg) scale(0.98); opacity: 0.74; }
   50% { opacity: 0.92; }

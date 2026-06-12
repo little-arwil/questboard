@@ -9,20 +9,27 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        display: ["Georgia", "Palatino Linotype", "Book Antiqua", "Palatino", "serif"],
+        display: ["var(--font-cinzel)", "Georgia", "serif"],
+        body: ["var(--font-inter)", "ui-sans-serif", "system-ui", "sans-serif"],
       },
       colors: {
         charcoal: "#080b0d",
         "charcoal-2": "#111717",
+        gold: "#C9A84C",
+        "gold-light": "#E8C96A",
+        "gold-dim": "#7A6030",
         ember: "#f4c56a",
-        gold: "#d6a94c",
         parchment: "#f2dfb7",
         violet: "#8b5cf6",
+        "purple-btn": "#5B21B6",
         emerald: "#35d39a",
+        "text-muted": "#9B8E78",
+        "text-white": "#F0EAD6",
       },
       boxShadow: {
         "quest-card": "0 24px 80px rgba(0, 0, 0, 0.38)",
-        "gold-glow": "0 0 40px rgba(214, 169, 76, 0.22)",
+        "gold-glow": "0 0 40px rgba(201, 168, 76, 0.22)",
+        "shadow-gold": "0 0 30px rgba(201,168,76,0.15)",
         "emerald-glow": "0 0 40px rgba(53, 211, 154, 0.18)",
       },
       keyframes: {

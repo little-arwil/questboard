@@ -30,7 +30,7 @@ export function Hero() {
     const handler = (e: MouseEvent) => {
       const x = (e.clientX / window.innerWidth - 0.5) * 10;
       const y = (e.clientY / window.innerHeight - 0.5) * 6;
-      el.style.transform = `translate(${x}px, ${y}px)`;
+      el.style.transform = `translate(calc(-50% + ${x}px), ${y}px)`;
     };
     window.addEventListener("mousemove", handler);
     return () => window.removeEventListener("mousemove", handler);
@@ -61,20 +61,33 @@ export function Hero() {
         ))}
       </div>
 
-      {/* ── Content ── */}
-      <div className="relative z-[3] mx-auto flex w-full max-w-[1440px] flex-col items-center justify-center gap-8 px-6 py-10 lg:h-[calc(100vh-68px)] lg:flex-row lg:gap-0 lg:px-[60px] lg:py-0">
-        {/* LEFT: Headline + CTA + Trust */}
-        <div className="w-full max-w-[440px] text-center lg:flex-[0_0_440px] lg:text-left">
-          <h1 className="font-display text-[clamp(2.4rem,4vw,3.4rem)] font-semibold leading-[1.15] text-[#F0EAD6]">
-            Temukan table D&amp;D<br />
-            yang cocok sebelum
-            <span className="block font-bold text-gold">roll pertama.</span>
+      {/* ── Desktop: Character — dominant, zoomed, head safe below navbar ── */}
+      <div
+        ref={charRef}
+        className="absolute left-1/2 top-[68px] z-[1] hidden -translate-x-1/2 lg:block"
+        style={{ transition: "transform 0.12s ease-out" }}
+      >
+        <div className="relative flex h-[150vh] min-h-[1000px] w-[105vh] min-w-[46rem] max-w-[70rem] items-start justify-center">
+          {/* Purple glow orb behind character */}
+          <div className="pointer-events-none absolute left-1/2 top-[34%] z-0 size-[420px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(107,63,160,0.4),transparent_70%)]" />
+          <HeroCharacter />
+        </div>
+      </div>
+
+      {/* ── Desktop content: left headline + right card, aligned with navbar (48px) ── */}
+      <div className="relative z-[3] hidden lg:block">
+        {/* LEFT: aligned with navbar logo */}
+        <div className="absolute left-[48px] top-1/2 w-[440px] max-w-[34vw] -translate-y-1/2" style={{ top: "calc((100vh - 68px) / 2)" }}>
+          <h1 className="font-display text-[clamp(2.4rem,3.6vw,3.4rem)] font-semibold leading-[1.15] text-[#F0EAD6]">
+            <span className="block">Temukan Table D&amp;D</span>
+            <span className="block">Yang Cocok Sebelum</span>
+            <span className="block font-bold text-gold">Roll Pertama.</span>
           </h1>
           <p className="mt-[18px] mb-[34px] max-w-[360px] text-sm leading-[1.65] text-text-muted">
             QuestBoard membantu player dan DM menemukan campaign yang pas berdasarkan gaya main, jadwal, pengalaman, dan ekspektasi party.
           </p>
 
-          <div className="flex flex-wrap justify-center gap-[14px] lg:justify-start">
+          <div className="flex flex-wrap gap-[14px]">
             <TrackedLink
               href="#join-beta"
               eventName="join_beta_click"
@@ -101,7 +114,7 @@ export function Hero() {
           </div>
 
           {/* Trust badges */}
-          <div className="mt-[52px] flex flex-wrap justify-center gap-[36px] lg:justify-start">
+          <div className="mt-[52px] flex flex-wrap gap-x-[36px] gap-y-[20px]">
             <div className="flex items-start gap-[10px]">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" strokeWidth="1.5" className="shrink-0 opacity-75">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
@@ -132,21 +145,42 @@ export function Hero() {
           </div>
         </div>
 
-        {/* CENTER: Character */}
-        <div
-          ref={charRef}
-          className="hidden flex-1 items-end justify-center lg:flex"
-          style={{ height: "calc(100vh - 68px)", minHeight: "600px", transition: "transform 0.12s ease-out" }}
-        >
-          <div className="relative flex h-[92%] w-full max-h-[760px] items-end justify-center">
-            {/* Purple glow orb behind character */}
-            <div className="absolute bottom-[20%] left-1/2 z-0 size-[300px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(107,63,160,0.4),transparent_70%)] pointer-events-none" />
-            <HeroCharacter />
+        {/* RIGHT: campaign card aligned with navbar right edge */}
+        <div className="absolute right-[48px] w-[340px] -translate-y-1/2" style={{ top: "calc((100vh - 68px) / 2)" }}>
+          <HeroCampaignCard />
+        </div>
+      </div>
+
+      {/* ── Mobile: stacked ── */}
+      <div className="relative z-[3] mx-auto flex w-full max-w-[440px] flex-col items-center gap-8 px-6 py-10 lg:hidden">
+        <div className="w-full text-center">
+          <h1 className="font-display text-[clamp(2.4rem,4vw,3.4rem)] font-semibold leading-[1.15] text-[#F0EAD6]">
+            <span className="block">Temukan Table D&amp;D</span>
+            <span className="block">Yang Cocok Sebelum</span>
+            <span className="block font-bold text-gold">Roll Pertama.</span>
+          </h1>
+          <p className="mx-auto mt-[18px] mb-[34px] max-w-[360px] text-sm leading-[1.65] text-text-muted">
+            QuestBoard membantu player dan DM menemukan campaign yang pas berdasarkan gaya main, jadwal, pengalaman, dan ekspektasi party.
+          </p>
+          <div className="flex flex-wrap justify-center gap-[14px]">
+            <TrackedLink
+              href="#join-beta"
+              eventName="join_beta_click"
+              eventProperties={{ location: "hero" }}
+              className="inline-flex items-center gap-[10px] rounded-[6px] bg-gold px-[26px] py-[14px] text-sm font-semibold text-[#0A0806] transition hover:bg-gold-light"
+            >
+              Mulai Quest
+            </TrackedLink>
+            <a
+              href="#campaign-filter"
+              className="inline-flex items-center gap-[10px] rounded-[6px] border border-[rgba(240,234,214,0.35)] bg-transparent px-[26px] py-[14px] text-sm font-medium text-[#F0EAD6] transition hover:border-gold"
+            >
+              Lihat Campaign
+              <ArrowRight className="size-3.5" aria-hidden="true" />
+            </a>
           </div>
         </div>
-
-        {/* RIGHT: Campaign Card */}
-        <div className="w-full max-w-[380px] lg:w-[340px] lg:max-w-none lg:flex-[0_0_340px]">
+        <div className="w-full max-w-[380px]">
           <HeroCampaignCard />
         </div>
       </div>

@@ -146,7 +146,7 @@ export function Hero() {
         </div>
 
         {/* RIGHT: campaign card aligned with navbar right edge */}
-        <div className="absolute right-[48px] w-[340px] -translate-y-1/2" style={{ top: "calc((100vh - 68px) / 2)" }}>
+        <div className="absolute right-[48px] w-[min(30vw,480px)] min-w-[420px] -translate-y-1/2 xl:w-[480px]" style={{ top: "calc((100vh - 68px) / 2)" }}>
           <HeroCampaignCard />
         </div>
       </div>
@@ -180,7 +180,7 @@ export function Hero() {
             </a>
           </div>
         </div>
-        <div className="w-full max-w-[380px]">
+        <div className="w-full max-w-[460px]">
           <HeroCampaignCard />
         </div>
       </div>

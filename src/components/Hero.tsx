@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Dice5 } from "lucide-react";
 import { HeroCampaignCard } from "@/components/HeroCampaignCard";
 import { HeroCharacter } from "@/components/HeroCharacter";
 import { TrackedLink } from "@/components/TrackedLink";
@@ -113,6 +113,16 @@ export function Hero() {
             </a>
           </div>
 
+          {/* Play Aethermoor entry */}
+          <a
+            href="/aethermoor.html"
+            className="mt-[22px] inline-flex items-center gap-[10px] rounded-[6px] border border-violet/40 bg-[rgba(91,33,182,0.08)] px-[22px] py-[12px] text-sm font-medium text-violet no-underline transition hover:-translate-y-1 hover:bg-[rgba(139,92,246,0.16)] hover:border-violet/70"
+          >
+            <Dice5 className="size-4" aria-hidden="true" />
+            <span>Mainkan <strong>Aethermoor</strong> — Petualangan D&amp;D Solo</span>
+            <ArrowRight className="size-3.5" aria-hidden="true" />
+          </a>
+
           {/* Trust badges */}
           <div className="mt-[52px] flex flex-wrap gap-x-[36px] gap-y-[20px]">
             <div className="flex items-start gap-[10px]">
@@ -179,6 +189,13 @@ export function Hero() {
               <ArrowRight className="size-3.5" aria-hidden="true" />
             </a>
           </div>
+          <a
+            href="/aethermoor.html"
+            className="mx-auto mt-[18px] inline-flex items-center gap-[8px] rounded-[6px] border border-violet/40 bg-[rgba(91,33,182,0.08)] px-[20px] py-[11px] text-sm font-medium text-violet no-underline transition hover:bg-[rgba(139,92,246,0.16)]"
+          >
+            <Dice5 className="size-4" aria-hidden="true" />
+            Mainkan Aethermoor
+          </a>
         </div>
         <div className="w-full max-w-[460px]">
           <HeroCampaignCard />

@@ -1,4 +1,4 @@
-import { FlaskConical, Search } from "lucide-react";
+import { Dice5, FlaskConical, Search } from "lucide-react";
 import { TrackedLink } from "@/components/TrackedLink";
 import { navLinks } from "@/data/mockData";
 
@@ -54,6 +54,13 @@ export function Navbar() {
         </ul>
 
         <div className="flex items-center gap-[12px]">
+          <a
+            href="/aethermoor.html"
+            className="inline-flex items-center gap-[8px] rounded-[4px] border border-violet bg-transparent px-[18px] py-[8px] text-sm font-medium text-violet no-underline transition hover:bg-[rgba(139,92,246,0.14)]"
+          >
+            <Dice5 className="size-3.5" aria-hidden="true" />
+            Mainkan
+          </a>
           <a
             href="/app"
             className="inline-flex items-center gap-[8px] rounded-[4px] border border-gold bg-transparent px-[18px] py-[8px] text-sm font-medium text-gold no-underline transition hover:bg-[rgba(201,168,76,0.12)]"

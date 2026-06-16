@@ -302,6 +302,7 @@ function characterSVG(raceKey, clsKey, size){
 ============================================================ */
 const State = {
   char:{name:'',race:null,cls:null,scores:null,hpMax:0,hp:0,gold:0,inventory:[]},
+  quest:null,
   messages:[],
   pendingRoll:null,
   busy:false,
@@ -536,6 +537,7 @@ async function beginAdventure(){
   c.hp=c.hpMax;
   c.gold=c.cls.gold;
   c.inventory=c.cls.items.slice();
+  initQuest(); // quest system starts here
 
   // wake audio (we're inside a user gesture) and begin the ambient soundscape
   await Audio.ensure();
@@ -645,6 +647,121 @@ Satu langkah keliru bisa membangunkan sesuatu yang lebih baik dibiarkan terlelap
 Dunia Aethermoor menanti gerakanmu berikutnya.`,
 ];
 
+const QUEST_DEFS = {
+  petarung: {
+    title: 'Serigala di Jalur Timur',
+    intro: 'Tujuanmu jelas: temukan serigala raksasa yang meneror kafilah, lindungi jalan desa, lalu kembali hidup-hidup.',
+    win: 'Serigala raksasa tumbang dan lolongannya lenyap ditelan hutan. Kafilah kembali melintas, dan namamu disebut dengan hormat di setiap meja kedai. Misi selesai.',
+    fail: 'Tubuhmu melemah sebelum ancaman itu berakhir. Jalur Timur tetap dikuasai bayangan, dan Aethermoor mencatat kegagalanmu dalam bisik angin.',
+    stages: [
+      {label:'Temukan jejak serigala', roll:'[ROLL:d20:Bertahan Hidup:WIS:12]', success:'Kau menemukan jejak cakar sebesar telapak tangan di lumpur. Arah sarangnya mulai jelas.', fail:'Jejaknya kacau oleh hujan dan kepanikan ternak. Kau tersesat cukup lama. [HP:-1]'},
+      {label:'Hadapi penyergapan', roll:'[ROLL:d20:Atletik:STR:13]', success:'Kau menahan terjangan makhluk itu dan tidak kehilangan pijakan.', fail:'Serigala itu menghantammu ke batu basah. Napasmu terputus sesaat. [HP:-2]'},
+      {label:'Akhiri ancaman', roll:'[ROLL:d20:Serangan Terakhir:STR:14]', success:'Dengan satu serangan mantap, kau memaksa monster itu mundur dan akhirnya tumbang.', fail:'Seranganmu meleset, tapi celah kecil masih tersisa. [HP:-2]'},
+    ],
+  },
+  penyihir: {
+    title: 'Resonansi Menara Timur',
+    intro: 'Kau harus menstabilkan gangguan arcana di Menara Timur sebelum resonansinya merobek batas realitas.',
+    win: 'Lingkaran sihir menyala biru tenang. Menara Timur berhenti bergetar, dan bisikan dari celah realitas menghilang. Misi selesai.',
+    fail: 'Energi liar menelan fokusmu. Rune-rune pecah seperti kaca, dan kesadaranmu jatuh ke gelap.',
+    stages: [
+      {label:'Baca pola rune', roll:'[ROLL:d20:Arcana:INT:12]', success:'Rune-rune itu membentuk peta energi. Kau menemukan sumber gangguan.', fail:'Simbolnya berubah saat kau membacanya. Sakit menusuk kepalamu. [HP:-1]'},
+      {label:'Tahan luapan mana', roll:'[ROLL:d20:Konsentrasi:CON:13]', success:'Kau menahan arus mana liar tanpa kehilangan kendali.', fail:'Ledakan kecil membakar lengan jubahmu. [HP:-2]'},
+      {label:'Segel celah arcana', roll:'[ROLL:d20:Arcana:INT:14]', success:'Segel terakhir terkunci. Menara itu bernapas lega.', fail:'Celah itu melawan, memuntahkan kilatan ungu. [HP:-2]'},
+    ],
+  },
+  pencuri: {
+    title: 'Liontin Pemakaman Tua',
+    intro: 'Kontrakmu sederhana tapi berbahaya: ambil liontin dari leher patung di pemakaman tua, jangan bunuh siapa pun, dan jangan ketahuan.',
+    win: 'Kau menyelinap keluar saat kabut menutup jejakmu. Liontin dingin berada di genggamanmu. Tidak ada darah tertumpah. Tidak ada saksi tersisa. Misi selesai.',
+    fail: 'Lonceng pemakaman berdentang. Obor menyala satu per satu. Terlambat—Aethermoor melihatmu jatuh dalam bayangan.',
+    stages: [
+      {label:'Masuk tanpa terlihat', roll:'[ROLL:d20:Menyelinap:DEX:12]', success:'Kau melewati pagar besi saat penjaga menoleh ke arah lain.', fail:'Kerikil bergeser di bawah kakimu. Seseorang hampir melihatmu. [HP:-1]'},
+      {label:'Buka kunci makam', roll:'[ROLL:d20:Peralatan Maling:DEX:13]', success:'Kunci tua itu menyerah dengan klik lembut.', fail:'Jarum jebakan menusuk jarimu sebelum kau sempat menariknya. [HP:-2]'},
+      {label:'Ambil liontin dan kabur', roll:'[ROLL:d20:Kelincahan:DEX:14]', success:'Kau merebut liontin dan menghilang sebelum bayangan penjaga tiba.', fail:'Patung itu mengeluarkan jeritan batu. Kau harus memaksa jalan keluar. [HP:-2]'},
+    ],
+  },
+  pendeta: {
+    title: 'Matahari Hitam',
+    intro: 'Wabah aneh menodai kampung selatan. Kau harus menemukan sumber kutukan dan memurnikannya sebelum mimpi buruk menjadi nyata.',
+    win: 'Doamu pecah menjadi cahaya hangat. Tanaman berhenti membusuk, penduduk terbangun tanpa mimpi buruk, dan kampung itu diselamatkan. Misi selesai.',
+    fail: 'Cahaya sucimu meredup. Kutukan itu lebih lapar dari imanmu, dan kampung tenggelam dalam mimpi matahari hitam.',
+    stages: [
+      {label:'Diagnosis kutukan', roll:'[ROLL:d20:Pengobatan:WIS:12]', success:'Kau tahu ini bukan penyakit tubuh, melainkan noda spiritual.', fail:'Gejalanya menipu. Waktu berharga terbuang. [HP:-1]'},
+      {label:'Lindungi warga', roll:'[ROLL:d20:Agama:INT:13]', success:'Simbol sucimu membentuk lingkaran pelindung sementara.', fail:'Bayangan kutukan menggigit balik melalui doamu. [HP:-2]'},
+      {label:'Sucikan sumbernya', roll:'[ROLL:d20:Iman:WIS:14]', success:'Kutukan itu retak dan hancur dalam cahaya.', fail:'Ritualmu terguncang oleh bisikan matahari hitam. [HP:-2]'},
+    ],
+  },
+  pemburu: {
+    title: 'Jejak Belerang',
+    intro: 'Makhluk asing berkeliaran di hutan barat. Kau harus melacaknya, memahami pola buruannya, dan menghentikannya.',
+    win: 'Panah terakhirmu menancap tepat. Makhluk itu jatuh di antara akar tua, dan hutan kembali bernapas. Misi selesai.',
+    fail: 'Hutan menutup di sekelilingmu. Jejak belerang memudar, dan makhluk itu tetap bebas berburu.',
+    stages: [
+      {label:'Lacak jejak belerang', roll:'[ROLL:d20:Bertahan Hidup:WIS:12]', success:'Jejak panas di tanah mengarah ke lembah tersembunyi.', fail:'Jejaknya memutar balik dan membuatmu kelelahan. [HP:-1]'},
+      {label:'Hindari perangkap alam', roll:'[ROLL:d20:Persepsi:WIS:13]', success:'Kau melihat sarang duri beracun sebelum menginjaknya.', fail:'Duri hitam menggores betismu. [HP:-2]'},
+      {label:'Tembakan penentu', roll:'[ROLL:d20:Membidik:DEX:14]', success:'Tembakanmu tepat saat makhluk itu menerjang.', fail:'Panahmu menyerempet, dan cakar membalas. [HP:-2]'},
+    ],
+  },
+  bard: {
+    title: 'Saksi yang Hilang',
+    intro: 'Sebuah rahasia berbahaya harus dibawa ke telinga yang tepat. Temukan saksi terakhir sebelum cerita ini dikubur selamanya.',
+    win: 'Kau menyusun kata, nada, dan keberanian menjadi kebenaran. Saksi itu selamat, rahasia terbuka, dan namamu menjadi legenda kecil malam itu. Misi selesai.',
+    fail: 'Lagu itu putus di bait terakhir. Saksi menghilang, dan rahasia Aethermoor kembali terkunci.',
+    stages: [
+      {label:'Kumpulkan rumor', roll:'[ROLL:d20:Persuasi:CHA:12]', success:'Senyum dan kata manismu membuka mulut orang-orang yang takut bicara.', fail:'Rumor yang kau dapat saling bertentangan dan membuatmu kehilangan waktu. [HP:-1]'},
+      {label:'Baca kebohongan', roll:'[ROLL:d20:Wawasan:WIS:13]', success:'Kau menangkap getar suara seseorang yang menyembunyikan lokasi saksi.', fail:'Kebohongan itu hampir menjeratmu ke perangkap. [HP:-2]'},
+      {label:'Selamatkan saksi', roll:'[ROLL:d20:Pertunjukan:CHA:14]', success:'Perhatian musuh teralih oleh pertunjukanmu, memberi saksi celah untuk kabur.', fail:'Nada terakhir terlalu cepat runtuh. Kau harus menanggung akibatnya. [HP:-2]'},
+    ],
+  },
+};
+
+function initQuest(){
+  const key = State.char.cls ? State.char.cls.key : 'petarung';
+  const def = QUEST_DEFS[key] || QUEST_DEFS.petarung;
+  State.quest = { def, stage: 0, successes: 0, failures: 0, complete: false, failed: false };
+}
+function currentQuestStage(){
+  if(!State.quest || State.quest.complete || State.quest.failed) return null;
+  return State.quest.def.stages[State.quest.stage] || null;
+}
+function questProgressText(){
+  if(!State.quest) return '';
+  const total = State.quest.def.stages.length;
+  if(State.quest.complete) return 'Selesai';
+  if(State.quest.failed) return 'Gagal';
+  return 'Tahap '+(State.quest.stage+1)+' / '+total;
+}
+function questStatusClass(){
+  if(!State.quest) return '';
+  if(State.quest.complete) return ' complete';
+  if(State.quest.failed) return ' failed';
+  return '';
+}
+function advanceQuestStage(){
+  if(!State.quest || State.quest.complete || State.quest.failed) return;
+  State.quest.successes += 1;
+  State.quest.stage += 1;
+  if(State.quest.stage >= State.quest.def.stages.length) showVictory();
+  else renderSheet();
+}
+function showVictory(){
+  if(!State.quest) return;
+  State.quest.complete = true;
+  clearPendingRoll();
+  renderSheet();
+  renderMsg('🏆 '+State.quest.def.win, 'dm');
+  setComposerEnabled(false);
+}
+function showDefeat(reason){
+  if(!State.quest || State.quest.complete || State.quest.failed) return;
+  State.quest.failed = true;
+  clearPendingRoll();
+  renderSheet();
+  renderMsg('💀 '+(reason || State.quest.def.fail), 'sys');
+  setComposerEnabled(false);
+}
+
 
 async function askDM(userContent, mode){
   if(State.busy) return;
@@ -661,30 +778,43 @@ async function askDM(userContent, mode){
       var key = c.cls ? c.cls.key : 'petarung';
       var stories = DM_OPENERS[key] || DM_OPENERS.petarung;
       var story = stories[Math.floor(Math.random() * stories.length)];
-      text = "Nama mu " + c.name + ", seorang " + c.race.name + " " + c.cls.name + ".\n\n" + story;
-      text += "\n\nApa yang akan kau lakukan? [ROLL:d20:Persepsi:WIS:12]";
+      var firstStage = currentQuestStage();
+      text = "Namamu " + c.name + ", seorang " + c.race.name + " " + c.cls.name + ".\n\n" + story;
+      if(State.quest){
+        text += "\n\nMISI UTAMA — " + State.quest.def.title + "\n" + State.quest.def.intro;
+      }
+      text += "\n\nTahap 1: " + firstStage.label + ". Apa yang akan kau lakukan? " + firstStage.roll;
     } else if (mode === 'roll') {
-      var low = ['Sayangnya, usaha kali ini belum membuahkan hasil yang diharapkan. Tapi takdir masih memberimu kesempatan.', 'Kegagalan adalah guru yang kejam, tapi ia mengajar dengan baik.', 'Rintangan ini lebih sulit dari perkiraanmu. Tapi bukankah itu yang membuat petualangan layak dikenang?'];
-      var mid = ['Langkahmu cukup mantap. Tidak spektakuler, tapi cukup untuk melewati rintangan kali ini.', 'Usahamu membuahkan hasil yang lumayan.', 'Cukup baik. Kadang, yang biasa saja sudah cukup untuk bertahan hidup.'];
-      var high = ['Luar biasa! Aethermoor seakan berpihak padamu kali ini.', 'Takdir menyambutmu dengan tangan terbuka.', 'Gerakanmu sempurna. Bahkan para petualang senior akan mengangguk hormat.'];
       var isCrit = userContent.indexOf('SUKSES KRITIS') >= 0;
       var isCritFail = userContent.indexOf('GAGAL KRITIS') >= 0;
       var isSuccess = userContent.indexOf('Berhasil') >= 0 || userContent.indexOf('Sukses') >= 0;
-      if (isCrit) {
-        text = 'Kekuatan kosmik mengalir melalui dirimu! ' + high[Math.floor(Math.random() * high.length)];
-      } else if (isCritFail) {
-        text = 'Nasib buruk menimpamu! ' + low[Math.floor(Math.random() * low.length)];
-      } else if (isSuccess) {
-        text = 'Usahamu membuahkan hasil. ' + mid[Math.floor(Math.random() * mid.length)];
-      } else {
-        text = mid[Math.floor(Math.random() * mid.length)];
+      var stage = currentQuestStage();
+      if(stage){
+        if(isSuccess || isCrit){
+          text = (isCrit ? 'Sukses kritis! ' : '') + stage.success;
+          advanceQuestStage();
+          var nextStage = currentQuestStage();
+          if(nextStage){
+            text += "\n\nTahap berikutnya: " + nextStage.label + ". Apa yang akan kau lakukan? " + nextStage.roll;
+          }
+        }else{
+          State.quest.failures += 1;
+          text = (isCritFail ? 'Gagal kritis! ' : '') + stage.fail;
+          if(State.char.hp <= 0){
+            showDefeat();
+            return;
+          }
+          text += "\n\nKau masih bisa mencoba lagi. Tahap saat ini: " + stage.label + ". Apa langkahmu? " + stage.roll;
+          renderSheet();
+        }
+      }else{
+        text = 'Takdir sudah ditentukan. Perjalanan ini telah mencapai akhirnya.';
       }
-      text += "\n\nApa langkahmu selanjutnya?";
     } else {
+      var activeStage = currentQuestStage();
       text = ADVENTURE_FOLLOWUPS[Math.floor(Math.random() * ADVENTURE_FOLLOWUPS.length)];
-      if (Math.random() < 0.45) {
-        var rolls = ['[ROLL:d20:Penyelidikan:INT:13]', '[ROLL:d20:Persuasi:CHA:11]', '[ROLL:d20:Atletik:STR:14]', '[ROLL:d20:Kelincahan:DEX:12]', '[ROLL:d20:Persepsi:WIS:10]'];
-        text += "\n\n" + rolls[Math.floor(Math.random() * rolls.length)];
+      if(activeStage){
+        text += "\n\nTujuan saat ini: " + activeStage.label + ". " + activeStage.roll;
       }
     }
     hideThinking();
@@ -760,6 +890,9 @@ function applyHP(delta){
   fill.style.width=(c.hp/c.hpMax*100)+'%';
   $('#hp-val').textContent=c.hp+' / '+c.hpMax;
   if(delta<0){bar.classList.remove('dmg');void bar.offsetWidth;bar.classList.add('dmg');}
+  if(c.hp<=0 && State.quest && !State.quest.complete && !State.quest.failed){
+    showDefeat('HP-mu habis. Perjalanan berakhir di sini, dan Aethermoor menyimpan namamu dalam ingatannya.');
+  }
 }
 function applyGold(delta){
   State.char.gold=Math.max(0,State.char.gold+delta);
@@ -790,6 +923,27 @@ function renderSheet(){
     sg.appendChild(d);
   });
   renderInventory(null);
+  renderQuest();
+}
+function renderQuest(){
+  const block=$('#quest-block'), prog=$('#quest-progress');
+  if(!block||!prog) return;
+  if(!State.quest){block.style.display='none';return;}
+  block.style.display='';
+  const q=State.quest;
+  let html='<div class="quest-title'+questStatusClass()+'">'+escapeHTML(q.def.title)+'</div>';
+  html+='<div class="quest-status'+questStatusClass()+'">'+questProgressText()+'</div>';
+  html+='<div class="quest-steps">';
+  q.def.stages.forEach((s,i)=>{
+    let cls='qs-pending';
+    if(q.complete||i<q.stage) cls='qs-done';
+    else if(q.failed && i===q.stage) cls='qs-failed';
+    else if(i===q.stage) cls='qs-active';
+    const mark = (cls==='qs-done')?'✓':(cls==='qs-failed'?'✗':(cls==='qs-active'?'▸':'○'));
+    html+='<div class="quest-step '+cls+'"><span class="qs-mark">'+mark+'</span>'+escapeHTML(s.label)+'</div>';
+  });
+  html+='</div>';
+  prog.innerHTML=html;
 }
 function renderInventory(fresh){
   const list=$('#inv-list');list.innerHTML='';

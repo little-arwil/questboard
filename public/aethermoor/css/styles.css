@@ -308,6 +308,20 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .gold-row{display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.9rem;border-bottom:1px solid var(--edge-soft);color:var(--gold-bright);font-family:'Cinzel',serif;letter-spacing:.05em}
 .gold-row .gc{color:var(--gold)}
 
+.quest-block{padding:1rem 1.2rem;border-bottom:1px solid var(--edge-soft)}
+.quest-title{font-family:'Cinzel',serif;color:var(--parch);font-size:.92rem;font-weight:700;line-height:1.25;margin-bottom:.45rem}
+.quest-title.complete{color:var(--gold-bright)}
+.quest-title.failed{color:#ff9c9c}
+.quest-status{display:inline-flex;padding:.18rem .5rem;border:1px solid var(--edge-soft);border-radius:999px;color:var(--gold);font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.65rem;background:rgba(12,10,18,.35)}
+.quest-status.complete{border-color:rgba(246,210,122,.6);box-shadow:var(--glow-gold)}
+.quest-status.failed{border-color:rgba(191,70,70,.7);color:#ffb0b0}
+.quest-steps{display:flex;flex-direction:column;gap:.38rem}
+.quest-step{display:flex;align-items:flex-start;gap:.45rem;font-size:.82rem;line-height:1.25;color:var(--bone-dim);padding:.36rem .45rem;border:1px solid transparent;border-radius:7px;background:rgba(12,10,18,.22)}
+.quest-step.qs-active{color:var(--parch);border-color:rgba(157,127,212,.38);background:rgba(157,127,212,.09)}
+.quest-step.qs-done{color:var(--gold-bright);border-color:rgba(246,210,122,.24)}
+.quest-step.qs-failed{color:#ffb0b0;border-color:rgba(191,70,70,.32)}
+.qs-mark{font-family:'Cinzel',serif;color:var(--gold);flex-shrink:0}
+
 .inv-block{padding:1rem 1.2rem 2rem;flex:1}
 .inv-list{display:flex;flex-direction:column;gap:.4rem;margin-top:.2rem}
 .inv-item{

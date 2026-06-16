@@ -286,6 +286,12 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
 .portrait .ring{position:absolute;inset:-7px;border-radius:50%;border:1px solid var(--arcane-deep);opacity:.6;animation:spin 24s linear infinite;pointer-events:none}
 .portrait .art{position:absolute;inset:0;border-radius:50%;overflow:hidden;display:flex;justify-content:center;align-items:flex-start}
 .portrait .art svg{width:100%;height:auto;display:block;filter:drop-shadow(0 1px 3px rgba(0,0,0,.45))}
+.portrait .art .char-portrait-img,
+.hp-art .char-portrait-img{
+  width:100%;height:100%;display:block;object-fit:cover;object-position:center top;
+  filter:drop-shadow(0 1px 3px rgba(0,0,0,.45));
+}
+.hp-art .char-portrait-img{border-radius:28px}
 .sheet-head .pc-name{font-family:'Cinzel',serif;font-weight:700;font-size:1.3rem;color:var(--parch);letter-spacing:.02em}
 .sheet-head .pc-class{font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:.1em;color:var(--gold);text-transform:uppercase;margin-top:.2rem}
 

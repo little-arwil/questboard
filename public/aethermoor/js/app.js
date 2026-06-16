@@ -296,6 +296,20 @@ function characterSVG(raceKey, clsKey, size){
   size = size || 96;
   return '<svg width="'+size+'" height="'+(size*1.16)+'" viewBox="0 0 100 116" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMin meet">'+characterInner(raceKey,clsKey)+'</svg>';
 }
+/* Portrait image lookup — fallback to SVG if not found */
+const PORTRAIT_MAP = {
+  'manusia:petarung':    1, 'manusia:pencuri':     1,
+  'elf:pemburu':         1, 'elf:penyihir':        1,
+  'dwarf:pendeta':       1,
+  'tiefling:penyihir':   1,
+  'dragonborn:bard':     1,
+};
+function getPortraitHTML(raceKey, clsKey, size){
+  if(PORTRAIT_MAP[raceKey+':'+clsKey]){
+    return '<img src="/aethermoor/portraits/'+raceKey+'_'+clsKey+'.webp" alt="" class="char-portrait-img" width="'+size+'" height="'+(size*1.16)+'">';
+  }
+  return characterSVG(raceKey, clsKey, size);
+}
 
 /* ============================================================
    STATE
@@ -462,7 +476,7 @@ function updatePreview(){
   const nm=(($('#name-input')&&$('#name-input').value.trim())||'');
   $('#preview-name').textContent = nm || 'Pahlawan Tanpa Nama';
   if(c.race && c.cls){
-    art.innerHTML=characterSVG(c.race.key,c.cls.key,124);
+    art.innerHTML=getPortraitHTML(c.race.key,c.cls.key,124);
     art.classList.remove('reveal'); void art.offsetWidth; art.classList.add('reveal');
     sub.textContent = c.race.name+' · '+c.cls.name;
     traits.innerHTML='<span class="hp-tag">'+c.race.sub+'</span><span class="hp-tag">'+c.cls.sub+'</span><span class="hp-tag">Prima · '+abilityFull(c.cls.prime)+'</span>';
@@ -909,7 +923,7 @@ function applyItem(sign,name){
 }
 function renderSheet(){
   const c=State.char;
-  $('#portrait-emblem').innerHTML=characterSVG(c.race.key,c.cls.key,104);
+  $('#portrait-emblem').innerHTML=getPortraitHTML(c.race.key,c.cls.key,104);
   $('#sheet-name').textContent=c.name;
   $('#sheet-class').textContent=c.race.name+' · '+c.cls.name;
   $('#hp-val').textContent=c.hp+' / '+c.hpMax;

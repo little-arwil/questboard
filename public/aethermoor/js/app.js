@@ -624,6 +624,27 @@ Malam ini ada yang perlu kau dengar\u2014bukan untuk diucapkan, tapi untuk kau b
   ],
 };
 
+const ADVENTURE_FOLLOWUPS = [
+  `Langkahmu menggema di lorong waktu Aethermoor. Udara terasa berat, seakan dunia menahan napas menanti keputusanmu.
+
+Sesuatu bergerak di kejauhan—mungkin kawan, mungkin lawan. Kau belum bisa memastikan.`,
+  `Bayangan-bayangan memanjang saat matahari Aethermoor merunduk di balik bukit. Suara langkahmu sendiri terdengar asing di tempat ini.
+
+Sebuah persimpangan terbentang: jalan yang terang namun ramai, atau lorong gelap yang menjanjikan jalan pintas—dan bahaya.`,
+  `Angin membawa aroma tanah basah dan sesuatu yang lebih tua, lebih dalam. Naluri petualangmu berbisik bahwa kau tak sendirian di sini.
+
+Di hadapanmu, jejak samar mengarah ke kegelapan. Pilihan ada di tanganmu.`,
+  `Keheningan pecah oleh suara gemerisik. Entah hewan, entah seseorang yang mengintai. Jantungmu berdegup, tapi tanganmu tetap mantap.
+
+Apa pun yang menunggu di depan, ia menunggu untukmu.`,
+  `Reruntuhan tua menjulang di sekitarmu, batu-batunya berukir simbol yang tak kau kenali. Ada kekuatan lama yang tertidur di tempat ini—kau bisa merasakannya.
+
+Satu langkah keliru bisa membangunkan sesuatu yang lebih baik dibiarkan terlelap.`,
+  `Cahaya redup obor menari di dinding, menciptakan bayangan yang seakan hidup. Setiap sudut menyimpan kemungkinan—harta, jebakan, atau rahasia.
+
+Dunia Aethermoor menanti gerakanmu berikutnya.`,
+];
+
 
 async function askDM(userContent, mode){
   if(State.busy) return;

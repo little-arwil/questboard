@@ -572,41 +572,58 @@ function buildOpenerPrompt(){
 /* ============================================================
    DUNGEON MASTER (Anthropic API)
 ============================================================ */
-/* Placeholder DM (non-AI mode) */
+
 const DM_OPENERS = {
   petarung: [
-    '"Kau … kau Petarung yang dicari penjaga pos? Ada serigala raksasa di jalan setapak timur—sudah dua kafilah diserang. Penjaga desa tak sanggup menghadapinya sendirian.\n\nIa menatapmu penuh harap, sebuah pedang tua di pinggangnya jelas lebih cocok untuk upacara daripada pertarungan.\n\nKeputusan ada di tanganmu.',
-    'Seorang veteran berjenggot menghampirimu di lapangan latihan. "Dengar, aku pernah lihat banyak petarung. Tapi cara kau memegang senjata … ada sesuatu yang berbeda.\n\nKau mungkin yang kucari. Ada turnamen kecil di kota utara—hadiahnya lima puluh keping emas. Tapi lawan-lawannya bukan anak kemarin."',
+    `"Kau \u2026 kau Petarung yang dicari penjaga pos? Ada serigala raksasa di jalan setapak timur\u2014sudah dua kafilah diserang. Penjaga desa tak sanggup menghadapinya sendirian.
+
+Ia menatapmu penuh harap, sebuah pedang tua di pinggangnya jelas lebih cocok untuk upacara daripada pertarungan.
+
+Keputusan ada di tanganmu."`,
+    `Seorang veteran berjenggot menghampirimu di lapangan latihan. "Dengar, aku pernah lihat banyak petarung. Tapi cara kau memegang senjata \u2026 ada sesuatu yang berbeda.
+
+Kau mungkin yang kucari. Ada turnamen kecil di kota utara\u2014hadiahnya lima puluh keping emas. Tapi lawan-lawannya bukan anak kemarin."`,
   ],
   penyihir: [
-    '"Akhirnya kau datang. Persimpangan ini telah menunggumu selama tiga siklus bulan. Ada gangguan di Menara Timur—resonansi yang tak seharusnya ada. Aku bisa merasakannya, dan kau pasti juga."\n\nIa mengulurkan sebuah gulungan perkamen yang menyala lembut. "Baca ini di perjalanan. Tapi hati-hati—pengetahuan punya harga."',
-    '"Kau Penyihir, kan? Kami butuh bantuanmu. Aliran mana di kuil bawah tanah kacau—semacam kutukan atau jebakan sihir. Tukang sihir kami sendiri tak berani mendekat."\n\nRaut wajahnya serius. Ini bukan pekerjaan sembarangan.',
+    `"Akhirnya kau datang. Persimpangan ini telah menunggumu selama tiga siklus bulan. Ada gangguan di Menara Timur\u2014resonansi yang tak seharusnya ada. Aku bisa merasakannya, dan kau pasti juga."
+
+Ia mengulurkan sebuah gulungan perkamen yang menyala lembut. "Baca ini di perjalanan. Tapi hati-hati\u2014pengetahuan punya harga."`,
+    `"Kau Penyihir, kan? Kami butuh bantuanmu. Aliran mana di kuil bawah tanah kacau\u2014semacam kutukan atau jebakan sihir. Tukang sihir kami sendiri tak berani mendekat."
+
+Raut wajahnya serius. Ini bukan pekerjaan sembarangan.`,
   ],
   pencuri: [
-    '"Hei, bayangan. Ada kerjaan buatmu." Dari atap seberang, suara serak berbisik, "Bos Saga ingin menemuimu. Kabarnya, ada peti di ruang bawah tanah Balai Kota yang belum bisa dibuka oleh siapa pun.\n\nKau tertarik, atau kau lebih suka berkelahi dengan tikus got sepanjang malam?"',
-    '"Barang berharga membutuhkan tangan yang tepat." Seorang perempuan berjubah gelap melempar kantong kecil ke arahmu—terdengar gemerincing logam. "Itu setengah bayaran di muka. Ambil sebuah lionet dari leher patung di pemakaman tua. Jangan bunuh siapa pun, dan jangan ketahuan."',
+    `"Hei, bayangan. Ada kerjaan buatmu." Dari atap seberang, suara serak berbisik, "Bos Saga ingin menemuimu. Kabarnya, ada peti di ruang bawah tanah Balai Kota yang belum bisa dibuka oleh siapa pun.
+
+Kau tertarik, atau kau lebih suka berkelahi dengan tikus got sepanjang malam?"`,
+    `"Barang berharga membutuhkan tangan yang tepat." Seorang perempuan berjubah gelap melempar kantong kecil ke arahmu\u2014terdengar gemerincing logam. "Itu setengah bayaran di muka. Ambil sebuah lionet dari leher patung di pemakaman tua. Jangan bunuh siapa pun, dan jangan ketahuan."`,
   ],
   pendeta: [
-    '"Pendeta! Wabah aneh melanda kampung selatan. Bukan penyakit biasa. Tanaman membusuk dalam semalam, dan penduduk bermimpi tentang matahari hitam."\n\nIa menyerahkan sebuah jimat perak yang berpendar redup. "Kepala desa memohon pertolongan. Aku … aku tak tahu harus berbuat apa lagi."',
-    '"Ada peziarah yang terluka di jalan utara. Mereka diserang—bukan oleh bandit biasa. Luka mereka … aneh. Seperti terbakar dari dalam."\n\nBiarawati itu tampak cemas. "Kemampuanmu mungkin satu-satunya harapan mereka."',
+    `"Pendeta! Wabah aneh melanda kampung selatan. Bukan penyakit biasa. Tanaman membusuk dalam semalam, dan penduduk bermimpi tentang matahari hitam."
+
+Ia menyerahkan sebuah jimat perak yang berpendar redup. "Kepala desa memohon pertolongan. Aku \u2026 aku tak tahu harus berbuat apa lagi."`,
+    `"Ada peziarah yang terluka di jalan utara. Mereka diserang\u2014bukan oleh bandit biasa. Luka mereka \u2026 aneh. Seperti terbakar dari dalam."
+
+Biarawati itu tampak cemas. "Kemampuanmu mungkin satu-satunya harapan mereka."`,
   ],
   pemburu: [
-    'Di sebuah lapangan kecil yang diterangi kabut pagi, bangkai seekor rusa besar tergeletak dengan luka yang aneh: sobekan yang rapi seolah dibuat oleh pisau bedah raksasa. Bulu-bulu di sekelilingnya membeku, meski udara tak dingin.\n\nDari semak, suara dahan patah. Kau bukan satu-satunya yang mengikuti jejak ini.',
-    '"Kau Pemburu, ya? Syukurlah." Seorang penjaga hutan berlari mendekat. "Ada makhluk aneh di hutan barat—bukan serigala, bukan beruang. Jejaknya sebesar perisai dan baunya … seperti belerang.\n\nAku sudah kehilangan dua orang anak buahku yang mencoba menyelidiki."',
+    `Di sebuah lapangan kecil yang diterangi kabut pagi, bangkai seekor rusa besar tergeletak dengan luka yang aneh: sobekan yang rapi seolah dibuat oleh pisau bedah raksasa. Bulu-bulu di sekelilingnya membeku, meski udara tak dingin.
+
+Dari semak, suara dahan patah. Kau bukan satu-satunya yang mengikuti jejak ini.`,
+    `"Kau Pemburu, ya? Syukurlah." Seorang penjaga hutan berlari mendekat. "Ada makhluk aneh di hutan barat\u2014bukan serigala, bukan beruang. Jejaknya sebesar perisai dan baunya \u2026 seperti belerang.
+
+Aku sudah kehilangan dua orang anak buahku yang mencoba menyelidiki."`,
   ],
   bard: [
-    '"Kau Bard, kan?" Sebuah koin emas mendarat di depanmu, digelindingkan oleh pria bertubuh tambun dengan jubah merah. "Aku punya cerita yang perlu disebar—tapi bukan cerita biasa. Masalahnya, saksi terakhir cerita ini baru saja menghilang di Rawa Timur.\n\nTertarik? Bayaranku cepat."',
-    'Suasana kedai hening saat kau memasuki panggung. Seorang perempuan tua menatapmu tajam. "Kau si penutur kisah?\n\nMalam ini ada yang perlu kau dengar—bukan untuk diucapkan, tapi untuk kau bawa ke telinga yang tepat."',
+    `"Kau Bard, kan?" Sebuah koin emas mendarat di depanmu, digelindingkan oleh pria bertubuh tambun dengan jubah merah. "Aku punya cerita yang perlu disebar\u2014tapi bukan cerita biasa. Masalahnya, saksi terakhir cerita ini baru saja menghilang di Rawa Timur.
+
+Tertarik? Bayaranku cepat."`,
+    `Suasana kedai hening saat kau memasuki panggung. Seorang perempuan tua menatapmu tajam. "Kau si penutur kisah?
+
+Malam ini ada yang perlu kau dengar\u2014bukan untuk diucapkan, tapi untuk kau bawa ke telinga yang tepat."`,
   ],
 };
 
-const ADVENTURE_FOLLOWUPS = [
-  "Kau menunggu sejenak, namun tak ada perubahan. Mungkin kau perlu bergerak—atau mungkin semesta hanya menunggu langkah pertamamu.",
-  "Jalanan Aethermoor sepi malam ini. Tapi di balik jendela-jendela redup, engkau bisa merasakan banyak pasang mata mengawasi.",
-  "Langkahmu menggema di antara tembok batu. Kota ini terasa hidup, namun penuh rahasia yang belum terungkap.",
-  "Kesempatan terbentang di hadapanmu. Tapi ingat—di Aethermoor, tak ada yang gratis. Setiap pilihan punya bobot.",
-  "Angin berbisik di telingamu, seakan membawa pesan dari sesuatu yang tak terlihat.",
-];
 
 async function askDM(userContent, mode){
   if(State.busy) return;
@@ -623,8 +640,8 @@ async function askDM(userContent, mode){
       var key = c.cls ? c.cls.key : 'petarung';
       var stories = DM_OPENERS[key] || DM_OPENERS.petarung;
       var story = stories[Math.floor(Math.random() * stories.length)];
-      text = 'Nama mu ' + c.name + ', seorang ' + c.race.name + ' ' + c.cls.name + '.\n\n' + story;
-      text += '\n\nApa yang akan kau lakukan? [ROLL:d20:Persepsi:WIS:12]';
+      text = "Nama mu " + c.name + ", seorang " + c.race.name + " " + c.cls.name + ".\n\n" + story;
+      text += "\n\nApa yang akan kau lakukan? [ROLL:d20:Persepsi:WIS:12]";
     } else if (mode === 'roll') {
       var low = ['Sayangnya, usaha kali ini belum membuahkan hasil yang diharapkan. Tapi takdir masih memberimu kesempatan.', 'Kegagalan adalah guru yang kejam, tapi ia mengajar dengan baik.', 'Rintangan ini lebih sulit dari perkiraanmu. Tapi bukankah itu yang membuat petualangan layak dikenang?'];
       var mid = ['Langkahmu cukup mantap. Tidak spektakuler, tapi cukup untuk melewati rintangan kali ini.', 'Usahamu membuahkan hasil yang lumayan.', 'Cukup baik. Kadang, yang biasa saja sudah cukup untuk bertahan hidup.'];
@@ -641,12 +658,12 @@ async function askDM(userContent, mode){
       } else {
         text = mid[Math.floor(Math.random() * mid.length)];
       }
-      text += '\n\nApa langkahmu selanjutnya?';
+      text += "\n\nApa langkahmu selanjutnya?";
     } else {
       text = ADVENTURE_FOLLOWUPS[Math.floor(Math.random() * ADVENTURE_FOLLOWUPS.length)];
       if (Math.random() < 0.45) {
         var rolls = ['[ROLL:d20:Penyelidikan:INT:13]', '[ROLL:d20:Persuasi:CHA:11]', '[ROLL:d20:Atletik:STR:14]', '[ROLL:d20:Kelincahan:DEX:12]', '[ROLL:d20:Persepsi:WIS:10]'];
-        text += '\n\n' + rolls[Math.floor(Math.random() * rolls.length)];
+        text += "\n\n" + rolls[Math.floor(Math.random() * rolls.length)];
       }
     }
     hideThinking();
@@ -660,6 +677,7 @@ async function askDM(userContent, mode){
     if(!State.pendingRoll) setComposerEnabled(true);
   }
 }
+
 
 function handleDMText(raw){
   let text=raw;

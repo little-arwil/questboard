@@ -913,7 +913,7 @@ function renderSheet(){
   $('#sheet-name').textContent=c.name;
   $('#sheet-class').textContent=c.race.name+' · '+c.cls.name;
   $('#hp-val').textContent=c.hp+' / '+c.hpMax;
-  $('#hp-fill').style.width='100%';
+  $('#hp-fill').style.width=(c.hp/c.hpMax*100)+'%';
   $('#gold-val').textContent=c.gold;
   const sg=$('#sheet-stats');sg.innerHTML='';
   ABILITIES.forEach(a=>{

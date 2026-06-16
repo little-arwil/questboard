@@ -1,521 +1,3 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Aethermoor — Petualangan D&D</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
-<style>
-:root{
-  --ink:#0c0a12;
-  --ink-2:#13101c;
-  --panel:#191523;
-  --panel-2:#211a30;
-  --edge:#3a2f4d;
-  --edge-soft:#2a2238;
-  --gold:#e2b24a;
-  --gold-bright:#f6d27a;
-  --gold-deep:#9c7320;
-  --arcane:#9d7fd4;
-  --arcane-deep:#5b3fa0;
-  --blood:#bf4646;
-  --blood-deep:#7a2626;
-  --parch:#e9dcbe;
-  --parch-ink:#2c2418;
-  --bone:#cabfa6;
-  --bone-dim:#8a8068;
-  --emerald:#5aa67a;
-  --shadow:0 18px 40px -12px rgba(0,0,0,.7);
-  --glow-gold:0 0 24px rgba(226,178,74,.35);
-  --glow-arcane:0 0 26px rgba(157,127,212,.4);
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%}
-body{
-  font-family:'EB Garamond',Georgia,serif;
-  background:var(--ink);
-  color:var(--bone);
-  overflow:hidden;
-  -webkit-font-smoothing:antialiased;
-  position:relative;
-}
-#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
-.veil{
-  position:fixed;inset:0;z-index:1;pointer-events:none;
-  background:
-    radial-gradient(120% 90% at 50% -10%, rgba(157,127,212,.10), transparent 55%),
-    radial-gradient(80% 60% at 80% 110%, rgba(226,178,74,.07), transparent 60%),
-    radial-gradient(70% 60% at 12% 100%, rgba(191,70,70,.06), transparent 60%);
-}
-.vignette{
-  position:fixed;inset:0;z-index:2;pointer-events:none;
-  box-shadow:inset 0 0 220px 60px rgba(0,0,0,.85);
-}
-.app{position:relative;z-index:3;height:100%;display:flex;flex-direction:column}
-
-/* ---------- buttons / shared ---------- */
-button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
-:focus-visible{outline:2px solid var(--gold-bright);outline-offset:3px;border-radius:4px}
-.rune-btn{
-  font-family:'Cinzel',serif;letter-spacing:.06em;font-weight:600;
-  color:var(--ink);background:linear-gradient(180deg,var(--gold-bright),var(--gold));
-  padding:.85rem 1.6rem;border-radius:7px;font-size:.95rem;
-  box-shadow:0 1px 0 rgba(255,255,255,.35) inset,0 -2px 0 rgba(120,80,10,.4) inset,var(--glow-gold);
-  transition:transform .14s ease, box-shadow .2s ease, filter .2s ease;
-  text-transform:uppercase;
-}
-.rune-btn:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.06);box-shadow:0 1px 0 rgba(255,255,255,.4) inset,0 -2px 0 rgba(120,80,10,.4) inset,0 0 30px rgba(226,178,74,.55)}
-.rune-btn:active:not(:disabled){transform:translateY(0)}
-.rune-btn:disabled{opacity:.4;cursor:not-allowed;filter:grayscale(.4)}
-.ghost-btn{
-  font-family:'Cinzel',serif;letter-spacing:.05em;color:var(--bone);
-  border:1px solid var(--edge);background:rgba(40,32,55,.4);
-  padding:.6rem 1.1rem;border-radius:7px;font-size:.82rem;transition:.2s;
-}
-.ghost-btn:hover{border-color:var(--gold);color:var(--gold-bright);background:rgba(60,48,80,.5)}
-
-/* ---------- CREATE SCREEN ---------- */
-.screen{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;visibility:hidden;transition:opacity .8s ease,visibility .8s}
-.screen.active{opacity:1;visibility:visible}
-.create-scroll{overflow-y:auto;height:100%;padding:0 1.2rem 4rem;-webkit-overflow-scrolling:touch}
-.title-block{text-align:center;padding:clamp(2.2rem,7vh,4.5rem) 1rem 1.4rem}
-.title-block .crest{font-size:2rem;color:var(--gold);filter:drop-shadow(var(--glow-gold));animation:flicker 5s infinite}
-.title-block h1{
-  font-family:'Cinzel Decorative',serif;font-weight:900;
-  font-size:clamp(2.6rem,8vw,5.4rem);line-height:.95;
-  letter-spacing:.04em;margin:.3rem 0 .2rem;
-  background:linear-gradient(180deg,var(--gold-bright) 10%,var(--gold) 55%,var(--gold-deep) 100%);
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-  text-shadow:0 0 50px rgba(226,178,74,.18);
-}
-.title-block .tag{font-style:italic;color:var(--bone-dim);font-size:clamp(1rem,2.4vw,1.25rem);letter-spacing:.02em}
-.divider{display:flex;align-items:center;justify-content:center;gap:1rem;color:var(--edge);margin:1.5rem auto;max-width:760px}
-.divider::before,.divider::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,transparent,var(--edge),transparent)}
-.divider span{font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:.3em;color:var(--gold-deep);text-transform:uppercase}
-
-.builder{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:2.2rem}
-.field-label{font-family:'Cinzel',serif;font-size:.82rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:.9rem;display:flex;align-items:center;gap:.6rem}
-.field-label .num{display:inline-grid;place-items:center;width:1.7rem;height:1.7rem;border:1px solid var(--gold-deep);border-radius:50%;font-size:.78rem;color:var(--gold-bright)}
-.name-input{
-  width:100%;background:rgba(12,10,18,.6);border:1px solid var(--edge);
-  border-radius:9px;padding:1rem 1.2rem;color:var(--parch);
-  font-family:'EB Garamond',serif;font-size:1.3rem;letter-spacing:.01em;transition:.25s;
-}
-.name-input::placeholder{color:var(--bone-dim);font-style:italic}
-.name-input:focus{border-color:var(--gold);box-shadow:var(--glow-gold);background:rgba(20,16,30,.7)}
-
-.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.8rem}
-.pick{
-  position:relative;text-align:left;border:1px solid var(--edge-soft);
-  background:linear-gradient(180deg,rgba(33,26,48,.55),rgba(19,16,28,.55));
-  border-radius:11px;padding:1rem 1rem 1.1rem;transition:.22s;overflow:hidden;
-}
-.pick::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 80% at 50% 0,rgba(157,127,212,.12),transparent 70%);opacity:0;transition:.25s}
-.pick:hover{border-color:var(--arcane);transform:translateY(-3px)}
-.pick:hover::before{opacity:1}
-.pick.sel{border-color:var(--gold);background:linear-gradient(180deg,rgba(70,54,30,.4),rgba(30,24,18,.5));box-shadow:var(--glow-gold)}
-.pick.sel::before{opacity:1;background:radial-gradient(120% 80% at 50% 0,rgba(226,178,74,.14),transparent 70%)}
-.pick .ic{color:var(--arcane);margin-bottom:.5rem;display:block}
-.pick.sel .ic{color:var(--gold-bright)}
-.pick h3{font-family:'Cinzel',serif;font-weight:600;font-size:1.05rem;color:var(--parch);letter-spacing:.02em}
-.pick .sub{font-size:.82rem;color:var(--gold-deep);font-family:'Cinzel',serif;letter-spacing:.05em;margin:.1rem 0 .5rem}
-.pick .desc{font-size:.92rem;color:var(--bone-dim);line-height:1.35;font-style:italic}
-.pick .traits{margin-top:.6rem;font-size:.8rem;color:var(--arcane);letter-spacing:.02em}
-.pick.sel .traits{color:var(--gold)}
-
-/* ability roll */
-.attr-wrap{display:flex;flex-direction:column;gap:1rem;align-items:center}
-.attr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(115px,1fr));gap:.7rem;width:100%}
-.attr{
-  text-align:center;border:1px solid var(--edge-soft);border-radius:11px;
-  padding:.9rem .4rem;background:rgba(12,10,18,.5);position:relative;transition:.3s;
-}
-.attr .ab-name{font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.12em;color:var(--gold);text-transform:uppercase}
-.attr .ab-score{font-family:'Cinzel',serif;font-size:2.1rem;font-weight:700;color:var(--parch);line-height:1.1;margin-top:.2rem}
-.attr .ab-mod{font-size:.92rem;color:var(--arcane);font-family:'Cinzel',serif}
-.attr .ab-bonus{position:absolute;top:.4rem;right:.5rem;font-size:.68rem;color:var(--emerald);font-family:'Cinzel',serif}
-.attr.rolling .ab-score{color:var(--gold-bright);text-shadow:0 0 14px rgba(226,178,74,.6)}
-.start-row{display:flex;justify-content:center;gap:1rem;flex-wrap:wrap;margin-top:.4rem}
-.hint{font-size:.85rem;color:var(--bone-dim);font-style:italic;text-align:center}
-
-/* ---------- PLAY SCREEN ---------- */
-.topbar{
-  display:flex;align-items:center;gap:.9rem;padding:.7rem clamp(.8rem,2vw,1.4rem);
-  border-bottom:1px solid var(--edge-soft);
-  background:linear-gradient(180deg,rgba(25,21,35,.92),rgba(19,16,28,.82));
-  backdrop-filter:blur(6px);z-index:5;
-}
-.topbar .crest-sm{color:var(--gold);filter:drop-shadow(var(--glow-gold));animation:flicker 6s infinite;flex-shrink:0}
-.topbar .brand{font-family:'Cinzel Decorative',serif;font-weight:700;font-size:1.25rem;letter-spacing:.05em;color:var(--gold-bright);white-space:nowrap}
-.topbar .who{font-size:.9rem;color:var(--bone-dim);font-style:italic;margin-left:.2rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.topbar .spacer{flex:1}
-.icon-btn{
-  width:40px;height:40px;border-radius:9px;border:1px solid var(--edge);
-  display:grid;place-items:center;color:var(--bone);background:rgba(40,32,55,.4);transition:.2s;flex-shrink:0;
-}
-.icon-btn:hover{border-color:var(--gold);color:var(--gold-bright)}
-.icon-btn.on{border-color:var(--arcane);color:var(--arcane);box-shadow:var(--glow-arcane)}
-
-.stage{flex:1;display:flex;min-height:0;position:relative}
-.story-col{flex:1;display:flex;flex-direction:column;min-width:0}
-.log{
-  flex:1;overflow-y:auto;padding:clamp(1rem,3vw,2rem) clamp(1rem,4vw,3rem);
-  display:flex;flex-direction:column;gap:1.5rem;-webkit-overflow-scrolling:touch;
-  scroll-behavior:smooth;
-}
-.msg{max-width:760px;opacity:0;transform:translateY(14px);transition:opacity .7s ease,transform .7s ease}
-.msg.in{opacity:1;transform:none}
-.msg.dm{align-self:flex-start;width:100%}
-.dm-frame{
-  position:relative;
-  background:
-    linear-gradient(180deg,rgba(233,220,190,.97),rgba(220,205,172,.97));
-  color:var(--parch-ink);border-radius:5px;padding:1.4rem 1.6rem;line-height:1.62;
-  font-size:clamp(1.02rem,1.5vw,1.12rem);
-  box-shadow:var(--shadow),0 0 0 1px rgba(120,90,40,.4),0 0 0 6px rgba(20,16,12,.25);
-}
-.dm-frame::before{content:"";position:absolute;inset:6px;border:1px solid rgba(120,90,40,.35);border-radius:3px;pointer-events:none}
-.dm-frame p{margin:0 0 .85rem;position:relative}
-.dm-frame p:last-child{margin-bottom:0}
-.dm-tag{font-family:'Cinzel',serif;font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-deep);display:block;margin-bottom:.7rem}
-.msg.pc{align-self:flex-end;text-align:right;max-width:560px}
-.pc-bubble{
-  display:inline-block;text-align:left;background:linear-gradient(180deg,rgba(70,54,100,.4),rgba(40,30,62,.5));
-  border:1px solid var(--arcane-deep);border-radius:12px 12px 3px 12px;padding:.8rem 1.1rem;
-  color:var(--parch);font-style:italic;font-size:1.05rem;line-height:1.45;box-shadow:0 8px 20px -8px rgba(0,0,0,.6);
-}
-.pc-tag{font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--arcane);display:block;margin-bottom:.4rem;text-align:right}
-.msg.sys{align-self:center;text-align:center;color:var(--blood);font-style:italic;font-size:.95rem;max-width:520px}
-.roll-note{align-self:center;display:flex;align-items:center;gap:.5rem;font-family:'Cinzel',serif;font-size:.84rem;letter-spacing:.04em;color:var(--gold);background:linear-gradient(180deg,rgba(70,54,30,.35),rgba(40,30,18,.4));border:1px solid var(--edge-soft);border-radius:22px;padding:.45rem 1rem;opacity:0;transition:opacity .6s ease}
-.roll-note.in{opacity:1}
-.roll-note span[aria-hidden]{color:var(--gold-bright)}
-.roll-note .ok{color:var(--emerald)}.roll-note .no{color:var(--blood)}.roll-note .crit{color:var(--gold-bright);font-weight:700}.roll-note .critno{color:var(--blood);font-weight:700}
-
-.thinking{align-self:flex-start;display:flex;align-items:center;gap:.7rem;color:var(--gold-deep);font-family:'Cinzel',serif;font-size:.82rem;letter-spacing:.08em}
-.thinking .orbs{display:flex;gap:.35rem}
-.thinking .orbs i{width:8px;height:8px;border-radius:50%;background:var(--gold);display:inline-block;animation:bob 1.1s infinite ease-in-out}
-.thinking .orbs i:nth-child(2){animation-delay:.18s}
-.thinking .orbs i:nth-child(3){animation-delay:.36s}
-
-/* roll request banner */
-.roll-call{
-  margin:0 clamp(1rem,4vw,3rem);padding:.85rem 1.1rem;border-radius:10px;
-  background:linear-gradient(180deg,rgba(70,54,30,.55),rgba(40,30,18,.6));
-  border:1px solid var(--gold);box-shadow:var(--glow-gold);
-  display:none;align-items:center;gap:.9rem;animation:pulse-soft 2.2s infinite;
-}
-.roll-call.show{display:flex}
-.roll-call .rc-ic{color:var(--gold-bright);flex-shrink:0}
-.roll-call .rc-txt{flex:1;font-size:.98rem;color:var(--parch)}
-.roll-call .rc-txt b{font-family:'Cinzel',serif;color:var(--gold-bright);letter-spacing:.03em}
-.roll-call .rc-dc{font-family:'Cinzel',serif;color:var(--gold);font-size:.85rem;letter-spacing:.05em}
-
-/* composer */
-.composer{
-  display:flex;gap:.7rem;align-items:flex-end;padding:.9rem clamp(1rem,4vw,3rem) 1rem;
-  border-top:1px solid var(--edge-soft);background:linear-gradient(0deg,rgba(19,16,28,.95),rgba(19,16,28,.6));
-}
-.composer textarea{
-  flex:1;resize:none;background:rgba(12,10,18,.65);border:1px solid var(--edge);
-  border-radius:11px;padding:.85rem 1.1rem;color:var(--parch);font-family:'EB Garamond',serif;
-  font-size:1.08rem;line-height:1.4;max-height:140px;min-height:52px;transition:.2s;
-}
-.composer textarea::placeholder{color:var(--bone-dim);font-style:italic}
-.composer textarea:focus{border-color:var(--gold);box-shadow:var(--glow-gold)}
-.composer textarea:disabled{opacity:.5}
-.send-btn{
-  width:52px;height:52px;border-radius:11px;flex-shrink:0;
-  background:linear-gradient(180deg,var(--gold-bright),var(--gold));color:var(--ink);
-  display:grid;place-items:center;box-shadow:var(--glow-gold);transition:.18s;
-}
-.send-btn:hover:not(:disabled){transform:translateY(-2px) scale(1.03)}
-.send-btn:disabled{opacity:.4;cursor:not-allowed;filter:grayscale(.4)}
-
-/* dice tray */
-.tray{
-  display:flex;align-items:center;gap:.5rem;padding:.6rem clamp(.8rem,3vw,2rem) .9rem;
-  border-top:1px solid var(--edge-soft);background:rgba(12,10,18,.7);
-  overflow-x:auto;-webkit-overflow-scrolling:touch;
-}
-.tray .tray-label{font-family:'Cinzel',serif;font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-deep);margin-right:.3rem;white-space:nowrap;flex-shrink:0}
-.die-btn{
-  position:relative;flex-shrink:0;width:50px;height:50px;border-radius:10px;
-  border:1px solid var(--edge);background:linear-gradient(180deg,rgba(40,32,55,.7),rgba(22,18,32,.7));
-  color:var(--bone);font-family:'Cinzel',serif;font-weight:600;font-size:.82rem;
-  display:grid;place-items:center;transition:.18s;
-}
-.die-btn .poly{position:absolute;inset:0;display:grid;place-items:center;opacity:.5;color:var(--arcane)}
-.die-btn span{position:relative;z-index:1}
-.die-btn:hover{border-color:var(--arcane);color:var(--parch);transform:translateY(-3px);box-shadow:var(--glow-arcane)}
-.die-btn.d20{width:62px;height:62px;font-size:1rem;border-color:var(--gold-deep);background:linear-gradient(180deg,rgba(70,54,30,.6),rgba(30,24,16,.7))}
-.die-btn.d20 .poly{color:var(--gold)}
-.die-btn.d20:hover{border-color:var(--gold);box-shadow:var(--glow-gold);color:var(--gold-bright)}
-.die-btn.flagged{animation:pulse-ring 1.3s infinite;border-color:var(--gold)}
-
-/* sheet panel */
-.sheet{
-  width:300px;flex-shrink:0;border-left:1px solid var(--edge-soft);
-  background:linear-gradient(180deg,rgba(25,21,35,.6),rgba(15,13,22,.7));
-  display:flex;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch;
-}
-.sheet-head{padding:1.3rem 1.2rem 1rem;text-align:center;border-bottom:1px solid var(--edge-soft)}
-.portrait{
-  width:96px;height:96px;margin:0 auto .7rem;border-radius:50%;
-  display:grid;place-items:center;position:relative;
-  background:radial-gradient(circle,rgba(40,32,55,.9),rgba(15,13,22,.9));
-  border:2px solid var(--gold-deep);box-shadow:var(--glow-gold),inset 0 0 20px rgba(0,0,0,.6);
-}
-.portrait .ring{position:absolute;inset:-7px;border-radius:50%;border:1px solid var(--arcane-deep);opacity:.6;animation:spin 24s linear infinite}
-.portrait svg{color:var(--gold-bright);filter:drop-shadow(0 0 6px rgba(226,178,74,.5))}
-.sheet-head .pc-name{font-family:'Cinzel',serif;font-weight:700;font-size:1.3rem;color:var(--parch);letter-spacing:.02em}
-.sheet-head .pc-class{font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:.1em;color:var(--gold);text-transform:uppercase;margin-top:.2rem}
-
-.hp-block{padding:1rem 1.2rem;border-bottom:1px solid var(--edge-soft)}
-.hp-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.45rem}
-.hp-top .lbl{font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--blood)}
-.hp-top .val{font-family:'Cinzel',serif;font-weight:600;color:var(--parch);font-size:.95rem}
-.hp-bar{height:14px;border-radius:8px;background:rgba(0,0,0,.5);border:1px solid var(--blood-deep);overflow:hidden;position:relative}
-.hp-fill{height:100%;background:linear-gradient(90deg,var(--blood-deep),var(--blood));border-radius:7px;transition:width .7s cubic-bezier(.2,.8,.2,1);box-shadow:0 0 12px rgba(191,70,70,.5)}
-.hp-bar.dmg{animation:hp-flash .5s}
-
-.stats-block{padding:1rem 1.2rem;border-bottom:1px solid var(--edge-soft)}
-.block-title{font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:.8rem}
-.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem}
-.stat{text-align:center;border:1px solid var(--edge-soft);border-radius:9px;padding:.55rem .2rem;background:rgba(12,10,18,.4)}
-.stat .sn{font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.08em;color:var(--gold);text-transform:uppercase}
-.stat .sv{font-family:'Cinzel',serif;font-size:1.25rem;font-weight:700;color:var(--parch);line-height:1.2}
-.stat .sm{font-size:.72rem;color:var(--arcane);font-family:'Cinzel',serif}
-
-.gold-row{display:flex;align-items:center;justify-content:center;gap:.5rem;padding:.9rem;border-bottom:1px solid var(--edge-soft);color:var(--gold-bright);font-family:'Cinzel',serif;letter-spacing:.05em}
-.gold-row .gc{color:var(--gold)}
-
-.inv-block{padding:1rem 1.2rem 2rem;flex:1}
-.inv-list{display:flex;flex-direction:column;gap:.4rem;margin-top:.2rem}
-.inv-item{
-  display:flex;align-items:center;gap:.55rem;font-size:.95rem;color:var(--bone);
-  padding:.4rem .6rem;border-radius:7px;border:1px solid var(--edge-soft);background:rgba(12,10,18,.35);
-  transition:.4s;
-}
-.inv-item.fresh{border-color:var(--gold);box-shadow:var(--glow-gold);color:var(--parch)}
-.inv-item .dot{color:var(--gold);flex-shrink:0}
-.inv-empty{font-style:italic;color:var(--bone-dim);font-size:.9rem}
-
-/* sheet toggle for mobile */
-.sheet-toggle{display:none}
-
-/* ---------- DICE OVERLAY ---------- */
-.dice-overlay{
-  position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;
-  background:radial-gradient(circle at 50% 45%,rgba(10,8,16,.82),rgba(5,4,9,.96));
-  backdrop-filter:blur(3px);flex-direction:column;gap:1.4rem;
-}
-.dice-overlay.show{display:flex;animation:fade-in .35s}
-.dice-overlay .ctx{font-family:'Cinzel',serif;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-size:clamp(.85rem,2.5vw,1.05rem);text-align:center;padding:0 1rem}
-.die-stage{position:relative;width:min(60vw,260px);height:min(60vw,260px);display:grid;place-items:center}
-.die-svg{width:100%;height:100%;filter:drop-shadow(0 0 30px rgba(157,127,212,.5))}
-.die-num{
-  position:absolute;font-family:'Cinzel',serif;font-weight:900;
-  font-size:clamp(3.4rem,16vw,6.5rem);color:var(--parch);
-  text-shadow:0 0 24px rgba(226,178,74,.4);line-height:1;
-}
-.die-stage.spin .die-svg{animation:tumble .8s linear infinite}
-.die-stage.crit-up .die-svg{filter:drop-shadow(0 0 50px rgba(246,210,122,.95))}
-.die-stage.crit-up .die-num{color:var(--gold-bright);text-shadow:0 0 40px rgba(246,210,122,.9)}
-.die-stage.crit-down .die-svg{filter:drop-shadow(0 0 50px rgba(191,70,70,.9))}
-.die-stage.crit-down .die-num{color:var(--blood);text-shadow:0 0 40px rgba(191,70,70,.9)}
-.result-line{
-  font-family:'Cinzel',serif;font-size:clamp(1rem,3.4vw,1.4rem);letter-spacing:.04em;
-  color:var(--parch);text-align:center;min-height:1.6em;padding:0 1rem;opacity:0;transition:opacity .4s;
-}
-.result-line.show{opacity:1}
-.result-line .ok{color:var(--emerald)}
-.result-line .no{color:var(--blood)}
-.result-line .crit{color:var(--gold-bright);font-weight:700}
-.result-line .critno{color:var(--blood);font-weight:700}
-.overlay-foot{min-height:46px;display:flex;align-items:center}
-.burst{position:absolute;inset:0;pointer-events:none;overflow:visible}
-
-/* ---------- intro toast ---------- */
-.audio-gate{
-  position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;
-  background:rgba(5,4,9,.7);backdrop-filter:blur(2px);
-}
-.audio-gate .card{
-  text-align:center;max-width:340px;padding:2rem 1.8rem;border-radius:14px;
-  background:linear-gradient(180deg,rgba(33,26,48,.95),rgba(19,16,28,.95));
-  border:1px solid var(--gold-deep);box-shadow:var(--shadow),var(--glow-gold);
-}
-.audio-gate .card .ic{color:var(--gold);margin-bottom:.6rem}
-.audio-gate .card p{color:var(--bone-dim);font-style:italic;font-size:.95rem;line-height:1.5;margin:.4rem 0 1.2rem}
-
-/* ---------- animations ---------- */
-@keyframes flicker{0%,100%{opacity:1}45%{opacity:.78}50%{opacity:.92}55%{opacity:.7}}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes tumble{to{transform:rotate(360deg) scale(1.04)}}
-@keyframes bob{0%,80%,100%{transform:translateY(0);opacity:.5}40%{transform:translateY(-7px);opacity:1}}
-@keyframes pulse-soft{0%,100%{box-shadow:0 0 16px rgba(226,178,74,.25)}50%{box-shadow:0 0 30px rgba(226,178,74,.55)}}
-@keyframes pulse-ring{0%,100%{box-shadow:0 0 0 0 rgba(226,178,74,.5)}50%{box-shadow:0 0 0 6px rgba(226,178,74,0)}}
-@keyframes hp-flash{0%,100%{background:rgba(0,0,0,.5)}30%{background:rgba(191,70,70,.6)}}
-@keyframes fade-in{from{opacity:0}to{opacity:1}}
-@keyframes ember-up{to{transform:translateY(-30px);opacity:0}}
-
-@media (prefers-reduced-motion:reduce){
-  *{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.15s!important}
-}
-
-/* ---------- responsive ---------- */
-@media (max-width:880px){
-  .sheet{
-    position:fixed;top:0;right:0;bottom:0;width:min(320px,86vw);z-index:30;
-    transform:translateX(100%);transition:transform .35s ease;box-shadow:-20px 0 50px rgba(0,0,0,.6);
-  }
-  .sheet.open{transform:none}
-  .sheet-toggle{
-    display:grid;place-items:center;
-  }
-  .sheet-scrim{position:fixed;inset:0;z-index:29;background:rgba(0,0,0,.5);display:none}
-  .sheet-scrim.show{display:block}
-}
-@media (max-width:520px){
-  .die-btn{width:44px;height:44px;font-size:.74rem}
-  .die-btn.d20{width:54px;height:54px}
-  .dm-frame{padding:1.1rem 1.1rem}
-  .tray .tray-label{display:none}
-}
-</style>
-</head>
-<body>
-<canvas id="bg-canvas"></canvas>
-<div class="veil"></div>
-<div class="vignette"></div>
-
-<div class="app">
-
-  <!-- ============ CREATE SCREEN ============ -->
-  <section class="screen active" id="screen-create">
-    <div class="create-scroll">
-      <div class="title-block">
-        <div class="crest">✦</div>
-        <h1>Aethermoor</h1>
-        <p class="tag">Sebuah dunia menanti seorang pemberani. Tempalah takdirmu.</p>
-      </div>
-
-      <div class="divider"><span>Ciptakan Pahlawanmu</span></div>
-
-      <div class="builder">
-        <div>
-          <div class="field-label"><span class="num">I</span> Nama Sang Petualang</div>
-          <input class="name-input" id="name-input" maxlength="28" placeholder="Bisikkan namamu kepada takdir…" autocomplete="off">
-        </div>
-
-        <div>
-          <div class="field-label"><span class="num">II</span> Bangsa</div>
-          <div class="card-grid" id="race-grid"></div>
-        </div>
-
-        <div>
-          <div class="field-label"><span class="num">III</span> Kelas</div>
-          <div class="card-grid" id="class-grid"></div>
-        </div>
-
-        <div>
-          <div class="field-label"><span class="num">IV</span> Atribut</div>
-          <div class="attr-wrap">
-            <div class="attr-grid" id="attr-grid"></div>
-            <p class="hint" id="attr-hint">Lempar 4d6 (buang yang terkecil) untuk menentukan kemampuanmu.</p>
-            <div class="start-row">
-              <button class="ghost-btn" id="roll-attr-btn">⚄ Lempar Atribut</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="start-row" style="margin-top:.5rem;margin-bottom:2rem">
-          <button class="rune-btn" id="begin-btn" disabled>Mulai Petualangan ✦</button>
-        </div>
-        <p class="hint" id="begin-hint" style="margin-bottom:3rem">Lengkapi nama, bangsa, kelas, dan atribut untuk memulai.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ PLAY SCREEN ============ -->
-  <section class="screen" id="screen-play">
-    <div class="topbar">
-      <span class="crest-sm" aria-hidden="true">✦</span>
-      <span class="brand">Aethermoor</span>
-      <span class="who" id="topbar-who"></span>
-      <span class="spacer"></span>
-      <button class="icon-btn" id="ambient-btn" title="Musik latar" aria-label="Alunkan musik latar">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-      </button>
-      <button class="icon-btn sheet-toggle" id="sheet-toggle" title="Lembar karakter" aria-label="Buka lembar karakter">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
-      </button>
-    </div>
-
-    <div class="stage">
-      <div class="story-col">
-        <div class="log" id="log"></div>
-        <div class="roll-call" id="roll-call">
-          <span class="rc-ic" aria-hidden="true">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2 3 7v10l9 5 9-5V7z"/><path d="m3 7 9 5 9-5M12 12v10"/></svg>
-          </span>
-          <div class="rc-txt" id="rc-txt"></div>
-        </div>
-        <div class="composer">
-          <textarea id="action-input" rows="1" placeholder="Apa yang kamu lakukan…?"></textarea>
-          <button class="send-btn" id="send-btn" aria-label="Lakukan aksi">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
-          </button>
-        </div>
-        <div class="tray" id="tray">
-          <span class="tray-label">Dadu</span>
-        </div>
-      </div>
-
-      <aside class="sheet" id="sheet">
-        <div class="sheet-head">
-          <div class="portrait"><div class="ring"></div><div id="portrait-emblem"></div></div>
-          <div class="pc-name" id="sheet-name">—</div>
-          <div class="pc-class" id="sheet-class">—</div>
-        </div>
-        <div class="hp-block">
-          <div class="hp-top"><span class="lbl">Titik Hidup</span><span class="val" id="hp-val">0 / 0</span></div>
-          <div class="hp-bar" id="hp-bar"><div class="hp-fill" id="hp-fill" style="width:100%"></div></div>
-        </div>
-        <div class="stats-block">
-          <div class="block-title">Atribut</div>
-          <div class="stat-grid" id="sheet-stats"></div>
-        </div>
-        <div class="gold-row">
-          <span class="gc" aria-hidden="true">●</span>
-          <span id="gold-val">0</span> Keping Emas
-        </div>
-        <div class="inv-block">
-          <div class="block-title">Ransel</div>
-          <div class="inv-list" id="inv-list"></div>
-        </div>
-      </aside>
-      <div class="sheet-scrim" id="sheet-scrim"></div>
-    </div>
-  </section>
-</div>
-
-<!-- DICE OVERLAY -->
-<div class="dice-overlay" id="dice-overlay">
-  <div class="ctx" id="dice-ctx"></div>
-  <div class="die-stage" id="die-stage">
-    <svg class="die-svg" id="die-svg" viewBox="0 0 200 200" aria-hidden="true"></svg>
-    <div class="die-num" id="die-num">?</div>
-    <div class="burst" id="burst"></div>
-  </div>
-  <div class="result-line" id="result-line"></div>
-  <div class="overlay-foot" id="overlay-foot"></div>
-</div>
-
-<script>
 "use strict";
 
 /* ============================================================
@@ -586,6 +68,233 @@ function bigDieSVG(){
     '<polygon points="100,188 174,145 100,100" fill="rgba(226,178,74,0.05)" stroke="#9c7320" stroke-width="1.2"/>'+
     '<polygon points="100,188 26,145 100,100" fill="rgba(226,178,74,0.05)" stroke="#9c7320" stroke-width="1.2"/>'+
     '<polygon points="100,12 174,55 100,100 26,55" fill="none" stroke="#e2b24a" stroke-width="0.8" opacity="0.5"/>';
+}
+
+/* ============================================================
+   CHARACTER PORTRAIT  (race + class -> SVG bust, viewBox 100x116)
+============================================================ */
+const SKIN = {
+  manusia:   {base:'#c98d5e', shade:'#a06d45', light:'#e3ad7c'},
+  elf:       {base:'#dcc8ad', shade:'#b8a487', light:'#f1e4cf'},
+  dwarf:     {base:'#c67c50', shade:'#9c5b36', light:'#e09c6f'},
+  halfling:  {base:'#d09865', shade:'#a8743f', light:'#ecb887'},
+  tiefling:  {base:'#b34e63', shade:'#7f3247', light:'#d4748a'},
+  dragonborn:{base:'#8f9c5c', shade:'#697440', light:'#b3bf80'},
+};
+const HAIR = {
+  manusia:'#46301f', elf:'#d9b46a', dwarf:'#9a4e28',
+  halfling:'#5c3a22', tiefling:'#241d33', dragonborn:null,
+};
+const GLOW_EYE = { tiefling:'#f7c14a', dragonborn:'#f0b24a' };
+const GARB = {
+  petarung:  {base:'#5d6775', shade:'#3f4855', trim:'#a6b6c8', metal:true},
+  penyihir:  {base:'#4a3a6e', shade:'#332650', trim:'#9d7fd4'},
+  pencuri:   {base:'#2d2935', shade:'#1b1822', trim:'#5a5266'},
+  pendeta:   {base:'#cdbf9c', shade:'#a3946f', trim:'#e2b24a'},
+  pemburu:   {base:'#3f5a3a', shade:'#2a3f27', trim:'#74914f'},
+  bard:      {base:'#7a3b52', shade:'#57293b', trim:'#e2b24a'},
+};
+function prop(cls, g){
+  switch(cls){
+    case 'petarung':
+      return '<g opacity="0.95"><line x1="70" y1="40" x2="40" y2="112" stroke="#c9d2dd" stroke-width="5" stroke-linecap="round"/><line x1="70" y1="40" x2="40" y2="112" stroke="#7e8896" stroke-width="1.6"/><line x1="62" y1="44" x2="80" y2="56" stroke="#9c7320" stroke-width="4" stroke-linecap="round"/><circle cx="71.5" cy="36" r="4" fill="#e2b24a"/></g>';
+    case 'penyihir':
+      return '<g opacity="0.95"><line x1="74" y1="34" x2="74" y2="112" stroke="#6e4a2c" stroke-width="4.5" stroke-linecap="round"/><path d="M74 22 L80 33 L74 40 L68 33 Z" fill="#b89be6"/><path d="M74 22 L80 33 L74 40 Z" fill="#9d7fd4"/><circle cx="74" cy="31" r="9" fill="#9d7fd4" opacity="0.25"/></g>';
+    case 'pencuri':
+      return '<g opacity="0.92"><line x1="70" y1="48" x2="84" y2="92" stroke="#b9c2cd" stroke-width="3"/><line x1="70" y1="48" x2="64" y2="40" stroke="#5a5266" stroke-width="4" stroke-linecap="round"/></g>';
+    case 'pendeta':
+      return '<g opacity="0.95"><line x1="74" y1="42" x2="74" y2="112" stroke="#a3946f" stroke-width="4" stroke-linecap="round"/><circle cx="74" cy="34" r="6.5" fill="none" stroke="#e2b24a" stroke-width="2.4"/><g stroke="#e2b24a" stroke-width="1.6"><line x1="74" y1="23" x2="74" y2="27"/><line x1="74" y1="41" x2="74" y2="45"/><line x1="65" y1="34" x2="69" y2="34"/><line x1="79" y1="34" x2="83" y2="34"/></g></g>';
+    case 'pemburu':
+      return '<g opacity="0.95" fill="none"><path d="M40 28 Q86 58 40 110" stroke="#6e4a2c" stroke-width="4" stroke-linecap="round"/><line x1="40" y1="28" x2="40" y2="110" stroke="#d8cdb6" stroke-width="1.2"/></g>';
+    case 'bard':
+      return '<g opacity="0.95"><line x1="66" y1="40" x2="86" y2="100" stroke="#7a4a28" stroke-width="6" stroke-linecap="round"/><ellipse cx="88" cy="104" rx="13" ry="16" fill="#9c6a38" transform="rotate(20 88 104)"/><g stroke="#d8cdb6" stroke-width="0.7"><line x1="68" y1="42" x2="88" y2="100"/><line x1="64" y1="44" x2="84" y2="102"/></g></g>';
+  }
+  return '';
+}
+function shoulders(g){
+  let s = '<path d="M50 60 C 28 60, 16 72, 12 116 L 88 116 C 84 72, 72 60, 50 60 Z" fill="'+g.base+'"/>';
+  s += '<path d="M50 62 C 33 62, 23 72, 18 116 L 12 116 C 16 72, 28 60, 50 60 Z" fill="'+g.shade+'" opacity="0.55"/>';
+  if(g.metal){
+    s += '<ellipse cx="22" cy="78" rx="14" ry="11" fill="'+g.trim+'"/>';
+    s += '<ellipse cx="78" cy="78" rx="14" ry="11" fill="'+g.trim+'"/>';
+    s += '<ellipse cx="22" cy="76" rx="14" ry="11" fill="'+g.shade+'" opacity="0.35"/>';
+    s += '<ellipse cx="78" cy="76" rx="9" ry="7" fill="#d7e0ea" opacity="0.5"/>';
+    s += '<path d="M40 72 L50 86 L60 72" fill="none" stroke="'+g.trim+'" stroke-width="3"/>';
+  } else {
+    s += '<path d="M50 60 C 41 60, 36 67, 36 72 L 50 84 L 64 72 C 64 67, 59 60, 50 60 Z" fill="'+g.trim+'" opacity="0.92"/>';
+    s += '<path d="M50 66 L50 86" stroke="'+g.shade+'" stroke-width="2" opacity="0.6"/>';
+  }
+  return s;
+}
+function neck(sk){
+  return '<path d="M43 52 L43 66 Q50 72 57 66 L57 52 Z" fill="'+sk.base+'"/>'+
+         '<path d="M43 52 L43 66 Q47 70 50 70 L50 52 Z" fill="'+sk.shade+'" opacity="0.4"/>';
+}
+function head(sk, race){
+  let rx = 17.5, ry = 21, cy = 38;
+  if(race==='halfling'||race==='dwarf'){ rx = 18.5; ry = 20; }
+  if(race==='elf'){ rx = 16; ry = 22; }
+  let s = '<ellipse cx="50" cy="'+cy+'" rx="'+rx+'" ry="'+ry+'" fill="'+sk.base+'"/>';
+  s += '<path d="M'+(50-rx+1)+' '+cy+' Q'+(50-rx)+' '+(cy+12)+' 50 '+(cy+ry-1)+' Q'+(50-7)+' '+(cy+ry-4)+' '+(50-rx+3)+' '+(cy+4)+' Z" fill="'+sk.shade+'" opacity="0.35"/>';
+  s += '<ellipse cx="50" cy="'+(cy-9)+'" rx="9" ry="5" fill="'+sk.light+'" opacity="0.35"/>';
+  return s;
+}
+function ears(sk, race){
+  if(race==='dragonborn') return '';
+  if(race==='elf'){
+    return '<path d="M33 36 Q24 26 27 20 Q31 30 36 34 Z" fill="'+sk.base+'" stroke="'+sk.shade+'" stroke-width="0.6"/>'+
+           '<path d="M67 36 Q76 26 73 20 Q69 30 64 34 Z" fill="'+sk.base+'" stroke="'+sk.shade+'" stroke-width="0.6"/>';
+  }
+  return '<ellipse cx="33" cy="40" rx="3.4" ry="5" fill="'+sk.base+'"/><ellipse cx="33" cy="40" rx="1.6" ry="3" fill="'+sk.shade+'" opacity="0.5"/>'+
+         '<ellipse cx="67" cy="40" rx="3.4" ry="5" fill="'+sk.base+'"/><ellipse cx="67" cy="40" rx="1.6" ry="3" fill="'+sk.shade+'" opacity="0.5"/>';
+}
+function snout(sk){
+  return '<path d="M48 38 Q70 40 72 50 Q70 58 60 58 Q52 58 49 53 Z" fill="'+sk.base+'"/>'+
+         '<path d="M60 58 Q70 57 72 50 Q70 56 62 56 Z" fill="'+sk.shade+'" opacity="0.5"/>'+
+         '<ellipse cx="68" cy="48.5" rx="1.4" ry="1.1" fill="'+sk.shade+'"/>'+
+         '<path d="M50 54 Q62 57 71 52" stroke="'+sk.shade+'" stroke-width="1.2" fill="none"/>'+
+         '<g stroke="'+sk.shade+'" stroke-width="0.9" opacity="0.6" fill="none"><path d="M40 30 Q46 28 52 30"/><path d="M40 34 Q46 32 52 34"/></g>'+
+         '<path d="M34 30 Q26 26 22 30 Q28 32 33 36 Z" fill="'+sk.shade+'"/>'+
+         '<path d="M34 24 Q24 22 19 27 Q27 27 33 32 Z" fill="'+sk.base+'"/>'+
+         '<path d="M40 22 Q34 14 36 8 Q41 16 45 22 Z" fill="'+sk.shade+'"/>'+
+         '<path d="M55 22 Q60 15 58 9 Q54 17 51 22 Z" fill="'+sk.shade+'"/>';
+}
+function face(sk, race){
+  const glow = GLOW_EYE[race];
+  const eyeY = 38, lx = 43, rx = 57;
+  let s = '';
+  const browCol = (race==='dragonborn'||race==='tiefling') ? sk.shade : (HAIR[race]||sk.shade);
+  if(race!=='dragonborn'){
+    s += '<path d="M39 33.5 Q43 31.5 47 33.5" stroke="'+browCol+'" stroke-width="1.6" fill="none" stroke-linecap="round"/>';
+    s += '<path d="M53 33.5 Q57 31.5 61 33.5" stroke="'+browCol+'" stroke-width="1.6" fill="none" stroke-linecap="round"/>';
+  }
+  if(glow){
+    [lx,rx].forEach(x=>{
+      s += '<ellipse cx="'+x+'" cy="'+eyeY+'" rx="4.6" ry="3" fill="'+glow+'" opacity="0.28"/>';
+      s += '<path d="M'+(x-3.6)+' '+eyeY+' Q'+x+' '+(eyeY-3)+' '+(x+3.6)+' '+eyeY+' Q'+x+' '+(eyeY+2.4)+' '+(x-3.6)+' '+eyeY+' Z" fill="'+glow+'"/>';
+      s += '<ellipse cx="'+x+'" cy="'+eyeY+'" rx="0.9" ry="2.2" fill="#1a1208"/>';
+    });
+  } else {
+    [lx,rx].forEach(x=>{
+      s += '<path d="M'+(x-3.4)+' '+eyeY+' Q'+x+' '+(eyeY-2.6)+' '+(x+3.4)+' '+eyeY+' Q'+x+' '+(eyeY+2.2)+' '+(x-3.4)+' '+eyeY+' Z" fill="#f4ecde"/>';
+      s += '<circle cx="'+(x+0.4)+'" cy="'+eyeY+'" r="1.7" fill="#3a2a1a"/>';
+      s += '<circle cx="'+(x+1.1)+'" cy="'+(eyeY-0.6)+'" r="0.5" fill="#fff" opacity="0.9"/>';
+    });
+    s += '<path d="M50 38 L48.4 45 Q50 46.4 51.6 45" stroke="'+sk.shade+'" stroke-width="1.1" fill="none" stroke-linecap="round"/>';
+    s += '<path d="M46 50 Q50 52 54 50" stroke="'+sk.shade+'" stroke-width="1.2" fill="none" stroke-linecap="round"/>';
+  }
+  return s;
+}
+function beard(){
+  const c = HAIR.dwarf;
+  return '<path d="M33 42 Q32 70 50 76 Q68 70 67 42 Q63 54 58 56 L58 60 Q50 64 42 60 L42 56 Q37 54 33 42 Z" fill="'+c+'"/>'+
+    '<path d="M42 49 Q50 53 58 49 Q54 56 50 55 Q46 56 42 49 Z" fill="'+c+'"/>'+
+    '<g stroke="#7a3c1e" stroke-width="1" opacity="0.7" fill="none"><path d="M44 60 Q44 70 47 74"/><path d="M56 60 Q56 70 53 74"/></g>'+
+    '<circle cx="46" cy="72" r="1.8" fill="#e2b24a"/><circle cx="54" cy="72" r="1.8" fill="#e2b24a"/>';
+}
+function hair(race, hidden){
+  if(hidden) return '';
+  const c = HAIR[race];
+  if(!c) return '';
+  switch(race){
+    case 'manusia':
+      return '<path d="M32 36 Q30 16 50 15 Q70 16 68 36 Q66 26 58 23 Q50 21 42 23 Q34 26 32 36 Z" fill="'+c+'"/>';
+    case 'elf':
+      return '<path d="M33 38 Q30 14 50 13 Q70 14 67 38 Q66 24 58 21 Q50 19 42 21 Q34 24 33 38 Z" fill="'+c+'"/>'+
+             '<path d="M33 30 Q27 50 30 72 L35 70 Q33 50 35 32 Z" fill="'+c+'"/>'+
+             '<path d="M67 30 Q73 50 70 72 L65 70 Q67 50 65 32 Z" fill="'+c+'"/>';
+    case 'dwarf':
+      return '<path d="M32 36 Q31 18 50 18 Q69 18 68 36 Q64 28 58 26 Q50 24 42 26 Q36 28 32 36 Z" fill="'+c+'"/>';
+    case 'halfling':
+      return '<g fill="'+c+'"><circle cx="36" cy="26" r="7"/><circle cx="46" cy="21" r="8"/><circle cx="56" cy="22" r="7.5"/><circle cx="64" cy="28" r="6.5"/><circle cx="32" cy="34" r="6"/><circle cx="68" cy="34" r="5.5"/></g>';
+    case 'tiefling':
+      return '<path d="M33 36 Q30 14 50 14 Q70 14 67 36 Q64 24 56 22 Q50 20 44 22 Q36 24 33 36 Z" fill="'+c+'"/>'+
+             '<path d="M33 30 Q30 44 33 56 L37 52 Q35 42 36 32 Z" fill="'+c+'"/>';
+  }
+  return '';
+}
+function horns(race){
+  if(race!=='tiefling') return '';
+  return '<path d="M39 22 Q31 12 33 3 Q39 12 45 21 Z" fill="#5a3142"/>'+
+         '<path d="M39 22 Q33 13 34 5 Q38 13 43 21 Z" fill="#3a1f2c"/>'+
+         '<path d="M61 22 Q69 12 67 3 Q61 12 55 21 Z" fill="#5a3142"/>'+
+         '<path d="M61 22 Q67 13 66 5 Q62 13 57 21 Z" fill="#3a1f2c"/>';
+}
+function headgear(cls, g, race){
+  switch(cls){
+    case 'petarung': {
+      const m = g.trim, sh = g.shade;
+      let s = '<path d="M30 40 Q29 16 50 15 Q71 16 70 40 L66 40 Q65 25 50 24 Q35 25 34 40 Z" fill="'+m+'"/>';
+      s += '<path d="M30 40 Q29 16 50 15 Q56 15 60 17 Q44 19 38 30 Q35 36 34 40 Z" fill="#d9e2ec" opacity="0.4"/>';
+      s += '<rect x="48" y="30" width="4" height="15" rx="2" fill="'+m+'"/>';
+      s += '<path d="M30 40 L70 40" stroke="'+sh+'" stroke-width="1.5"/>';
+      s += '<path d="M50 15 Q50 6 54 2 Q52 9 52 15 Z" fill="#bf4646"/>';
+      return {markup:s, hidesHair:true};
+    }
+    case 'penyihir': {
+      const base=g.base, sh=g.shade, band=g.trim;
+      let s = '<ellipse cx="50" cy="23" rx="27" ry="6.5" fill="'+sh+'"/>';
+      s += '<path d="M37 22 C 41 9, 44 5, 48 3 C 51 9, 55 15, 62 22 Q50 18 37 22 Z" fill="'+base+'"/>';
+      s += '<path d="M37 22 C 41 9, 44 5, 48 3 C 49 8, 50 12, 51 16 Q44 18 37 22 Z" fill="'+sh+'" opacity="0.45"/>';
+      s += '<path d="M40 21 Q50 17.5 60 21 L59 17 Q50 14 41 17 Z" fill="'+band+'"/>';
+      s += '<path d="M50 14.6 L51.3 17.4 L54.3 17.7 L52 19.7 L52.7 22.6 L50 21 L47.3 22.6 L48 19.7 L45.7 17.7 L48.7 17.4 Z" fill="#f6d27a"/>';
+      return {markup:s, hidesHair:true};
+    }
+    case 'pencuri': {
+      const base=g.base, sh=g.shade;
+      let s = '<path d="M24 46 Q18 12 50 10 Q82 12 76 46 L69 44 Q72 22 50 20 Q28 22 31 44 Z" fill="'+base+'"/>';
+      s += '<path d="M24 46 Q18 12 50 10 Q60 10 66 13 Q40 16 33 40 Q31 44 31 44 Z" fill="'+sh+'" opacity="0.6"/>';
+      s += '<path d="M34 30 Q33 20 50 19 Q67 20 66 30 Q60 24 50 24 Q40 24 34 30 Z" fill="#0d0a12" opacity="0.3"/>';
+      return {markup:s, hidesHair:true};
+    }
+    case 'pendeta': {
+      let s = '<ellipse cx="50" cy="17" rx="19" ry="5" fill="none" stroke="#f6d27a" stroke-width="2.4" opacity="0.9"/>';
+      s += '<ellipse cx="50" cy="17" rx="19" ry="5" fill="none" stroke="#fff3cf" stroke-width="0.8" opacity="0.7"/>';
+      s += '<path d="M34 28 Q50 23 66 28" fill="none" stroke="#e2b24a" stroke-width="2.4"/>';
+      s += '<circle cx="50" cy="26" r="2.2" fill="#f6d27a"/>';
+      return {markup:s, hidesHair:false};
+    }
+    case 'pemburu': {
+      const base=g.base, sh=g.shade;
+      let s = '<path d="M25 46 Q20 14 50 12 Q80 14 75 46 L68 44 Q71 24 50 22 Q29 24 32 44 Z" fill="'+base+'"/>';
+      s += '<path d="M25 46 Q20 14 50 12 Q59 12 65 15 Q40 18 33 42 Z" fill="'+sh+'" opacity="0.55"/>';
+      s += '<path d="M70 24 Q82 10 84 0 Q74 8 68 22 Z" fill="#c2543f"/>';
+      s += '<path d="M71 22 Q80 12 83 3" stroke="#7a2f24" stroke-width="0.8" fill="none"/>';
+      return {markup:s, hidesHair:true};
+    }
+    case 'bard': {
+      const base=g.base, trim=g.trim;
+      let s = '<path d="M30 28 Q30 12 52 12 Q72 12 70 26 Q60 20 44 22 Q35 23 30 28 Z" fill="'+base+'"/>';
+      s += '<path d="M30 28 Q30 12 52 12 Q58 12 62 14 Q44 16 36 24 Z" fill="#fff" opacity="0.15"/>';
+      s += '<path d="M30 28 Q40 24 54 23" stroke="'+trim+'" stroke-width="2" fill="none"/>';
+      s += '<path d="M66 22 Q80 8 84 14 Q74 16 68 26 Z" fill="#e2b24a"/>';
+      return {markup:s, hidesHair:false};
+    }
+  }
+  return {markup:'', hidesHair:false};
+}
+function characterInner(raceKey, clsKey){
+  const sk = SKIN[raceKey] || SKIN.manusia;
+  const g  = GARB[clsKey] || GARB.petarung;
+  const hg = headgear(clsKey, g, raceKey);
+  let s = '';
+  s += '<ellipse cx="50" cy="44" rx="40" ry="46" fill="#e2b24a" opacity="0.05"/>';
+  s += prop(clsKey, g);
+  s += shoulders(g);
+  s += neck(sk);
+  s += head(sk, raceKey);
+  s += ears(sk, raceKey);
+  if(raceKey==='dragonborn') s += snout(sk);
+  s += face(sk, raceKey);
+  if(raceKey==='dwarf') s += beard();
+  s += hair(raceKey, hg.hidesHair);
+  s += horns(raceKey);
+  s += hg.markup;
+  return s;
+}
+function characterSVG(raceKey, clsKey, size){
+  size = size || 96;
+  return '<svg width="'+size+'" height="'+(size*1.16)+'" viewBox="0 0 100 116" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMin meet">'+characterInner(raceKey,clsKey)+'</svg>';
 }
 
 /* ============================================================
@@ -736,12 +445,37 @@ function selRace(r,el){
   State.char.race=r;
   document.querySelectorAll('#race-grid .pick').forEach(p=>p.classList.toggle('sel',p===el));
   if(State.char.scores) renderAttr(State.char.scores); // refresh bonuses
+  updatePreview();
   refreshBegin();
 }
 function selClass(c,el){
   State.char.cls=c;
   document.querySelectorAll('#class-grid .pick').forEach(p=>p.classList.toggle('sel',p===el));
+  updatePreview();
   refreshBegin();
+}
+function abilityFull(k){const a=ABILITIES.find(x=>x.k===k);return a?a.full:k;}
+function updatePreview(){
+  const c=State.char;
+  const art=$('#preview-art'), sub=$('#preview-sub'), traits=$('#preview-traits');
+  const nm=(($('#name-input')&&$('#name-input').value.trim())||'');
+  $('#preview-name').textContent = nm || 'Pahlawan Tanpa Nama';
+  if(c.race && c.cls){
+    art.innerHTML=characterSVG(c.race.key,c.cls.key,124);
+    art.classList.remove('reveal'); void art.offsetWidth; art.classList.add('reveal');
+    sub.textContent = c.race.name+' · '+c.cls.name;
+    traits.innerHTML='<span class="hp-tag">'+c.race.sub+'</span><span class="hp-tag">'+c.cls.sub+'</span><span class="hp-tag">Prima · '+abilityFull(c.cls.prime)+'</span>';
+  } else if(c.race || c.cls){
+    const chosen = c.race ? ('Bangsa '+c.race.name) : ('Kelas '+c.cls.name);
+    const missing = c.race ? 'kelasmu' : 'bangsamu';
+    art.innerHTML='<div class="hp-empty">❖</div>';
+    sub.textContent = chosen+' dipilih — kini tentukan '+missing+'.';
+    traits.innerHTML='';
+  } else {
+    art.innerHTML='<div class="hp-empty">❖</div>';
+    sub.textContent='Pilih bangsa & kelas untuk menyingkap wujudmu.';
+    traits.innerHTML='';
+  }
 }
 function renderAttr(base){
   const g=$('#attr-grid');g.innerHTML='';
@@ -841,28 +575,28 @@ function buildOpenerPrompt(){
 /* Placeholder DM (non-AI mode) */
 const DM_OPENERS = {
   petarung: [
-    '"Kau … kau Petarung yang dicari penjaga pos? Ada serigala raksasa di jalan setapak timur—sudah dua kafilah diserang. Penjaga desa tak sanggup menghadapinya sendirian."\n\nIa menatapmu penuh harap, sebuah pedang tua di pinggangnya jelas lebih cocok untuk upacara daripada pertarungan.\n\nKeputusan ada di tanganmu.',
-    'Seorang veteran berjenggot menghampirimu di lapangan latihan. "Dengar, aku pernah lihat banyak petarung. Tapi cara kau memegang senjata … ada sesuatu yang berbeda.\n\nKau mungkin yang kucari. Ada turnamen kecil di kota utara—hadiahnya lima puluh keping emas. Tapi lawan-lawannya bukan anak kemarin."',
+    '"Kau … kau Petarung yang dicari penjaga pos? Ada serigala raksasa di jalan setapak timur—sudah dua kafilah diserang. Penjaga desa tak sanggup menghadapinya sendirian.\\n\\nIa menatapmu penuh harap, sebuah pedang tua di pinggangnya jelas lebih cocok untuk upacara daripada pertarungan.\\n\\nKeputusan ada di tanganmu.',
+    'Seorang veteran berjenggot menghampirimu di lapangan latihan. "Dengar, aku pernah lihat banyak petarung. Tapi cara kau memegang senjata … ada sesuatu yang berbeda.\\n\\nKau mungkin yang kucari. Ada turnamen kecil di kota utara—hadiahnya lima puluh keping emas. Tapi lawan-lawannya bukan anak kemarin."',
   ],
   penyihir: [
-    '"Akhirnya kau datang. Persimpangan ini telah menunggumu selama tiga siklus bulan. Ada gangguan di Menara Timur—resonansi yang tak seharusnya ada. Aku bisa merasakannya, dan kau pasti juga."\n\nIa mengulurkan sebuah gulungan perkamen yang menyala lembut. "Baca ini di perjalanan. Tapi hati-hati—pengetahuan punya harga."',
-    '"Kau Penyihir, kan? Kami butuh bantuanmu. Aliran mana di kuil bawah tanah kacau—semacam kutukan atau jebakan sihir. Tukang sihir kami sendiri tak berani mendekat."\n\nRaut wajahnya serius. Ini bukan pekerjaan sembarangan.',
+    '"Akhirnya kau datang. Persimpangan ini telah menunggumu selama tiga siklus bulan. Ada gangguan di Menara Timur—resonansi yang tak seharusnya ada. Aku bisa merasakannya, dan kau pasti juga."\\n\\nIa mengulurkan sebuah gulungan perkamen yang menyala lembut. "Baca ini di perjalanan. Tapi hati-hati—pengetahuan punya harga."',
+    '"Kau Penyihir, kan? Kami butuh bantuanmu. Aliran mana di kuil bawah tanah kacau—semacam kutukan atau jebakan sihir. Tukang sihir kami sendiri tak berani mendekat."\\n\\nRaut wajahnya serius. Ini bukan pekerjaan sembarangan.',
   ],
   pencuri: [
-    '"Hei, bayangan. Ada kerjaan buatmu." Dari atap seberang, suara serak berbisik, "Bos Saga ingin menemuimu. Kabarnya, ada peti di ruang bawah tanah Balai Kota yang belum bisa dibuka oleh siapa pun.\n\nKau tertarik, atau kau lebih suka berkelahi dengan tikus got sepanjang malam?"',
+    '"Hei, bayangan. Ada kerjaan buatmu." Dari atap seberang, suara serak berbisik, "Bos Saga ingin menemuimu. Kabarnya, ada peti di ruang bawah tanah Balai Kota yang belum bisa dibuka oleh siapa pun.\\n\\nKau tertarik, atau kau lebih suka berkelahi dengan tikus got sepanjang malam?"',
     '"Barang berharga membutuhkan tangan yang tepat." Seorang perempuan berjubah gelap melempar kantong kecil ke arahmu—terdengar gemerincing logam. "Itu setengah bayaran di muka. Ambil sebuah lionet dari leher patung di pemakaman tua. Jangan bunuh siapa pun, dan jangan ketahuan."',
   ],
   pendeta: [
-    '"Pendeta! Wabah aneh melanda kampung selatan. Bukan penyakit biasa. Tanaman membusuk dalam semalam, dan penduduk bermimpi tentang matahari hitam."\n\nIa menyerahkan sebuah jimat perak yang berpendar redup. "Kepala desa memohon pertolongan. Aku … aku tak tahu harus berbuat apa lagi."',
-    '"Ada peziarah yang terluka di jalan utara. Mereka diserang—bukan oleh bandit biasa. Luka mereka … aneh. Seperti terbakar dari dalam."\n\nBiarawati itu tampak cemas. "Kemampuanmu mungkin satu-satunya harapan mereka."',
+    '"Pendeta! Wabah aneh melanda kampung selatan. Bukan penyakit biasa. Tanaman membusuk dalam semalam, dan penduduk bermimpi tentang matahari hitam."\\n\\nIa menyerahkan sebuah jimat perak yang berpendar redup. "Kepala desa memohon pertolongan. Aku … aku tak tahu harus berbuat apa lagi."',
+    '"Ada peziarah yang terluka di jalan utara. Mereka diserang—bukan oleh bandit biasa. Luka mereka … aneh. Seperti terbakar dari dalam."\\n\\nBiarawati itu tampak cemas. "Kemampuanmu mungkin satu-satunya harapan mereka."',
   ],
   pemburu: [
-    'Di sebuah lapangan kecil yang diterangi kabut pagi, bangkai seekor rusa besar tergeletak dengan luka yang aneh: sobekan yang rapi seolah dibuat oleh pisau bedah raksasa. Bulu-bulu di sekelilingnya membeku, meski udara tak dingin.\n\nDari semak, suara dahan patah. Kau bukan satu-satunya yang mengikuti jejak ini.',
-    '"Kau Pemburu, ya? Syukurlah." Seorang penjaga hutan berlari mendekat. "Ada makhluk aneh di hutan barat—bukan serigala, bukan beruang. Jejaknya sebesar perisai dan baunya … seperti belerang.\n\nAku sudah kehilangan dua orang anak buahku yang mencoba menyelidiki."',
+    'Di sebuah lapangan kecil yang diterangi kabut pagi, bangkai seekor rusa besar tergeletak dengan luka yang aneh: sobekan yang rapi seolah dibuat oleh pisau bedah raksasa. Bulu-bulu di sekelilingnya membeku, meski udara tak dingin.\\n\\nDari semak, suara dahan patah. Kau bukan satu-satunya yang mengikuti jejak ini.',
+    '"Kau Pemburu, ya? Syukurlah." Seorang penjaga hutan berlari mendekat. "Ada makhluk aneh di hutan barat—bukan serigala, bukan beruang. Jejaknya sebesar perisai dan baunya … seperti belerang.\\n\\nAku sudah kehilangan dua orang anak buahku yang mencoba menyelidiki."',
   ],
   bard: [
-    '"Kau Bard, kan?" Sebuah koin emas mendarat di depanmu, digelindingkan oleh pria bertubuh tambun dengan jubah merah. "Aku punya cerita yang perlu disebar—tapi bukan cerita biasa. Masalahnya, saksi terakhir cerita ini baru saja menghilang di Rawa Timur.\n\nTertarik? Bayaranku cepat."',
-    'Suasana kedai hening saat kau memasuki panggung. Seorang perempuan tua menatapmu tajam. "Kau si penutur kisah?\n\nMalam ini ada yang perlu kau dengar—bukan untuk diucapkan, tapi untuk kau bawa ke telinga yang tepat."',
+    '"Kau Bard, kan?" Sebuah koin emas mendarat di depanmu, digelindingkan oleh pria bertubuh tambun dengan jubah merah. "Aku punya cerita yang perlu disebar—tapi bukan cerita biasa. Masalahnya, saksi terakhir cerita ini baru saja menghilang di Rawa Timur.\\n\\nTertarik? Bayaranku cepat."',
+    'Suasana kedai hening saat kau memasuki panggung. Seorang perempuan tua menatapmu tajam. "Kau si penutur kisah?\\n\\nMalam ini ada yang perlu kau dengar—bukan untuk diucapkan, tapi untuk kau bawa ke telinga yang tepat."',
   ],
 };
 
@@ -889,8 +623,8 @@ async function askDM(userContent, mode){
       var key = c.cls ? c.cls.key : 'petarung';
       var stories = DM_OPENERS[key] || DM_OPENERS.petarung;
       var story = stories[Math.floor(Math.random() * stories.length)];
-      text = 'Nama mu ' + c.name + ', seorang ' + c.race.name + ' ' + c.cls.name + '.\n\n' + story;
-      text += '\n\nApa yang akan kau lakukan? [ROLL:d20:Persepsi:WIS:12]';
+      text = 'Nama mu ' + c.name + ', seorang ' + c.race.name + ' ' + c.cls.name + '.\\n\\n' + story;
+      text += '\\n\\nApa yang akan kau lakukan? [ROLL:d20:Persepsi:WIS:12]';
     } else if (mode === 'roll') {
       var low = ['Sayangnya, usaha kali ini belum membuahkan hasil yang diharapkan. Tapi takdir masih memberimu kesempatan.', 'Kegagalan adalah guru yang kejam, tapi ia mengajar dengan baik.', 'Rintangan ini lebih sulit dari perkiraanmu. Tapi bukankah itu yang membuat petualangan layak dikenang?'];
       var mid = ['Langkahmu cukup mantap. Tidak spektakuler, tapi cukup untuk melewati rintangan kali ini.', 'Usahamu membuahkan hasil yang lumayan.', 'Cukup baik. Kadang, yang biasa saja sudah cukup untuk bertahan hidup.'];
@@ -907,12 +641,12 @@ async function askDM(userContent, mode){
       } else {
         text = mid[Math.floor(Math.random() * mid.length)];
       }
-      text += '\n\nApa langkahmu selanjutnya?';
+      text += '\\n\\nApa langkahmu selanjutnya?';
     } else {
       text = ADVENTURE_FOLLOWUPS[Math.floor(Math.random() * ADVENTURE_FOLLOWUPS.length)];
       if (Math.random() < 0.45) {
         var rolls = ['[ROLL:d20:Penyelidikan:INT:13]', '[ROLL:d20:Persuasi:CHA:11]', '[ROLL:d20:Atletik:STR:14]', '[ROLL:d20:Kelincahan:DEX:12]', '[ROLL:d20:Persepsi:WIS:10]'];
-        text += '\n\n' + rolls[Math.floor(Math.random() * rolls.length)];
+        text += '\\n\\n' + rolls[Math.floor(Math.random() * rolls.length)];
       }
     }
     hideThinking();
@@ -920,7 +654,7 @@ async function askDM(userContent, mode){
   } catch(e) {
     console.error('DM error', e);
     hideThinking();
-    renderMsg('Penglihatan meredup\u2026 arus arcana terputus dari Sang Narator. Coba kirim aksimu sekali lagi.', 'sys');
+    renderMsg('Penglihatan meredup\\u2026 arus arcana terputus dari Sang Narator. Coba kirim aksimu sekali lagi.', 'sys');
   } finally {
     State.busy = false;
     if(!State.pendingRoll) setComposerEnabled(true);
@@ -1003,7 +737,7 @@ function applyItem(sign,name){
 }
 function renderSheet(){
   const c=State.char;
-  $('#portrait-emblem').innerHTML=emblem(c.cls.key,44);
+  $('#portrait-emblem').innerHTML=characterSVG(c.race.key,c.cls.key,104);
   $('#sheet-name').textContent=c.name;
   $('#sheet-class').textContent=c.race.name+' · '+c.cls.name;
   $('#hp-val').textContent=c.hp+' / '+c.hpMax;
@@ -1253,7 +987,7 @@ function autosize(ta){ta.style.height='auto';ta.style.height=Math.min(140,ta.scr
 function init(){
   buildCreate();
 
-  $('#name-input').addEventListener('input',e=>{State.char.name=e.target.value;refreshBegin();});
+  $('#name-input').addEventListener('input',e=>{State.char.name=e.target.value;refreshBegin();updatePreview();});
   $('#roll-attr-btn').addEventListener('click',()=>{rollAttrAnim();});
   $('#begin-btn').addEventListener('click',()=>{beginAdventure();});
 
@@ -1288,6 +1022,3 @@ function init(){
   });
 }
 document.addEventListener('DOMContentLoaded',init);
-</script>
-</body>
-</html>

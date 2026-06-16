@@ -55,7 +55,7 @@ export function Navbar() {
 
         <div className="flex items-center gap-[12px]">
           <a
-            href="/aethermoor.html"
+            href="/aethermoor/"
             className="inline-flex items-center gap-[8px] rounded-[4px] border border-violet bg-transparent px-[18px] py-[8px] text-sm font-medium text-violet no-underline transition hover:bg-[rgba(139,92,246,0.14)]"
           >
             <Dice5 className="size-3.5" aria-hidden="true" />

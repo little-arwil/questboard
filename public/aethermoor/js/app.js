@@ -299,7 +299,12 @@ function characterSVG(raceKey, clsKey, size){
 /* Portrait image lookup — fallback to SVG if not found */
 const PORTRAIT_MAP = {
   'manusia:petarung':    1, 'manusia:pencuri':     1,
+  'manusia:penyihir':    1, 'manusia:pendeta':     1,
+  'manusia:pemburu':     1, 'manusia:bard':        1,
+  'elf:petarung':        1, 'elf:pencuri':         1,
   'elf:pemburu':         1, 'elf:penyihir':        1,
+  'elf:pendeta':         1, 'elf:bard':            1,
+  'dwarf:petarung':      1, 'dwarf:penyihir':      1,
   'dwarf:pendeta':       1,
   'tiefling:penyihir':   1,
   'dragonborn:bard':     1,

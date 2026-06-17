@@ -298,16 +298,18 @@ function characterSVG(raceKey, clsKey, size){
 }
 /* Portrait image lookup — fallback to SVG if not found */
 const PORTRAIT_MAP = {
-  'manusia:petarung':    1, 'manusia:pencuri':     1,
-  'manusia:penyihir':    1, 'manusia:pendeta':     1,
-  'manusia:pemburu':     1, 'manusia:bard':        1,
-  'elf:petarung':        1, 'elf:pencuri':         1,
-  'elf:pemburu':         1, 'elf:penyihir':        1,
-  'elf:pendeta':         1, 'elf:bard':            1,
-  'dwarf:petarung':      1, 'dwarf:penyihir':      1,
-  'dwarf:pendeta':       1,
-  'tiefling:penyihir':   1,
-  'dragonborn:bard':     1,
+  'manusia:petarung':1,'manusia:pencuri':1,'manusia:penyihir':1,
+  'manusia:pendeta':1,'manusia:pemburu':1,'manusia:bard':1,
+  'elf:petarung':1,'elf:pencuri':1,'elf:penyihir':1,
+  'elf:pendeta':1,'elf:pemburu':1,'elf:bard':1,
+  'dwarf:petarung':1,'dwarf:pencuri':1,'dwarf:penyihir':1,
+  'dwarf:pendeta':1,'dwarf:pemburu':1,'dwarf:bard':1,
+  'halfling:petarung':1,'halfling:pencuri':1,'halfling:penyihir':1,
+  'halfling:pendeta':1,'halfling:pemburu':1,'halfling:bard':1,
+  'tiefling:petarung':1,'tiefling:pencuri':1,'tiefling:penyihir':1,
+  'tiefling:pendeta':1,'tiefling:pemburu':1,'tiefling:bard':1,
+  'dragonborn:petarung':1,'dragonborn:pencuri':1,'dragonborn:penyihir':1,
+  'dragonborn:pendeta':1,'dragonborn:pemburu':1,'dragonborn:bard':1,
 };
 function getPortraitHTML(raceKey, clsKey, size){
   if(PORTRAIT_MAP[raceKey+':'+clsKey]){

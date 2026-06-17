@@ -5,6 +5,7 @@ import { Hero } from "@/components/Hero";
 import { HowItWorks } from "@/components/HowItWorks";
 import { MatchingPreview } from "@/components/MatchingPreview";
 import { Navbar } from "@/components/Navbar";
+import { ProfileDiscovery } from "@/components/ProfileDiscovery";
 
 export default function Home() {
   return (
@@ -12,6 +13,7 @@ export default function Home() {
       <Navbar />
       <Hero />
       <HowItWorks />
+      <ProfileDiscovery />
       <MatchingPreview />
       <Features />
       <CTASection />

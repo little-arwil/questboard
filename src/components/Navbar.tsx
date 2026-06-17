@@ -37,6 +37,12 @@ export function Navbar() {
         </div>
 
         <div className="hidden items-center gap-3 lg:flex">
+          <Link
+            href="/auth"
+            className="inline-flex items-center rounded-[6px] border border-white/10 px-[16px] py-[9px] text-sm font-semibold text-text-muted no-underline transition hover:border-gold/30 hover:text-gold"
+          >
+            Login
+          </Link>
           <a
             href="/app/dm/create-campaign"
             className="inline-flex items-center rounded-[6px] border border-gold/35 px-[18px] py-[9px] text-sm font-semibold text-gold no-underline transition hover:bg-gold/10"

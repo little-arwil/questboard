@@ -26,7 +26,13 @@ export function CampaignCard({ campaign }: { campaign: Campaign }) {
             {campaign.title}
           </h2>
           <div className="mt-2 flex flex-wrap items-center gap-2 text-sm font-semibold text-parchment/58">
-            <span>DM {campaign.dm}</span>
+            {campaign.dmHandle ? (
+              <Link href={`/profile/${campaign.dmHandle}`} className="text-parchment/70 no-underline transition hover:text-gold">
+                DM {campaign.dm}
+              </Link>
+            ) : (
+              <span>DM {campaign.dm}</span>
+            )}
             {campaign.dmRating ? (
               <span className="inline-flex items-center gap-1 text-gold">
                 <Star className="size-3.5 fill-gold" aria-hidden="true" />

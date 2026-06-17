@@ -421,3 +421,38 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;color:inhe
   .dm-frame{padding:1.1rem 1.1rem}
   .tray .tray-label{display:none}
 }
+
+/* ============================================================
+   MULTIPLAYER ROOM UI
+============================================================ */
+.mp-lobby{
+  width:min(920px,92vw);margin:0 auto 1.5rem;padding:1rem;border:1px solid rgba(226,178,74,.28);
+  border-radius:18px;background:linear-gradient(180deg,rgba(24,18,34,.78),rgba(9,8,14,.72));
+  box-shadow:0 18px 48px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.04);
+  display:grid;grid-template-columns:1fr auto;gap:1rem;align-items:center;
+}
+.mp-lobby-copy{display:flex;flex-direction:column;gap:.25rem;color:rgba(239,229,203,.78);font-size:.94rem;line-height:1.35}
+.mp-lobby-copy strong{font-family:Cinzel,serif;color:var(--gold-bright);letter-spacing:.08em;text-transform:uppercase;font-size:.82rem}
+.mp-lobby-actions{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.mp-join-row{display:flex;gap:.5rem;align-items:center}
+.mp-code-input{
+  width:5.8rem;height:2.55rem;text-align:center;text-transform:uppercase;letter-spacing:.18em;font-family:Cinzel,serif;font-weight:700;
+  color:var(--gold-bright);background:rgba(3,3,8,.62);border:1px solid rgba(226,178,74,.34);border-radius:999px;outline:none;
+}
+.mp-code-input:focus{border-color:rgba(246,210,122,.75);box-shadow:0 0 0 3px rgba(157,127,212,.16)}
+.mp-lobby-status{grid-column:1/-1;color:rgba(239,229,203,.58);font-size:.82rem;border-top:1px solid rgba(226,178,74,.12);padding-top:.7rem}
+.mp-lobby-status.ok{color:#9be7b1}.mp-lobby-status.warn{color:#f6d27a}.mp-lobby-status.no{color:#ff9a9a}
+.mp-party{align-items:center;gap:.45rem;min-width:0;margin-right:.45rem;color:rgba(239,229,203,.78)}
+.mp-badge{display:inline-grid;place-items:center;min-width:1.65rem;height:1.65rem;border-radius:50%;background:rgba(157,127,212,.2);border:1px solid rgba(157,127,212,.48);color:var(--arcane);font-size:.78rem;font-weight:700}
+.mp-room-label{font-family:Cinzel,serif;color:var(--gold-bright);letter-spacing:.12em;font-size:.78rem;border:1px solid rgba(226,178,74,.25);border-radius:999px;padding:.35rem .55rem;background:rgba(0,0,0,.28)}
+.mp-chip-list{display:flex;gap:.35rem;max-width:30vw;overflow:hidden;white-space:nowrap}
+.mp-chip{display:inline-flex;align-items:center;gap:.28rem;max-width:8rem;overflow:hidden;text-overflow:ellipsis;padding:.32rem .5rem;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);font-size:.76rem;color:rgba(239,229,203,.84)}
+.mp-chip.me{border-color:rgba(226,178,74,.24)}
+.mp-dot{width:.42rem;height:.42rem;border-radius:50%;background:#74f09a;box-shadow:0 0 8px rgba(116,240,154,.7);flex:0 0 auto}
+.mp-leave{width:1.8rem;height:1.8rem;font-size:.82rem;color:rgba(239,229,203,.6)}
+.mp-peer-badge,.mp-roll-who{font-size:.72rem;color:var(--arcane);font-weight:600;margin-left:.25rem}
+.roll-note.remote{border-color:rgba(157,127,212,.26);background:rgba(157,127,212,.08)}
+@media (max-width:760px){
+  .mp-lobby{grid-template-columns:1fr;padding:.9rem}.mp-lobby-actions{justify-content:flex-start}.mp-join-row{width:100%}.mp-code-input{flex:1}
+  .mp-party{display:none!important}
+}

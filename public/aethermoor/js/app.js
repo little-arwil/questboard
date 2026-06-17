@@ -572,6 +572,15 @@ async function beginAdventure(){
   buildTray();
   $('#topbar-who').textContent='— '+c.name+', '+c.race.name+' '+c.cls.name;
 
+  if(window.AethermoorMP&&window.AethermoorMP.isActive()){
+    window.AethermoorMP.announceIdentity(c.race.name,c.cls.name);
+    if(!window.AethermoorMP.isHost()){
+      renderMsg(c.name+', kau telah bergabung ke dalam panggung Aethermoor. Sang Narator akan memulai petualangan sesaat lagi…','sys');
+      renderMsg('Gunakan toolbar dadu di bawah untuk ikut lemparan. Ketik aksi untuk mengobrol dengan rekanmu.','sys');
+      return;
+    }
+  }
+
   // kick off the DM
   const opener = buildOpenerPrompt();
   State.messages=[];
@@ -840,6 +849,7 @@ async function askDM(userContent, mode){
     }
     hideThinking();
     handleDMText(text);
+    if(window.AethermoorMP&&window.AethermoorMP.isActive())window.AethermoorMP.onLocalDM(text);
   } catch(e) {
     console.error('DM error', e);
     hideThinking();
@@ -1133,6 +1143,10 @@ function reportRollToDM(pending,raw,abil,m,total,nat20,nat1){
   // message the DM sees
   const msg = '[Hasil pemeriksaan '+pending.label+': dadu '+raw+abilStr+' = total '+total+dcStr+(outcome?' — '+outcome:'')+']';
   clearPendingRoll();
+  if(window.AethermoorMP&&window.AethermoorMP.isActive()&&!window.AethermoorMP.isHost()){
+    window.AethermoorMP.onLocalRollResult(msg);
+    return;
+  }
   askDM(msg,'roll');
 }
 
@@ -1143,6 +1157,7 @@ function renderRollNote(html){
   el.innerHTML='<span aria-hidden="true">⚄</span>'+html;
   log.appendChild(el);
   requestAnimationFrame(()=>{el.classList.add('in');log.scrollTop=log.scrollHeight;});
+  if(window.AethermoorMP&&window.AethermoorMP.isActive())window.AethermoorMP.onLocalRoll(html);
 }
 
 function closeOverlay(){$('#dice-overlay').classList.remove('show');}
@@ -1187,6 +1202,13 @@ function submitAction(){
   }
   ta.value='';autosize(ta);
   Audio.click();
+  if(window.AethermoorMP&&window.AethermoorMP.isActive()){
+    window.AethermoorMP.onLocalAction(v);
+    if(!window.AethermoorMP.isHost()){
+      renderMsg(v,'pc');
+      return;
+    }
+  }
   askDM(v,'action');
 }
 function flashRollCall(){
@@ -1196,10 +1218,51 @@ function flashRollCall(){
 function autosize(ta){ta.style.height='auto';ta.style.height=Math.min(140,ta.scrollHeight)+'px';}
 
 /* ============================================================
+   MULTIPLAYER LOBBY WIRE-UP
+============================================================ */
+function wireMultiplayer(){
+  const mp=window.AethermoorMP;
+  const status=$('#mp-lobby-status');
+  if(!mp||!status) return;
+  const setStatus=(text,cls)=>{status.textContent=text;status.className='mp-lobby-status '+(cls||'');};
+  const getName=()=>($('#name-input').value.trim()||State.char.name||'Petualang');
+
+  $('#mp-create-room').addEventListener('click',async()=>{
+    try{
+      setStatus('Membuka gerbang realtime…','warn');
+      const code=await mp.createRoom(getName());
+      setStatus('Room '+code+' aktif. Bagikan kode ini ke temanmu, lalu mulai petualangan sebagai host.','ok');
+      $('#mp-join-code').value=code;
+    }catch(e){
+      console.error('MP create room failed',e);
+      setStatus('Multiplayer belum tersedia. Pastikan NEXT_PUBLIC_SUPABASE_URL dan NEXT_PUBLIC_SUPABASE_ANON_KEY sudah aktif di deploy.','no');
+    }
+  });
+
+  $('#mp-join-room').addEventListener('click',async()=>{
+    const code=$('#mp-join-code').value.trim().toUpperCase();
+    if(!code){setStatus('Masukkan kode room dulu.','warn');return;}
+    try{
+      setStatus('Mencari room '+code+'…','warn');
+      await mp.joinRoom(code,getName());
+      setStatus('Berhasil gabung room '+code+'. Lengkapi karakter lalu mulai petualangan.','ok');
+    }catch(e){
+      console.error('MP join room failed',e);
+      setStatus('Gagal gabung room. Cek kode atau konfigurasi Supabase Realtime.','no');
+    }
+  });
+
+  $('#mp-join-code').addEventListener('input',e=>{e.target.value=e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,4);});
+  $('#mp-leave-btn').addEventListener('click',()=>{mp.leave();setStatus('Kamu keluar dari room. Solo mode aktif.','warn');});
+  $('#name-input').addEventListener('input',()=>{if(mp.isActive())mp.setName(getName());});
+}
+
+/* ============================================================
    WIRE UP
 ============================================================ */
 function init(){
   buildCreate();
+  wireMultiplayer();
 
   $('#name-input').addEventListener('input',e=>{State.char.name=e.target.value;refreshBegin();updatePreview();});
   $('#roll-attr-btn').addEventListener('click',()=>{rollAttrAnim();});

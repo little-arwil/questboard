@@ -28,6 +28,21 @@
 
       <div class="divider"><span>Ciptakan Pahlawanmu</span></div>
 
+      <div class="mp-lobby" id="mp-lobby">
+        <div class="mp-lobby-copy">
+          <strong>Mode Online</strong>
+          <span>Buat room lalu bagikan kode ke temanmu. Semua aksi, narasi DM, dan lemparan dadu akan muncul realtime.</span>
+        </div>
+        <div class="mp-lobby-actions">
+          <button class="ghost-btn" id="mp-create-room" type="button">Buat Room</button>
+          <div class="mp-join-row">
+            <input class="mp-code-input" id="mp-join-code" maxlength="4" placeholder="KODE" autocomplete="off">
+            <button class="ghost-btn" id="mp-join-room" type="button">Gabung</button>
+          </div>
+        </div>
+        <div class="mp-lobby-status" id="mp-lobby-status">Solo mode aktif. Multiplayer memakai Supabase Realtime jika tersedia.</div>
+      </div>
+
       <div class="builder">
         <div>
           <div class="field-label"><span class="num">I</span> Nama Sang Petualang</div>
@@ -82,6 +97,12 @@
       <span class="brand">Aethermoor</span>
       <span class="who" id="topbar-who"></span>
       <span class="spacer"></span>
+      <div class="mp-party" id="mp-party" style="display:none">
+        <span class="mp-badge" id="mp-count" title="Pemain dalam room">1</span>
+        <span class="mp-room-label" id="mp-room-code">----</span>
+        <div class="mp-chip-list" id="mp-party-list"></div>
+        <button class="icon-btn mp-leave" id="mp-leave-btn" title="Tinggalkan room" aria-label="Tinggalkan room">✕</button>
+      </div>
       <button class="icon-btn" id="ambient-btn" title="Musik latar" aria-label="Alunkan musik latar">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
       </button>
@@ -154,6 +175,7 @@
   <div class="overlay-foot" id="overlay-foot"></div>
 </div>
 
+<script src="/aethermoor/js/mp.js"></script>
 <script src="/aethermoor/js/app.js"></script>
 </body>
 </html>

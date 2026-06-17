@@ -9,16 +9,44 @@ type Step = "confirm" | "note" | "review" | "done";
 export function ApplyWizard({ campaign }: { campaign: Campaign }) {
   const [step, setStep] = useState<Step>("confirm");
   const [role, setRole] = useState("Player");
-  const [schedule, setSchedule] = useState("Yes, I’m available");
+  const [schedule, setSchedule] = useState("Yes, I'm available");
   const [note, setNote] = useState("");
   const [applied, setApplied] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const reset = () => {
     setStep("confirm");
     setRole("Player");
-    setSchedule("Yes, I’m available");
+    setSchedule("Yes, I'm available");
     setNote("");
     setApplied(false);
+    setSubmitError(null);
+  };
+
+  const handleSubmit = async () => {
+    setSubmitting(true);
+    setSubmitError(null);
+    try {
+      const response = await fetch("/api/lfg/applications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          campaign_id: campaign.id,
+          role,
+          schedule_confirmation: schedule,
+          note: note || null,
+          contact_email: null,
+        }),
+      });
+      const json = await response.json();
+      if (!response.ok) throw new Error(json.error ?? "Failed to submit");
+      setApplied(true);
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (applied) {
@@ -94,9 +122,9 @@ export function ApplyWizard({ campaign }: { campaign: Campaign }) {
               onChange={(e) => setSchedule(e.target.value)}
               className="mt-2 h-12 w-full rounded-md border border-white/10 bg-charcoal px-3 text-sm font-bold text-parchment"
             >
-              <option>Yes, I&rsquo;m available</option>
-              <option>Yes, but need flexibility</option>
-              <option>I&rsquo;ll confirm session-by-session</option>
+              <option value="Yes, I'm available">Yes, I&rsquo;m available</option>
+              <option value="Yes, but need flexibility">Yes, but need flexibility</option>
+              <option value="I'll confirm session-by-session">I&rsquo;ll confirm session-by-session</option>
             </select>
           </label>
 
@@ -191,15 +219,16 @@ export function ApplyWizard({ campaign }: { campaign: Campaign }) {
             </button>
             <button
               type="button"
-              onClick={() => {
-                setApplied(true);
-                setStep("done");
-              }}
-              className="inline-flex h-11 items-center gap-2 rounded-md bg-ember px-5 text-sm font-black text-charcoal transition hover:-translate-y-0.5 hover:bg-gold hover:shadow-gold-glow"
+              onClick={handleSubmit}
+              disabled={submitting}
+              className="inline-flex h-11 items-center gap-2 rounded-md bg-ember px-5 text-sm font-black text-charcoal transition hover:-translate-y-0.5 hover:bg-gold hover:shadow-gold-glow disabled:opacity-50 disabled:hover:translate-y-0"
             >
               <Send className="size-4" />
-              Send Application
+              {submitting ? "Sending..." : "Send Application"}
             </button>
+            {submitError ? (
+              <p className="mt-3 rounded-md border border-ember/25 bg-ember/10 px-4 py-3 text-sm font-bold text-amber">{submitError}</p>
+            ) : null}
           </div>
         </div>
       )}

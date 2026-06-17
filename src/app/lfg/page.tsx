@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { ArrowRight, CalendarDays, Filter, Search, ShieldCheck, Sparkles, Star, UsersRound, X } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { CampaignCard } from "@/components/prototype/CampaignCard";
-import { appFilters, campaigns } from "@/data/appMockData";
+import { appFilters, campaigns as mockCampaigns } from "@/data/appMockData";
 import type { Campaign } from "@/data/appMockData";
 import { getPlaystyleFocusOption } from "@/lib/playstyleFocus";
 
@@ -59,6 +59,21 @@ export default function LfgPage() {
   const [preferredFocus, setPreferredFocus] = useState(7);
   const [query, setQuery] = useState("");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [campaigns, setCampaigns] = useState<Campaign[]>(mockCampaigns);
+  const [dataSource, setDataSource] = useState<"mock" | "supabase">("mock");
+
+  useEffect(() => {
+    fetch("/api/lfg/campaigns")
+      .then((response) => response.json())
+      .then((json) => {
+        if (json.campaigns && Array.isArray(json.campaigns) && json.campaigns.length) {
+          setCampaigns(json.campaigns as Campaign[]);
+          if (json.source === "supabase") setDataSource("supabase");
+        }
+      })
+      .catch(() => {
+        /* keep mock */ });
+  }, []);
 
   const results = useMemo(
     () =>
@@ -69,7 +84,7 @@ export default function LfgPage() {
           matchScore: matchScore(campaign, filters, preferredFocus, query),
         }))
         .sort((a, b) => b.matchScore - a.matchScore),
-    [filters, preferredFocus, query],
+    [filters, preferredFocus, query, campaigns],
   );
 
   const featured = results.find((campaign) => campaign.featured) ?? results[0] ?? campaigns[0];
@@ -244,7 +259,7 @@ export default function LfgPage() {
         <div className="min-w-0">
           <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-sm font-black uppercase tracking-[0.16em] text-violet">Live board</p>
+              <p className="text-sm font-black uppercase tracking-[0.16em] text-violet">Live board {dataSource === "supabase" ? <span className="text-emerald">· Synced</span> : ""}</p>
               <h2 className="mt-1 text-3xl font-black text-white">{results.length} open campaigns</h2>
             </div>
             <button

@@ -39,16 +39,16 @@ export const problems = [
 
 export const howItWorks = [
   {
-    title: "Buat profil table kamu",
-    body: "Isi jadwal, timezone, bahasa, tools, gaya main, dan batasan table sebelum apply.",
+    title: "Pilih jadwal & vibe main",
+    body: "Atur preferensi: hari main, bahasa, pengalaman, dan seberapa roleplay vs combat yang kamu suka. Sistem langsung filter campaign yang cocok.",
   },
   {
-    title: "Dapatkan match berdasarkan kompatibilitas",
-    body: "QuestBoard menampilkan campaign dan applicant dengan sinyal kecocokan yang mudah dibaca.",
+    title: "Lihat campaign dan DM",
+    body: "Tiap campaign punya profil DM, rating, review player sebelumnya, seats tersisa, dan playstyle mix — jadi kamu tau persis ekspektasi sebelum apply.",
   },
   {
-    title: "Join party yang sudah siap session zero",
-    body: "Masuk ke table dengan ekspektasi yang sudah jelas, bukan tebak-tebakan di chat panjang.",
+    title: "Apply ke table",
+    body: "Kirim request dengan role dan catatan ke DM. DM biasanya respon dalam beberapa jam. Session zero dipake buat nyocokin detail sebelum mulai.",
   },
 ];
 

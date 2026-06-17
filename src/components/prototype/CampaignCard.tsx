@@ -1,14 +1,22 @@
 import Link from "next/link";
-import { CalendarDays, MapPin, ScrollText, Sparkles, UsersRound } from "lucide-react";
+import { CalendarDays, MapPin, ScrollText, Sparkles, UsersRound, Star } from "lucide-react";
 import { PlaystyleFocusScale } from "@/components/prototype/PlaystyleFocusScale";
 import type { Campaign } from "@/data/appMockData";
 import { getPlaystyleFocusOption } from "@/lib/playstyleFocus";
 
 export function CampaignCard({ campaign }: { campaign: Campaign }) {
   const playstyleFocus = getPlaystyleFocusOption(campaign.playstyleFocus);
+  const seatsOpen = campaign.seatsOpen ?? 0;
+  const partySize = campaign.partySize ?? 5;
+  const filled = Math.max(partySize - seatsOpen, 0);
 
   return (
-    <article className="glass-panel flex h-full flex-col rounded-lg p-5 transition hover:-translate-y-1 hover:border-gold/35">
+    <article className="glass-panel relative flex h-full flex-col rounded-lg p-5 transition hover:-translate-y-1 hover:border-gold/35">
+      {campaign.featured ? (
+        <span className="absolute -top-2 left-5 rounded-full border border-gold/40 bg-gold/15 px-3 py-0.5 text-[0.6rem] font-black uppercase tracking-[0.14em] text-gold">
+          Featured
+        </span>
+      ) : null}
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald">
@@ -17,7 +25,18 @@ export function CampaignCard({ campaign }: { campaign: Campaign }) {
           <h2 className="mt-2 text-2xl font-black tracking-normal text-white">
             {campaign.title}
           </h2>
-          <p className="mt-2 text-sm font-semibold text-parchment/58">DM {campaign.dm}</p>
+          <div className="mt-2 flex flex-wrap items-center gap-2 text-sm font-semibold text-parchment/58">
+            <span>DM {campaign.dm}</span>
+            {campaign.dmRating ? (
+              <span className="inline-flex items-center gap-1 text-gold">
+                <Star className="size-3.5 fill-gold" aria-hidden="true" />
+                {campaign.dmRating.toFixed(1)}
+                {campaign.dmGamesRun ? (
+                  <span className="text-parchment/42">· {campaign.dmGamesRun} games</span>
+                ) : null}
+              </span>
+            ) : null}
+          </div>
         </div>
         <div className="rounded-md border border-emerald/24 bg-emerald/12 px-3 py-2 text-center">
           <p className="text-[0.65rem] font-black uppercase text-emerald/78">Match</p>
@@ -26,6 +45,21 @@ export function CampaignCard({ campaign }: { campaign: Campaign }) {
       </div>
 
       <p className="mt-4 line-clamp-3 leading-7 text-parchment/72">{campaign.description}</p>
+
+      {/* Seats indicator */}
+      <div className="mt-4 flex items-center gap-3">
+        <div className="flex gap-1" aria-label={`${seatsOpen} of ${partySize} seats open`}>
+          {Array.from({ length: partySize }).map((_, i) => (
+            <span
+              key={i}
+              className={`h-2 w-5 rounded-full ${i < filled ? "bg-white/14" : "bg-emerald shadow-emerald-glow"}`}
+            />
+          ))}
+        </div>
+        <span className="text-xs font-black text-emerald">
+          {seatsOpen > 0 ? `${seatsOpen} seat${seatsOpen > 1 ? "s" : ""} open` : "Full"}
+        </span>
+      </div>
 
       <dl className="mt-5 grid gap-3 text-sm sm:grid-cols-2">
         <div className="flex items-center gap-2 text-parchment/72">

@@ -76,7 +76,7 @@ export function Navbar() {
             Coba Prototype
           </a>
           <a
-            href="#campaign-filter"
+            href="/lfg"
             className="inline-flex items-center gap-[8px] rounded-[4px] border border-gold bg-transparent px-[18px] py-[8px] text-sm font-medium text-gold no-underline transition hover:bg-[rgba(201,168,76,0.12)]"
           >
             <Search className="size-3.5" aria-hidden="true" />
@@ -130,7 +130,7 @@ export function Navbar() {
                 Prototype
               </a>
               <a
-                href="#campaign-filter"
+                href="/lfg"
                 onClick={() => setOpen(false)}
                 className="inline-flex items-center justify-center gap-2 rounded-[6px] border border-gold bg-transparent px-4 py-3 text-sm font-medium text-gold no-underline transition hover:bg-[rgba(201,168,76,0.12)]"
               >

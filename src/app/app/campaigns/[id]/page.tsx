@@ -218,7 +218,13 @@ export default async function CampaignDetailPage({ params }: CampaignDetailPageP
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-black uppercase tracking-[0.16em] text-gold">DM</p>
-                <h2 className="mt-1 text-2xl font-black text-white">{campaign.dm}</h2>
+                {campaign.dmHandle ? (
+                  <Link href={`/profile/${campaign.dmHandle}`} className="mt-1 text-xl font-black text-white no-underline transition hover:text-gold sm:text-2xl">
+                    {campaign.dm}
+                  </Link>
+                ) : (
+                  <h2 className="mt-1 text-xl font-black text-white sm:text-2xl">{campaign.dm}</h2>
+                )}
                 {campaign.dmRating ? (
                   <div className="mt-1 flex items-center gap-2">
                     <StarRating rating={campaign.dmRating} />

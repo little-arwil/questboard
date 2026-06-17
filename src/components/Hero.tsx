@@ -83,7 +83,7 @@ export function Hero() {
 
           <div className="flex flex-wrap gap-[14px]">
             <TrackedLink
-              href="#join-beta"
+              href="/lfg"
               eventName="join_beta_click"
               eventProperties={{ location: "hero" }}
               className="inline-flex items-center gap-[10px] rounded-[6px] bg-gold px-[26px] py-[14px] text-sm font-semibold text-[#0A0806] transition hover:bg-gold-light hover:-translate-y-[1px]"
@@ -164,7 +164,7 @@ export function Hero() {
           </p>
           <div className="grid grid-cols-1 gap-3 min-[390px]:grid-cols-2">
             <TrackedLink
-              href="#join-beta"
+              href="/lfg"
               eventName="join_beta_click"
               eventProperties={{ location: "hero" }}
               className="inline-flex items-center justify-center gap-[10px] rounded-[6px] bg-gold px-[22px] py-[14px] text-sm font-semibold text-[#0A0806] transition hover:bg-gold-light"

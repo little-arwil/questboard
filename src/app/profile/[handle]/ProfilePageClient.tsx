@@ -73,13 +73,16 @@ function ProfileHero({ profile }: { profile: SocialProfile }) {
             ))}
             <span className="ml-1 text-sm font-bold text-white">{profile.rating}</span>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <button className="inline-flex items-center gap-2 rounded-md bg-gold px-5 py-2.5 text-xs font-bold text-charcoal transition hover:bg-gold-light">
+          <div className="flex flex-wrap justify-end gap-2">
+            <Link href="/auth" className="inline-flex items-center gap-2 rounded-md bg-gold px-5 py-2.5 text-xs font-bold text-charcoal no-underline transition hover:bg-gold-light">
               <MessageCircle className="size-3.5" /> Message
-            </button>
+            </Link>
             <button className="inline-flex items-center gap-2 rounded-md border border-white/15 bg-white/5 px-5 py-2.5 text-xs font-bold text-parchment transition hover:border-gold/35">
               <Heart className="size-3.5" /> Add Friend
             </button>
+            <Link href="/app/profile/edit" className="inline-flex items-center gap-2 rounded-md border border-gold/30 bg-gold/8 px-5 py-2.5 text-xs font-bold text-gold no-underline transition hover:bg-gold/15">
+              Edit Profile
+            </Link>
           </div>
         </div>
       </div>
@@ -266,7 +269,14 @@ export function ProfilePageClient({ profile }: { profile: SocialProfile }) {
       )}
 
       {activeTab === "Characters" && (
-        <CharacterShowcaseSection characters={profile.characters} />
+        <>
+          <div className="px-6 pt-6 sm:px-10 xl:px-12">
+            <Link href="/app/profile/characters/new" className="inline-flex rounded-md bg-gold px-4 py-2 text-xs font-black text-charcoal no-underline transition hover:bg-gold-light">
+              Create Character
+            </Link>
+          </div>
+          <CharacterShowcaseSection characters={profile.characters} />
+        </>
       )}
 
       {activeTab === "Reviews" && (

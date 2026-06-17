@@ -7,6 +7,7 @@ import { Navbar } from "@/components/Navbar";
 import { CampaignCard } from "@/components/prototype/CampaignCard";
 import { appFilters, campaigns as mockCampaigns } from "@/data/appMockData";
 import type { Campaign } from "@/data/appMockData";
+import { socialProfiles } from "@/data/socialProfiles";
 import { getPlaystyleFocusOption } from "@/lib/playstyleFocus";
 
 function filterKey(label: string) {
@@ -283,6 +284,34 @@ export default function LfgPage() {
                 <p className="mt-2 text-sm text-parchment/58">Try relaxing filters or moving your table focus.</p>
               </div>
             ) : null}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-white/8 px-5 py-10 sm:px-8 lg:px-12">
+        <div className="mx-auto max-w-[1440px]">
+          <div className="mb-5 flex items-end justify-between gap-4">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.18em] text-gold">People behind the tables</p>
+              <h2 className="mt-2 text-2xl font-black text-white">Trusted DMs & reliable players</h2>
+            </div>
+            <Link href="/profile/raka-dm" className="hidden text-sm font-bold text-gold no-underline hover:text-gold-light sm:block">
+              Browse profiles →
+            </Link>
+          </div>
+          <div className="grid gap-3 md:grid-cols-3">
+            {socialProfiles.slice(0, 3).map((profile) => (
+              <Link key={profile.handle} href={`/profile/${profile.handle}`} className="rounded-lg border border-white/10 bg-white/[0.04] p-4 no-underline transition hover:border-gold/35 hover:bg-gold/[0.04]">
+                <div className="flex items-center gap-3">
+                  <div className="grid size-11 place-items-center rounded-lg bg-gold/10 text-sm font-black text-gold">{profile.avatarSeed}</div>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-black text-white">{profile.displayName}</p>
+                    <p className="text-xs text-text-muted">{profile.role} · {profile.trustScore}% trust · {profile.rating}★</p>
+                  </div>
+                </div>
+                <p className="mt-3 line-clamp-2 text-xs leading-5 text-parchment/60">{profile.headline}</p>
+              </Link>
+            ))}
           </div>
         </div>
       </section>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Dice5 } from "lucide-react";
 import { HeroCampaignCard } from "@/components/HeroCampaignCard";
 import { HeroCharacter } from "@/components/HeroCharacter";
 import { TrackedLink } from "@/components/TrackedLink";
@@ -38,13 +38,11 @@ export function Hero() {
 
   return (
     <section className="relative min-h-screen overflow-hidden" style={{ paddingTop: "68px" }}>
-      {/* ── Background ── */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[url('/hero/questboard-war-room.png')] bg-cover bg-center brightness-[0.45] saturate-[0.7]" />
         <div className="absolute inset-0 bg-[linear-gradient(105deg,rgba(8,5,3,0.88)_0%,rgba(8,5,3,0.65)_38%,rgba(8,5,3,0.10)_65%,rgba(8,5,3,0.50)_100%)]" />
       </div>
 
-      {/* ── Ambient floating particles ── */}
       <div className="pointer-events-none absolute inset-0 z-[2]" aria-hidden="true">
         {particles.map((p, i) => (
           <span
@@ -61,22 +59,18 @@ export function Hero() {
         ))}
       </div>
 
-      {/* ── Desktop: Character — dominant, zoomed, head safe below navbar ── */}
       <div
         ref={charRef}
         className="absolute left-1/2 top-[68px] z-[1] hidden -translate-x-1/2 lg:block"
         style={{ transition: "transform 0.12s ease-out" }}
       >
-        <div className="relative flex h-[150vh] min-h-[1000px] w-[105vh] min-w-[46rem] max-w-[70rem] items-start justify-center">
-          {/* Purple glow orb behind character */}
+        <div className="relative flex aspect-[1024/1536] h-[150vh] min-h-[1000px] w-auto max-w-none items-start justify-center">
           <div className="pointer-events-none absolute left-1/2 top-[34%] z-0 size-[420px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,rgba(107,63,160,0.4),transparent_70%)]" />
           <HeroCharacter />
         </div>
       </div>
 
-      {/* ── Desktop content: left headline + right card, aligned with navbar (48px) ── */}
       <div className="relative z-[3] hidden lg:block">
-        {/* LEFT: aligned with navbar logo */}
         <div className="absolute left-[48px] top-1/2 w-[440px] max-w-[34vw] -translate-y-1/2" style={{ top: "calc((100vh - 68px) / 2)" }}>
           <h1 className="font-display text-[clamp(2.4rem,3.6vw,3.4rem)] font-semibold leading-[1.15] text-[#F0EAD6]">
             <span className="block">Temukan Table D&amp;D</span>
@@ -113,7 +107,15 @@ export function Hero() {
             </a>
           </div>
 
-          {/* Trust badges */}
+          <a
+            href="/aethermoor/"
+            className="mt-[22px] inline-flex items-center gap-[10px] rounded-[6px] border border-violet/40 bg-[rgba(91,33,182,0.08)] px-[22px] py-[12px] text-sm font-medium text-violet no-underline transition hover:-translate-y-1 hover:bg-[rgba(139,92,246,0.16)] hover:border-violet/70"
+          >
+            <Dice5 className="size-4" aria-hidden="true" />
+            <span>Mainkan <strong>Aethermoor</strong> — Petualangan D&amp;D Solo</span>
+            <ArrowRight className="size-3.5" aria-hidden="true" />
+          </a>
+
           <div className="mt-[52px] flex flex-wrap gap-x-[36px] gap-y-[20px]">
             <div className="flex items-start gap-[10px]">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" strokeWidth="1.5" className="shrink-0 opacity-75">
@@ -145,48 +147,52 @@ export function Hero() {
           </div>
         </div>
 
-        {/* RIGHT: campaign card aligned with navbar right edge */}
         <div className="absolute right-[48px] w-[min(30vw,480px)] min-w-[420px] -translate-y-1/2 xl:w-[480px]" style={{ top: "calc((100vh - 68px) / 2)" }}>
           <HeroCampaignCard />
         </div>
       </div>
 
-      {/* ── Mobile: stacked ── */}
-      <div className="relative z-[3] mx-auto flex w-full max-w-[440px] flex-col items-center gap-8 px-6 py-10 lg:hidden">
+      <div className="relative z-[3] mx-auto flex w-full max-w-[440px] flex-col items-center gap-7 px-5 pb-24 pt-8 sm:px-6 sm:pt-10 lg:hidden">
         <div className="w-full text-center">
-          <h1 className="font-display text-[clamp(2.4rem,4vw,3.4rem)] font-semibold leading-[1.15] text-[#F0EAD6]">
+          <h1 className="font-display text-[clamp(2.1rem,10vw,3.1rem)] font-semibold leading-[1.08] text-[#F0EAD6]">
             <span className="block">Temukan Table D&amp;D</span>
             <span className="block">Yang Cocok Sebelum</span>
             <span className="block font-bold text-gold">Roll Pertama.</span>
           </h1>
-          <p className="mx-auto mt-[18px] mb-[34px] max-w-[360px] text-sm leading-[1.65] text-text-muted">
+          <p className="mx-auto mb-7 mt-4 max-w-[340px] text-sm leading-[1.65] text-text-muted">
             QuestBoard membantu player dan DM menemukan campaign yang pas berdasarkan gaya main, jadwal, pengalaman, dan ekspektasi party.
           </p>
-          <div className="flex flex-wrap justify-center gap-[14px]">
+          <div className="grid grid-cols-1 gap-3 min-[390px]:grid-cols-2">
             <TrackedLink
               href="#join-beta"
               eventName="join_beta_click"
               eventProperties={{ location: "hero" }}
-              className="inline-flex items-center gap-[10px] rounded-[6px] bg-gold px-[26px] py-[14px] text-sm font-semibold text-[#0A0806] transition hover:bg-gold-light"
+              className="inline-flex items-center justify-center gap-[10px] rounded-[6px] bg-gold px-[22px] py-[14px] text-sm font-semibold text-[#0A0806] transition hover:bg-gold-light"
             >
               Mulai Quest
             </TrackedLink>
             <a
               href="#campaign-filter"
-              className="inline-flex items-center gap-[10px] rounded-[6px] border border-[rgba(240,234,214,0.35)] bg-transparent px-[26px] py-[14px] text-sm font-medium text-[#F0EAD6] transition hover:border-gold"
+              className="inline-flex items-center justify-center gap-[10px] rounded-[6px] border border-[rgba(240,234,214,0.35)] bg-transparent px-[22px] py-[14px] text-sm font-medium text-[#F0EAD6] transition hover:border-gold"
             >
               Lihat Campaign
               <ArrowRight className="size-3.5" aria-hidden="true" />
             </a>
           </div>
+          <a
+            href="/aethermoor/"
+            className="mx-auto mt-4 inline-flex w-full items-center justify-center gap-[8px] rounded-[6px] border border-violet/40 bg-[rgba(91,33,182,0.08)] px-[20px] py-[12px] text-sm font-medium text-violet no-underline transition hover:bg-[rgba(139,92,246,0.16)] min-[390px]:w-auto"
+          >
+            <Dice5 className="size-4" aria-hidden="true" />
+            Mainkan Aethermoor
+          </a>
         </div>
-        <div className="w-full max-w-[460px]">
+        <div className="w-full max-w-[420px] px-1">
           <HeroCampaignCard />
         </div>
       </div>
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-[32px] left-1/2 z-10 -translate-x-1/2 text-center">
+      <div className="absolute bottom-[24px] left-1/2 z-10 hidden -translate-x-1/2 text-center sm:block">
         <span className="mb-[8px] block text-[0.62rem] uppercase tracking-[0.2em] text-text-muted">Scroll untuk menjelajahi</span>
         <div className="mx-auto size-5 animate-bounce border-r-2 border-b-2 border-gold" style={{ transform: "rotate(45deg)" }} />
       </div>

@@ -24,6 +24,9 @@ export type Campaign = {
   expectations: string[];
   dmRating?: number;
   dmGamesRun?: number;
+  dmBio?: string;
+  dmResponseTime?: string;
+  reviews?: Array<{ player: string; quote: string; rating: number; campaignRole: string }>;
   location?: string;
   commitment?: string;
   safetyTools?: string;
@@ -82,6 +85,13 @@ export const campaigns: Campaign[] = [
     status: "Session zero soon",
     dmRating: 4.9,
     dmGamesRun: 42,
+    dmBio: "RPG veteran dari 2018. Spesialisasi atmosfer — mystery, horror ringan, dan drama karakter. Percaya session zero yang solid lebih penting dari rulebook.",
+    dmResponseTime: "Usually responds within 4 hours",
+    reviews: [
+      { player: "Dian", quote: "Raka bikin mysterious village jadi hidup. Tiap sesi ada clue baru yang bikin kita mikir.", rating: 5, campaignRole: "Player"},
+      { player: "Vino", quote: "Pertama main D&D, Raka sabar banget jelasin rules sambil tetep immersive. Recommended buat newbie.", rating: 5, campaignRole: "Player"},
+      { player: "Sari", quote: "Session zero Raka detail — boundaries, lines & veils, semuanya dibahas. Rasanya aman.", rating: 5, campaignRole: "Player"},
+    ],
     commitment: "Weekly · 4 months",
     safetyTools: "Lines & veils",
     featured: true,
@@ -221,6 +231,12 @@ export const campaigns: Campaign[] = [
     status: "New player onboarding",
     dmRating: 4.9,
     dmGamesRun: 54,
+    dmBio: "Full-time DM sejak 2020. Udah ngajar 50+ player baru lewat campaign onboarding. Passion gue: ngeliat pemula pertama kali ngerasain magic of D&D dengan sistem yang aman dan seru.",
+    dmResponseTime: "Responds within 1–2 hours",
+    reviews: [
+      { player: "Rafi", quote: "Gue baru main D&D dan Tara nge-guide dari awal bikin karakter sampe sesi pertama. Seru banget!", rating: 5, campaignRole: "Player (New)"},
+      { player: "Maya", quote: "Best onboarding experience ever. Tara punya patience level dewa.", rating: 5, campaignRole: "Player"},
+    ],
     commitment: "Weekly starter arc · 12 sessions",
     safetyTools: "Stars & wishes",
     featured: true,
@@ -496,6 +512,13 @@ export const campaigns: Campaign[] = [
     status: "Interviewing players",
     dmRating: 4.9,
     dmGamesRun: 29,
+    dmBio: "Spesialisasi drama intrik dan politik kerajaan. Setiap NPC punya agenda sendiri dan setiap pilihan player bikin konsekuensi nyata. No railroading, all story.",
+    dmResponseTime: "Responds within a few hours",
+    reviews: [
+      { player: "Tama", quote: "Maya bikin plot twist yang bener-bener gak kepikiran. Tiap keputusan terasa berat.", rating: 5, campaignRole: "Player"},
+      { player: "Indah", quote: "Lore wikinya insane detail. Serasa beneran main di kerajaan.", rating: 5, campaignRole: "Player"},
+      { player: "Bimo", quote: "Combat jarang tapi setiap combat terasa epic karena sudah dibangun 3-4 sesi drama duluan.", rating: 4, campaignRole: "Player"},
+    ],
     commitment: "Weekly · 5 months",
     safetyTools: "Lines & veils, intrigue boundaries",
     featured: true,

@@ -28,12 +28,12 @@ export default function AuthPage() {
       return;
     }
 
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
+    const siteUrl = window.location.origin || process.env.NEXT_PUBLIC_SITE_URL;
 
     setLoading(true);
     const { error } = await supabase.auth.signInWithOtp({
       email: normalized,
-      options: { emailRedirectTo: `${siteUrl}/app/profile/edit` },
+      options: { emailRedirectTo: `${siteUrl}/auth/callback?next=/app/profile/edit` },
     });
     setLoading(false);
     setMessage(error ? error.message : "Magic link terkirim. Cek email kamu.");

@@ -67,19 +67,11 @@ function isPolicyError(error: SupabaseInsertError) {
 }
 
 function getFeedbackErrorMessage(error: SupabaseInsertError) {
-  if (isPolicyError(error)) {
-    return "Supabase policy menolak feedback ini.";
+  if (isPolicyError(error) || error.code === "23514" || error.code === "42P01") {
+    return "Feedback belum bisa dikirim. Coba lagi nanti.";
   }
 
-  if (error.code === "23514") {
-    return "Feedback belum lolos validasi database. Cek lagi isian kamu.";
-  }
-
-  if (error.code === "42P01") {
-    return "Table feedback belum ditemukan di Supabase. Jalankan SQL setup terlebih dulu.";
-  }
-
-  return "Supabase mengembalikan error. Cek browser console untuk detail.";
+  return "Feedback belum bisa dikirim. Coba lagi nanti.";
 }
 
 export function FeedbackForm() {

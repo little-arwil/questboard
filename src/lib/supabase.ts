@@ -60,6 +60,7 @@ export type LfgCampaignRow = {
   dm_games_run: number | null;
   dm_bio: string | null;
   dm_response_time: string | null;
+  dm_handle: string | null;
   reviews: Array<{ player: string; quote: string; rating: number; campaignRole: string }>;
   location: string | null;
   commitment: string | null;

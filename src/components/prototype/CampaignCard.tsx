@@ -54,7 +54,7 @@ export function CampaignCard({ campaign }: { campaign: Campaign }) {
 
       {/* Seats indicator */}
       <div className="mt-4 flex items-center gap-3">
-        <div className="flex gap-1" aria-label={`${seatsOpen} of ${partySize} seats open`}>
+        <div className="flex gap-1" aria-hidden="true">
           {Array.from({ length: partySize }).map((_, i) => (
             <span
               key={i}
@@ -120,7 +120,7 @@ export function CampaignCard({ campaign }: { campaign: Campaign }) {
           View Details
         </Link>
         <Link
-          href="/app/applications"
+          href={`/app/campaigns/${campaign.id}#apply`}
           className="inline-flex h-11 flex-1 items-center justify-center rounded-md bg-ember px-4 text-sm font-black text-charcoal transition hover:-translate-y-0.5 hover:bg-gold focus:outline-none focus:ring-2 focus:ring-ember focus:ring-offset-2 focus:ring-offset-charcoal"
         >
           Apply

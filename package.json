@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint src next.config.ts tailwind.config.ts"
+    "lint": "eslint src next.config.ts tailwind.config.ts",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run lint && npm run typecheck && npm run build"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
@@ -33,5 +35,8 @@
     "postcss": "^8.5.10",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.3"
+  },
+  "engines": {
+    "node": ">=20.9.0"
   }
 }

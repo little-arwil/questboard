@@ -10,9 +10,13 @@ export default function AuthPage() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
+  function isValidEmail(e: string) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e.trim().toLowerCase());
+  }
+
   async function handleMagicLink() {
     const normalized = email.trim().toLowerCase();
-    if (!normalized.includes("@")) {
+    if (!normalized || !isValidEmail(normalized)) {
       setMessage("Isi email yang valid dulu.");
       return;
     }
@@ -24,10 +28,12 @@ export default function AuthPage() {
       return;
     }
 
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
+
     setLoading(true);
     const { error } = await supabase.auth.signInWithOtp({
       email: normalized,
-      options: { emailRedirectTo: `${window.location.origin}/app/profile/edit` },
+      options: { emailRedirectTo: `${siteUrl}/app/profile/edit` },
     });
     setLoading(false);
     setMessage(error ? error.message : "Magic link terkirim. Cek email kamu.");

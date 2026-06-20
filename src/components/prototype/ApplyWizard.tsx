@@ -138,6 +138,9 @@ export function ApplyWizard({ campaign }: { campaign: Campaign }) {
               <ArrowRight className="size-4" />
             </button>
           </div>
+          {submitError ? (
+            <p className="mt-3 text-sm text-rose">{submitError}</p>
+          ) : null}
         </div>
       )}
 
@@ -177,6 +180,9 @@ export function ApplyWizard({ campaign }: { campaign: Campaign }) {
               <ArrowRight className="size-4" />
             </button>
           </div>
+          {submitError ? (
+            <p className="mt-3 text-sm text-rose">{submitError}</p>
+          ) : null}
         </div>
       )}
 

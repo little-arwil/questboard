@@ -109,7 +109,6 @@ export const campaigns: Campaign[] = [
   },
   {
     id: "clockwork-isles",
-    dmHandle: "maya-ranger",
     title: "Clockwork Isles",
     dm: "Mira",
     system: "D&D 2024",
@@ -144,7 +143,6 @@ export const campaigns: Campaign[] = [
   },
   {
     id: "ember-deep",
-    dmHandle: "raka-dm",
     title: "Ember Deep",
     dm: "Nadia",
     system: "D&D 5e",
@@ -180,7 +178,6 @@ export const campaigns: Campaign[] = [
   },
   {
     id: "lanterns-of-maritam",
-    dmHandle: "nara-cleric",
     title: "Lanterns of Maritam",
     dm: "Bima",
     system: "D&D 5e",
@@ -216,7 +213,6 @@ export const campaigns: Campaign[] = [
   },
   {
     id: "silverline-academy",
-    dmHandle: "maya-ranger",
     title: "Silverline Academy",
     dm: "Tara",
     system: "D&D 2024",

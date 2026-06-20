@@ -77,11 +77,11 @@ function ProfileHero({ profile }: { profile: SocialProfile }) {
             <Link href="/auth" className="inline-flex items-center gap-2 rounded-md bg-gold px-5 py-2.5 text-xs font-bold text-charcoal no-underline transition hover:bg-gold-light">
               <MessageCircle className="size-3.5" /> Message
             </Link>
-            <button className="inline-flex items-center gap-2 rounded-md border border-white/15 bg-white/5 px-5 py-2.5 text-xs font-bold text-parchment transition hover:border-gold/35">
+            <Link href="/auth" className="inline-flex items-center gap-2 rounded-md border border-white/15 bg-white/5 px-5 py-2.5 text-xs font-bold text-parchment no-underline transition hover:border-gold/35">
               <Heart className="size-3.5" /> Add Friend
-            </button>
-            <Link href="/app/profile/edit" className="inline-flex items-center gap-2 rounded-md border border-gold/30 bg-gold/8 px-5 py-2.5 text-xs font-bold text-gold no-underline transition hover:bg-gold/15">
-              Edit Profile
+            </Link>
+            <Link href="/auth" className="inline-flex items-center gap-2 rounded-md border border-gold/30 bg-gold/8 px-5 py-2.5 text-xs font-bold text-gold no-underline transition hover:bg-gold/15">
+              Claim This Profile
             </Link>
           </div>
         </div>

@@ -87,7 +87,7 @@ export function HeroCampaignCard() {
 
         {/* ── Featured quest row ── */}
         <a
-          href="#campaign-filter"
+          href="/lfg"
           className="group mt-3 flex items-center gap-3 rounded-[12px] border border-[rgba(218,171,91,0.18)] bg-[rgba(255,255,255,0.035)] px-3.5 py-3 no-underline transition hover:border-[rgba(218,171,91,0.45)] hover:bg-[rgba(218,171,91,0.06)]"
         >
           <ScrollText className="size-5 shrink-0 text-[#d8a84f]" aria-hidden="true" />
@@ -100,7 +100,7 @@ export function HeroCampaignCard() {
 
         {/* ── CTA ── */}
         <a
-          href="#campaign-filter"
+          href="/lfg"
           className="hero-card-cta mt-4 flex w-full items-center justify-center gap-2 rounded-[12px] border border-[rgba(218,171,91,0.4)] bg-gradient-to-r from-[#4c1d95]/85 via-[#5b21b6]/80 to-[#4c1d95]/85 px-4 py-3.5 text-sm font-semibold tracking-wide text-[#f5efdf] no-underline shadow-[0_0_18px_rgba(124,58,237,0.22)] transition hover:-translate-y-px hover:border-[rgba(244,199,107,0.65)] hover:shadow-[0_0_30px_rgba(124,58,237,0.4)] motion-reduce:animate-none"
         >
           View Campaign

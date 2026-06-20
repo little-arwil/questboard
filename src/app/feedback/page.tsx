@@ -66,7 +66,7 @@ export default function FeedbackPage() {
             <div className="mt-8 grid gap-3">
               {[
                 "Tidak perlu login.",
-                "Feedback disimpan ke Supabase.",
+                "Feedback kamu membantu pembangunan QuestBoard.",
                 "Tidak ada public read access untuk jawaban user.",
               ].map((item) => (
                 <div

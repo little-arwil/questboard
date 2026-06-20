@@ -28,6 +28,7 @@ create table if not exists public.lfg_campaigns (
   dm_games_run integer,
   dm_bio text,
   dm_response_time text,
+  dm_handle text check (dm_handle is null or dm_handle ~ '^[a-z0-9][a-z0-9-]{2,38}$'),
   reviews jsonb not null default '[]'::jsonb,
   location text,
   commitment text,

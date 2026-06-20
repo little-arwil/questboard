@@ -271,7 +271,9 @@ export default async function CampaignDetailPage({ params }: CampaignDetailPageP
           ) : null}
 
           {/* Apply Wizard */}
-          <ApplyWizard campaign={campaign} />
+          <div id="apply">
+            <ApplyWizard campaign={campaign} />
+          </div>
         </aside>
       </section>
     </>

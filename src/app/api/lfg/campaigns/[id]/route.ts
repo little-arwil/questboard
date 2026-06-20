@@ -41,6 +41,7 @@ function rowToCampaign(row: LfgCampaignRow): Campaign {
     dmGamesRun: row.dm_games_run ?? undefined,
     dmBio: row.dm_bio ?? undefined,
     dmResponseTime: row.dm_response_time ?? undefined,
+    dmHandle: row.dm_handle ?? undefined,
     reviews: row.reviews ?? [],
     location: row.location ?? undefined,
     commitment: row.commitment ?? undefined,

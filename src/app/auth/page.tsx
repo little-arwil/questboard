@@ -240,6 +240,16 @@ export default function AuthPage() {
             </div>
           </div>
 
+          {/* Forgot password (masuk tab only) */}
+          {tab === "masuk" && (
+            <Link
+              href="/auth/forgot-password"
+              className="mt-2 block text-right text-xs font-semibold text-parchment/40 transition hover:text-gold"
+            >
+              Lupa password?
+            </Link>
+          )}
+
           {/* Confirm password (daftar only) */}
           {tab === "daftar" && (
             <div className="mt-4">

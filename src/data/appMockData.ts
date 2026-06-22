@@ -48,6 +48,7 @@ export type ApplicationPreview = {
 
 export const appNavLinks = [
   { label: "Dashboard", href: "/app" },
+  { label: "Characters", href: "/app/characters" },
   { label: "LFG", href: "/app/campaigns" },
   { label: "Profile", href: "/app/profile" },
   { label: "Create Campaign", href: "/app/dm/create-campaign" },

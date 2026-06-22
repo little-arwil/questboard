@@ -7,6 +7,7 @@ export const WAITLIST_TABLE = "waitlist";
 export const FEEDBACK_TABLE = "feedback";
 export const LFG_CAMPAIGNS_TABLE = "lfg_campaigns";
 export const LFG_APPLICATIONS_TABLE = "lfg_applications";
+export const CHARACTERS_TABLE = "characters";
 
 export type WaitlistRole = "player" | "dm" | "both";
 export type WaitlistExperienceLevel = "new" | "some" | "experienced";

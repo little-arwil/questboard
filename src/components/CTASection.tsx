@@ -103,19 +103,15 @@ function getInsertErrorMessage(error: SupabaseInsertError) {
     return "Email ini sudah terdaftar.";
   }
 
-  if (isPolicyError(error)) {
-    return "Supabase policy menolak request insert.";
+  if (isPolicyError(error) || error.code === "42P01") {
+    return "Pendaftaran belum bisa dikirim. Coba lagi nanti.";
   }
 
   if (error.code === "23514") {
-    return "Email tidak lolos validasi database. Cek lagi format email kamu.";
+    return "Email tidak lolos validasi. Cek lagi format email kamu.";
   }
 
-  if (error.code === "42P01") {
-    return "Table waitlist belum ditemukan di Supabase. Jalankan SQL setup terlebih dulu.";
-  }
-
-  return "Supabase mengembalikan error. Cek browser console untuk detail.";
+  return "Pendaftaran belum bisa dikirim. Coba lagi nanti.";
 }
 
 export function CTASection() {

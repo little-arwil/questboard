@@ -18,7 +18,45 @@ type InsertBody = {
 
 const ALLOWED_ROLES = ["Player", "Player (New)", "Veteran player", "Flex role"];
 
+const fallbackSiteUrl = "https://questboard-nu.vercel.app";
+
+function getConfiguredSiteOrigin() {
+  try {
+    return new URL(process.env.NEXT_PUBLIC_SITE_URL || fallbackSiteUrl).origin;
+  } catch {
+    return new URL(fallbackSiteUrl).origin;
+  }
+}
+
+function getHeaderOrigin(value: string | null) {
+  if (!value) return null;
+  try {
+    return new URL(value).origin;
+  } catch {
+    return null;
+  }
+}
+
+function isAllowedRequestOrigin(request: NextRequest) {
+  const headerOrigin =
+    getHeaderOrigin(request.headers.get("origin")) ??
+    getHeaderOrigin(request.headers.get("referer"));
+
+  if (!headerOrigin) {
+    return process.env.NODE_ENV !== "production";
+  }
+
+  return (
+    headerOrigin === getConfiguredSiteOrigin() ||
+    headerOrigin === request.nextUrl.origin
+  );
+}
+
 export async function POST(request: NextRequest) {
+  if (!isAllowedRequestOrigin(request)) {
+    return NextResponse.json({ error: "Request origin is not allowed" }, { status: 403 });
+  }
+
   const body: InsertBody | null = await request.json().catch(() => null);
 
   if (!body || !body.campaign_id || !body.role || !body.schedule_confirmation) {
@@ -35,6 +73,10 @@ export async function POST(request: NextRequest) {
 
   const supabase = createSupabaseServerClient();
   if (getMissingSupabaseEnvVars().length || !supabase) {
+    if (process.env.NODE_ENV === "production") {
+      return NextResponse.json({ error: "Application backend unavailable. Please try again later." }, { status: 503 });
+    }
+
     return NextResponse.json({
       success: true,
       source: "mock",
@@ -60,7 +102,7 @@ export async function POST(request: NextRequest) {
 
   if (error) {
     console.error("[lfg/applications] Supabase insert failed", error);
-    return NextResponse.json({ error: "Failed to submit application", details: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Failed to submit application. Please try again later." }, { status: 500 });
   }
 
   return NextResponse.json({

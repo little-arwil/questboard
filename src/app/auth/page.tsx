@@ -51,7 +51,7 @@ export default function AuthPage() {
       provider,
       options: { redirectTo: redirectUrl },
     });
-    if (error) setMessage(error.message);
+    if (error) setMessage("Gagal terhubung ke provider OAuth. Coba lagi nanti.");
   }
 
   function isValid(e: string) {
@@ -93,7 +93,7 @@ export default function AuthPage() {
         } else if (error.message.includes("Email not confirmed")) {
           setMessage("Email belum dikonfirmasi. Cek inbox/spam kamu.");
         } else {
-          setMessage(error.message);
+          setMessage("Gagal masuk. Coba lagi nanti.");
         }
         setLoading(false);
         return;
@@ -105,7 +105,7 @@ export default function AuthPage() {
         password,
       });
       if (error) {
-        setMessage(error.message);
+        setMessage("Gagal mendaftar. Coba lagi nanti.");
         setLoading(false);
         return;
       }
